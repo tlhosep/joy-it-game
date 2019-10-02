@@ -9,7 +9,7 @@ Class to manage a global queue for various tasks
 @created: 2019-08-26 
 """ 
 
-from tlu_django_test import settings
+from joy_it_game import settings
 import logging
 import sys
 import threading

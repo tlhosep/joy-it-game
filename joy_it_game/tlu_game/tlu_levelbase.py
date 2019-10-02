@@ -17,8 +17,8 @@ from tlu_services.tlu_processes import abortProcess, startProcess, processlist
 import multiprocessing
 from tlu_services.tlu_threads import abortThread, startThread
 from tlu_hardware.tasks import Countdown
-from tlu_polltest import models
-from tlu_polltest.models import Level, userOk, getGameState
+from tlu_joyit_game import models
+from tlu_joyit_game.models import Level, userOk, getGameState
 from django.utils import timezone
 import logging
 from tlu_services import tlu_queue

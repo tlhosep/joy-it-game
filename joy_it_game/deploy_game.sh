@@ -50,15 +50,24 @@ checkModule() {
 	modname=$1
 	optional=$2
 	modulepath=$3
+	sudo_required=$4
 	echo "checking for $modname..."
 	$PIP list --format=columns | grep $modname &> /dev/null
 	if [ $? == 0 ]; then
 		echo "$modname installed"
 	else
 		if [ "$modulepath" == "" ]; then
-			"$PIP" install --upgrade "$modname"
+			if [ "$sudo_required" == "" ]; then
+				"$PIP" install --upgrade "$modname"
+			else
+				sudo "$PIP" install --upgrade "$modname"
+			fi
 		else
-			"$PIP" install "$modulepath"
+			if [ "$sudo_required" == "" ]; then
+				"$PIP" install "$modulepath"
+			else
+				sudo "$PIP" install "$modulepath"
+			fi
 		fi
 		if [ $? == 0 ]; then
 			echo "$modname yet deployed!"
@@ -167,22 +176,27 @@ if [ "$NONRASPI" == "" ]; then
 	checkModule "luma.led-matrix"
 	checkPackage "rabbitmq-server"
 else
-	checkModule "fake-rpi" "mandatory" "git+https://github.com/sn4k3/FakeRPi"
+	checkModule "fake-rpi" "mandatory" "git+https://github.com/sn4k3/FakeRPi" "sudo"
 fi
 
-echo "Change settings to no debug..."
-sed -i 's/DEBUG = True/DEBUG = False/g' $PWD/tlu_django_test/settings.py
-
+if [ "$NONRASPI" == "" ]; then
+	echo "Change settings to no debug..."
+	sed -i 's/DEBUG = True/DEBUG = False/g' $PWD/tlu_joyit_game/settings.py
+fi
 echo "Migrate, just in case... (will also create the db)"
 "$PYTHON" manage.py migrate
 
 echo "Checking or setting the superuser..."
-"$PYTHON" manage.py setup_adminuser --username=admin --email=th.lueth@tlc.it-consulting.com --password=test1234
-echo "admin with PW "test1234" has now been created and could be used to administer the system"
+"$PYTHON" manage.py setup_adminuser --username=admin --email=fake@fake.com --password=test1234
+echo ""
+echo "IMPORTANT:"
+echo "The user 'admin' with Password "test1234" has now been created and could be used to administer the system. Please note this down."
 
-echo "Preparing Desktop..."
-createDesktopIcon
-createDesktopIconStop
-
+if [ "$NONRASPI" == "" ]; then
+	echo "Preparing Desktop..."
+	createDesktopIcon
+	createDesktopIconStop
+fi
 
 echo "deployment of game finished!"
+.

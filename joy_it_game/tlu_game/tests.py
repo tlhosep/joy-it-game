@@ -8,9 +8,9 @@ This module shall try to test most of the provided game functionalities
 import unittest
 import logging
 from django.contrib.auth import get_user_model
-from tlu_polltest.models import Game, getGameState, setGameState, userOk, Level,\
+from tlu_joyit_game.models import Game, getGameState, setGameState, userOk, Level,\
     getCleanGameState
-from tlu_django_test import settings
+from joy_it_game import settings
 import time
 from tlu_game.tlu_level00 import Level00
 from tlu_game import tlu_globals

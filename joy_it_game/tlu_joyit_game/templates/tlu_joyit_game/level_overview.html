@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>tlu_joyit_game</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
+    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/Article-List.css">
+    <link rel="stylesheet" href="/assets/css/Brands.css">
+    <link rel="stylesheet" href="/assets/css/Footer-Clean.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
+    <link rel="stylesheet" href="/assets/css/Login-Form-Dark.css">
+    <link rel="stylesheet" href="/assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="/assets/css/Registration-Form-with-Photo.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+
+<body>{% include "header_inc.html" %}
+    <div id="content" style="margin-bottom: 0px;padding-bottom: 5px;background-image: url(&quot;/assets/img/nature/image4.jpg&quot;);">{% load i18n %}{% if user.is_authenticated %} 
+        <div class="jumbotron" id="SetSettings">
+            <h1>{% trans 'Overview' %}</h1>
+            <p>{% trans "Please find some details below:" %}<br></p>
+            <div><div class="table-responsive">
+    <table class="table" id="valuetable">
+        <thead>
+            <tr>
+                <th>{% trans "Item" %}</th>
+                <th>{% trans "Value" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{% trans "current level" %}</td>
+                <td>{{ current_level }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "last played" %}</td>
+                <td>{{ last_played }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "achieved points" %}</td>
+                <td>{{ achieved_points }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div><a class="btn btn-primary" role="button" id="startbutton" href="{{ next_level_url }}">{{ button_text }}</a><a class="btn btn-primary" role="button" id="startbutton" href="{% url 'tlu_joyit_game:restart'  %}">{% trans 'Restart the game' %}</a>{% if no_levels %}
+<h3>{% trans "You have no levels passed to list" %}</h3>
+{% else %}
+<h3>{% trans "Your levels played so far" %}</h3>
+<div class="table-responsive" style="height: 200px">
+    <table class="table" id="listtable">
+        <thead>
+            <tr>
+                <th>{% trans "Level" %}</th>
+                <th>{% trans "Started" %}</th>
+                <th>{% trans "Ended" %}</th>
+                <th>{% trans "Points" %}</th>
+                <th>{% trans "Time" %}</th>
+                <th>{% trans "Result" %}</th>
+                <th>{% trans "Action" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for level in levellist %}
+            <tr>
+                <td>{{ level.levelnum }}</td>
+                <td>{{ level.level_start }}</td>
+                <td>{{ level.level_ended }}</td>
+                <td>{{ level.points }}</td>
+                <td>{{ level|totalTime}}</td>
+                <td>{{ level.result|levelConvert }}</td>
+                <td><a id="delbutton" class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:deletelevel' level_id=level.id %}">{% trans 'Delete' %}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}</div>
+        </div>{% else %}
+        <div class="jumbotron text-center" id="Loggedout" style="margin-bottom: 10px;padding: 10px;">
+            <h1>{% trans "You have to log in" %}</h1>
+            <p>{% trans "We are sorry, but in order to move ahead you have to log in or register yourself" %}</p>
+            <div class="btn-group" role="group"><a class="btn btn-primary" role="button" href="{% url 'login' %}" style="background-color: rgb(19,255,14);">{% trans "Log &nbsp;in" %}</a><a class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:demo'%}">{% trans "Run demo" %}</a></div>
+        </div>{% endif %}</div><div>{% include "footer_inc.html" %}{% load i18n %}</div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/tlu_helper.js"></script>
+    <script src="/assets/js/tlu_settingshelper.js"></script>
+    <script src="/assets/js/tlu_levelsupport.js"></script>
+</body>
+
+</html>

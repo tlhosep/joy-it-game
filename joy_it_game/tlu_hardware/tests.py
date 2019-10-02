@@ -10,7 +10,7 @@ import tlu_hardware.tlu_buzzer as tlu_buzzer
 
 import logging
 from tlu_hardware.tasks import Countdown, CheckKey, CheckCursor, AnimatedBuzzer, Buzzer
-from tlu_django_test import settings
+from joy_it_game import settings
 from tlu_services.tlu_processes import abortProcess, startProcess
 from tlu_services.tlu_queue import tlu_queueobject
 from tlu_game.tlu_globals import ShowClock

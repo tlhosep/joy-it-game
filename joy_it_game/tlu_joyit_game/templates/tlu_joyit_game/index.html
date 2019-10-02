@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>tlu_joyit_game</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
+    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/Article-List.css">
+    <link rel="stylesheet" href="/assets/css/Brands.css">
+    <link rel="stylesheet" href="/assets/css/Footer-Clean.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
+    <link rel="stylesheet" href="/assets/css/Login-Form-Dark.css">
+    <link rel="stylesheet" href="/assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="/assets/css/Registration-Form-with-Photo.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+
+<body>{% include "header_inc.html" %}
+    <div id="content" style="margin-bottom: 0px;padding-bottom: 5px;background-image: url(&quot;/assets/img/nature/image4.jpg&quot;);">{% load i18n %}{% if user.is_authenticated %} 
+        <div class="jumbotron" id="Loggedin">
+            <h1>{% trans "Welcome" %} {{ user.username }}!</h1>
+            <p>{% trans 'Hey' %} {{ user.username }}{% trans ", you are now able to start the little game or to continue from where you have left off. Please press the below button to get started :) " %}<br></p>
+            <div style="height: 140px;"><img src="/assets/img/tlu/RB-JoyPi-2g.png" style="height: 120px;"></div>
+            <p>
+                <div class="btn-group border rounded-circle shadow-sm" role="group"><a class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:levelOverview' %}" style="background-color: rgb(137,143,65);padding-bottom: 6px;">{% trans "Get started" %}</a><a class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:demo'%}">{% trans "Run demo" %}</a></div>
+            </p>
+        </div>{% else %}
+        <div class="jumbotron text-center" id="Loggedout" style="margin-bottom: 10px;padding: 10px;">
+            <h1>{% trans "You have to log in" %}</h1>
+            <p>{% trans "We are sorry, but in order to move ahead you have to log in or register yourself" %}</p>
+            <div class="btn-group" role="group"><a class="btn btn-primary" role="button" href="{% url 'login' %}" style="background-color: rgb(19,255,14);">{% trans "Log &nbsp;in" %}</a><a class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:demo'%}">{% trans "Run demo" %}</a></div>
+        </div><div>{% endif %}</div></div><div>{% include "footer_inc.html" %}{% load i18n %}</div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/tlu_helper.js"></script>
+    <script src="/assets/js/tlu_settingshelper.js"></script>
+    <script src="/assets/js/tlu_levelsupport.js"></script>
+</body>
+
+</html>

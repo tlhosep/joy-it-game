@@ -15,9 +15,9 @@ The second level introduces simply the 4 cursor keys
 import logging
 from django.utils.translation import gettext as _
 from django.utils import timezone
-from tlu_polltest.models import Level
+from tlu_joyit_game.models import Level
 
-from tlu_polltest import models
+from tlu_joyit_game import models
 
 from tlu_hardware.tasks import Countdown, CheckCursor, Buzzer
 from tlu_game.tlu_levelbase import LevelBase

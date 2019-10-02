@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>tlu_joyit_game</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
+    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/Article-List.css">
+    <link rel="stylesheet" href="/assets/css/Brands.css">
+    <link rel="stylesheet" href="/assets/css/Footer-Clean.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
+    <link rel="stylesheet" href="/assets/css/Login-Form-Dark.css">
+    <link rel="stylesheet" href="/assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="/assets/css/Registration-Form-with-Photo.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+
+<body>{% include "header_inc.html" %}
+    <div id="content" style="margin-bottom: 0px;padding-bottom: 5px;background-image: url(&quot;/assets/img/nature/image4.jpg&quot;);">{% load i18n %}
+        <div class="jumbotron" id="SetSettings">
+            <h1>{% trans 'Test your email settings' %}</h1>
+            <p>{% trans "As you just have defined some basic email handling it would be great to check if the paramter given do work as expected. This could be checked on this page by the click of a button." %}<br></p>
+            <p>{% trans "If you did receive the email by the method decided please confirm by checkmarking and we will let you go :)" %}</p>
+            <form id="loginform" method="post" action="{% url 'tlu_joyit_game:settingscheck' %}">{% csrf_token %}
+{% if email_error %}
+<div class="alert alert-danger">
+{{ email_message }}
+</div>
+{% else %}
+<div class="alert alert-info">
+{{ email_message }}
+</div>
+{% endif %}
+{{ form.as_p }}
+<button class="btn btn-primary" type="submit">{% trans "Perform the check or move ahead" %}</button></form>
+            <div class="btn-group" role="group"><a class="btn btn-primary" role="button" style="background-color: rgb(96,81,27);" href="{% url 'tlu_joyit_game:index'  %}">{% trans 'Home' %}</a><a class="btn btn-primary" role="button" style="background-color: rgb(5,225,14);" href="{% url 'tlu_joyit_game:emailsettings'  %}">{% trans 'Change settings' %}</a></div>
+        </div>
+    </div><div>{% include "footer_inc.html" %}{% load i18n %}</div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/tlu_helper.js"></script>
+    <script src="/assets/js/tlu_settingshelper.js"></script>
+    <script src="/assets/js/tlu_levelsupport.js"></script>
+</body>
+
+</html>

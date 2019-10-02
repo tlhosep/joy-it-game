@@ -30,7 +30,7 @@ class local_settings():
         self.MYBASE_DIR = os.path.dirname(os.path.abspath(__file__))
         self.setDefaults()
         self.SITE_ROOT = os.path.dirname(os.path.realpath(self.MYBASE_DIR)) #for below :)    
-        self.SETTINGS_PATH = os.path.join(self.SITE_ROOT, 'tlu_django_test')   #path for settings
+        self.SETTINGS_PATH = os.path.join(self.SITE_ROOT, 'joy_it_game')   #path for settings
         self.LOCAL_SETTINGS_File = os.path.join(self.SETTINGS_PATH, 'local_settings.py')
 
     def setDefaults(self):

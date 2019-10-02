@@ -1,0 +1,6 @@
+/game_db.sqlite3
+*.pyc
+*.tmp
+/pythongame
+/log/*.log
+
