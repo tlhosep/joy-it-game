@@ -1,0 +1,283 @@
+.login-dark {
+  margin-top: 80px;
+}
+
+.d-xl-flex.justify-content-xl-start {
+  max-width: 120px;
+}
+
+#logo {
+  padding-left: 10px;
+  padding-top: 5px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-top: -5px;
+  margin-right: 5px;
+}
+
+#Head img, svg {
+  max-height: 40px;
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+#Head .container {
+  margin: 0px;
+  padding: 0px;
+}
+
+#compname {
+  margin-left: 5px;
+  padding-left: 5px;
+}
+
+#content {
+  text-align: center;
+  margin-top: 40px;
+  /*margin-top: 60px;*/
+  background-image: url(/assets/img/nature/image1.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: rgba(255,255,255,75);
+}
+
+#content .jumbotron {
+  padding: 20px;
+  border-radius: 20px;
+  background-color: rgba(255,255,255,0.68);
+  max-width: 800px;
+  margin: auto;
+}
+
+#footer {
+  background-color: rgb(37,96,160);
+  color: rgba(255,255,255,1.0);
+}
+
+#social .text-center {
+  font-size: 14px;
+  margin-top: 0px;
+}
+
+#social {
+  padding-top: 0px;
+  margin-top: 0px;
+  text-align: center;
+}
+
+#footer .container {
+  text-align: center;
+}
+
+@media (max-width: 576px) {
+  #Head img, svg {
+    margin-right: 2px;
+  }
+}
+
+@media (max-width: 576px) {
+  #content {
+    padding: 5px;
+  }
+}
+
+@media (min-width: 576px) {
+  #content {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 575px) {
+  #content .jumbotron {
+    padding: 5px;
+  }
+}
+
+.bs-tooltip-top .tlu_tooltip {
+  background-color: rgb(30,7,96);
+}
+
+.bs-tooltip-top .tlu_tooltip-arrow::before {
+  border-top-color: rgba(30,7,96,1.0);
+}
+
+.lang.active {
+  color: red;
+  background-color: white;
+}
+
+.lang {
+  color: white;
+}
+
+.vertical-center {
+  margin: 0;
+  height: 40px;
+  overflow: hidden;
+  width: 120px;
+  vertical-align: text-bottom;
+}
+
+rounded {
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+}
+
+.lightblue {
+  background-color: #3b8ec2;
+}
+
+.vertical-center select {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  height: 40px;
+  color: white;
+}
+
+.vertical-center.slate {
+  height: 34px;
+}
+
+.vertical-center.slate select {
+  border: 1px solid #ccc;
+  font-size: 16px;
+  height: 34px;
+}
+
+#genericform input[type=text], textarea, input[type=email], input[type=checkbox], select, input[type=password], input[type=number] {
+  width: 100%;
+  padding: 12px 20px;
+  border: 1px solid #9a9a9a;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+#genericform {
+  text-align: start;
+  padding: 20px;
+}
+
+#genericform button[type=submit] {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  box-sizing: border-box;
+  color: white;
+  background-color: green;
+}
+
+#genericform ul {
+  border: 2px solid #666;
+  list-style-type: none;
+  list-style: none;
+  color: red;
+  padding: 10px;
+}
+
+#buttonarea {
+  padding: 10px;
+  background-color: #cfcfcf;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+.navigation-clean.navbar-light .navbar-nav .nav-link {
+  color: #afafb1;
+}
+
+.navigation-clean.navbar-light .navbar-nav .nasv-link:visited {
+  color: white;
+}
+
+.navigation-clean .navbar-nav > li > .dropdown-menu {
+  background-color: #37434d;
+}
+
+.navigation-clean .dropdown-menu .dropdown-item:focus, .navigation-clean .dropdown-menu .dropdown-item {
+  color: white;
+}
+
+.navigation-clean .navbar-nav > li > .dropdown-menu {
+  border-radius: 5px;
+}
+
+#Head .navigation-clean {
+  background-color: #4f86c3;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+@media (max-width: 560px) {
+  #content img {
+    /*max-width: 120px;*/
+    margin-right: 2px;
+  }
+}
+
+@media (min-width: 768px) {
+  .navigation-clean {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+}
+
+#instruction {
+  background-color: white;
+  border-color: blue;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: dashed;
+}
+
+#status {
+  background-color: white;
+  border-color: blue;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: outset;
+}
+
+#dipsettings {
+  background-color: lightgrey;
+  border-color: grey;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: outset;
+}
+
+#valuetable td, #listtable td {
+  /*border: 1px solid grey;*/
+  text-align: left;
+  border-spacing: 1px;
+  border-top: 1px solid grey;
+  padding: 2px;
+  border-left: 1px solid grey;
+}
+
+#valuetable th, #listtable th {
+  color: white;
+  background-color: lightgrey;
+  padding: 1px;
+  border-left: 1px solid white;
+}
+
+#valuetable th:first-child, #listtable th:first-child {
+  border-left: none;
+}
+
+#valuetable td:first-child, #listtable td:first-child {
+  border-left: none;
+}
+
+#valuetable table, #listtable table {
+  width: 50%;
+  display: block;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+

@@ -1,0 +1,879 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-01 13:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Thomas Lueth <th.luethL@tlc-it-consulting.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tlu_django_test/settings.py:126
+msgid "German"
+msgstr "Deutsch"
+
+#: tlu_django_test/settings.py:127
+msgid "English"
+msgstr "Englisch"
+
+#: tlu_game/tlu_level00.py:60 tlu_game/tlu_level01.py:80
+#: tlu_game/tlu_levelbase.py:204
+msgid "Level00 starts.."
+msgstr "Level 2 startet..."
+
+#: tlu_game/tlu_level00.py:74 tlu_game/tlu_level00.py:82
+msgid "Level00 passed"
+msgstr "Level0 erfolgreich"
+
+#: tlu_game/tlu_level00.py:79
+msgid "Level00 failed"
+msgstr "Level 00: Fehler"
+
+#: tlu_game/tlu_level01.py:60 tlu_game/tlu_level01.py:84
+#: tlu_game/tlu_level02.py:60 tlu_game/tlu_level02.py:84
+msgid "Level: "
+msgstr "Level: "
+
+#: tlu_game/tlu_level01.py:60
+msgid "Key = "
+msgstr "Taste = "
+
+#: tlu_game/tlu_level01.py:63
+msgid "You have just pressed Key #"
+msgstr "Du hast die Taste gedrückt: #"
+
+#: tlu_game/tlu_level01.py:84
+msgid "Easy start "
+msgstr "Einfacher Start"
+
+#: tlu_game/tlu_level01.py:85
+msgid "Level 1 running"
+msgstr "Level 1 läuft"
+
+#: tlu_game/tlu_level01.py:102
+msgid "Level 1 failed"
+msgstr "Level 1 fehlerhaft"
+
+#: tlu_game/tlu_level01.py:106
+msgid "You have passed Level 1 :)"
+msgstr "Du hast Level 1 geschafft!"
+
+#: tlu_game/tlu_level02.py:60
+msgid "Cursor = "
+msgstr "Cursor = "
+
+#: tlu_game/tlu_level02.py:63
+msgid "You have just pressed cursor - "
+msgstr "Cursortaste war - "
+
+#: tlu_game/tlu_level02.py:80
+msgid "Level 2 starts.."
+msgstr "Level 2 gestartet..."
+
+#: tlu_game/tlu_level02.py:84
+msgid "Cursorkeys... "
+msgstr "Pfeiltasten..."
+
+#: tlu_game/tlu_level02.py:85
+msgid "Level 2 running"
+msgstr "Level 2 läuft"
+
+#: tlu_game/tlu_level02.py:102
+msgid "Level 2 failed"
+msgstr "Level 2 fehlerhaft"
+
+#: tlu_game/tlu_level02.py:106
+msgid "You have passed Level 2 :)"
+msgstr "Du hast Level 2 geschafft!"
+
+#: tlu_game/tlu_levelbase.py:67
+msgid "Game aborted :("
+msgstr "Spiel abgebrochen :("
+
+#: tlu_game/tlu_levelbase.py:131
+msgid "Timeout reached :("
+msgstr "Zeitüberschreitung :("
+
+#: tlu_game/tlu_levelbase.py:221
+msgid "Level x failed"
+msgstr "Level x fehlerhaft"
+
+#: tlu_game/tlu_levelbase.py:224
+msgid "Level x passed"
+msgstr "Level x erfolgreich"
+
+#: tlu_game/tlu_levelbase.py:245
+msgid "Level is running"
+msgstr "Level läuft"
+
+#: tlu_game/tlu_levelbase.py:249
+msgid "You have to login in order to play this level..."
+msgstr "Du mussst Dich anmelden um dieses Level zu spielen..."
+
+#: tlu_hardware/tlu_cursor.py:55
+msgid "up"
+msgstr "hoch"
+
+#: tlu_hardware/tlu_cursor.py:57
+msgid "right"
+msgstr "rechts"
+
+#: tlu_hardware/tlu_cursor.py:59
+msgid "down"
+msgstr "runter"
+
+#: tlu_hardware/tlu_cursor.py:61
+msgid "left"
+msgstr "links"
+
+#: tlu_polltest/cms_menus.py:28
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:15
+msgid "About me"
+msgstr "Über mich"
+
+#: tlu_polltest/cms_menus.py:29
+#: tlu_polltest/templates/tlu_polltest/setup_check.html:39
+msgid "Home"
+msgstr "Start"
+
+#: tlu_polltest/cms_menus.py:33
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: tlu_polltest/cms_menus.py:35
+msgid "email settings"
+msgstr "Email Einstellungen"
+
+#: tlu_polltest/cms_menus.py:36
+msgid "change password"
+msgstr "Password ändern"
+
+#: tlu_polltest/cms_menus.py:38
+msgid "login"
+msgstr "Anmeldung"
+
+#: tlu_polltest/cms_menus.py:39
+msgid "logout"
+msgstr "Abmeldung"
+
+#: tlu_polltest/models.py:436
+msgid "not started"
+msgstr "Nicht gestartet"
+
+#: tlu_polltest/models.py:436
+msgid "passed"
+msgstr "Erfolg!"
+
+#: tlu_polltest/models.py:436
+msgid "retry"
+msgstr "Wiederholung"
+
+#: tlu_polltest/models.py:436
+msgid "abort"
+msgstr "Abbruch"
+
+#: tlu_polltest/models.py:436
+msgid "failed"
+msgstr "Fehler"
+
+#: tlu_polltest/models.py:436
+msgid "started"
+msgstr "Gestartet"
+
+#: tlu_polltest/models.py:436
+msgid "timeout"
+msgstr ""
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:7
+msgid "Services"
+msgstr "Dienstleistungen"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:9
+msgid "Web design"
+msgstr "Web Design"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:10
+msgid "Development"
+msgstr "Entwicklung / Programmierung"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:11
+msgid "Project Management"
+msgstr "Projektleitung"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:17
+msgid "Company"
+msgstr "Firma"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:18
+msgid "Projects"
+msgstr "Projekte"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:19
+msgid "Legal"
+msgstr "Datenschutz"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:22
+msgid "Twitter Channel"
+msgstr "Twitter Kanal"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:23
+msgid "Linked in profile"
+msgstr "Linked in Profil"
+
+#: tlu_polltest/templates/tlu_polltest/footer_inc.html:23
+msgid "Xing profile"
+msgstr "Xing Profil"
+
+#: tlu_polltest/templates/tlu_polltest/index.html:24
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:25
+msgid "Welcome"
+msgstr "Willkommen"
+
+#: tlu_polltest/templates/tlu_polltest/index.html:25
+msgid "Hey"
+msgstr "Hallo"
+
+#: tlu_polltest/templates/tlu_polltest/index.html:25
+msgid ""
+", you are now able to start the little game or to continue from where you "
+"have left off. Please press the below button to get started :) "
+msgstr ""
+", Du kannst jetzt das Spiel neu starten oder fortsetzen. Bitte drücke den "
+"Knopf unten um anzufangen."
+
+#: tlu_polltest/templates/tlu_polltest/index.html:28
+msgid "Get started"
+msgstr "Starte jetzt"
+
+#: tlu_polltest/templates/tlu_polltest/index.html:28
+#: tlu_polltest/templates/tlu_polltest/index.html:34
+#: tlu_polltest/templates/tlu_polltest/level00.html:30
+#: tlu_polltest/templates/tlu_polltest/level01.html:30
+#: tlu_polltest/templates/tlu_polltest/level_base.html:56
+#: tlu_polltest/templates/tlu_polltest/level_error.html:34
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:86
+msgid "Run demo"
+msgstr "Zeige Demo"
+
+#: tlu_polltest/templates/tlu_polltest/index.html:32
+#: tlu_polltest/templates/tlu_polltest/level00.html:28
+#: tlu_polltest/templates/tlu_polltest/level01.html:28
+#: tlu_polltest/templates/tlu_polltest/level_base.html:54
+#: tlu_polltest/templates/tlu_polltest/level_error.html:32
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:84
+msgid "You have to log in"
+msgstr "Du musst Dich leider anmelden"
+
+#: tlu_polltest/templates/tlu_polltest/index.html:33
+#: tlu_polltest/templates/tlu_polltest/level00.html:29
+#: tlu_polltest/templates/tlu_polltest/level01.html:29
+#: tlu_polltest/templates/tlu_polltest/level_base.html:55
+#: tlu_polltest/templates/tlu_polltest/level_error.html:33
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:85
+msgid ""
+"We are sorry, but in order to move ahead you have to log in or register "
+"yourself"
+msgstr "Du musst Dich leider anmelden oder registrieren um fortzufahren."
+
+#: tlu_polltest/templates/tlu_polltest/index.html:34
+#: tlu_polltest/templates/tlu_polltest/level00.html:30
+#: tlu_polltest/templates/tlu_polltest/level01.html:30
+#: tlu_polltest/templates/tlu_polltest/level_base.html:56
+#: tlu_polltest/templates/tlu_polltest/level_error.html:34
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:86
+msgid "Log &nbsp;in"
+msgstr "Anmeldung"
+
+#: tlu_polltest/templates/tlu_polltest/level00.html:24
+msgid "Level 00: Overview"
+msgstr "Level 00: Test"
+
+#: tlu_polltest/templates/tlu_polltest/level00.html:25
+msgid "Please find some data below:"
+msgstr "Hier sind ein paar Daten:"
+
+#: tlu_polltest/templates/tlu_polltest/level00.html:25
+msgid "Continue or start the game now"
+msgstr "Starte oder setze das Spiel fort"
+
+#: tlu_polltest/templates/tlu_polltest/level01.html:24
+msgid "Level 01: Orientation"
+msgstr "Level 01: Orientierung"
+
+#: tlu_polltest/templates/tlu_polltest/level01.html:25
+msgid "This is an easy start"
+msgstr "Ein ganz einfacher Start"
+
+#: tlu_polltest/templates/tlu_polltest/level01.html:25
+#: tlu_polltest/views.py:117
+msgid "Continue the game now"
+msgstr "Setze das Spiel fort"
+
+#: tlu_polltest/templates/tlu_polltest/level_01.html:3
+msgid "Level 01: The jouney starts here"
+msgstr "Level 01: Der Spaß beginnt"
+
+#: tlu_polltest/templates/tlu_polltest/level_01.html:5
+msgid ""
+"In this level you have to press all 16 buttons in the sequence left top to "
+"bottom right in order to note down their number.<br>Timelimit: 16 seconds"
+msgstr ""
+"In diesem Abschnitt musst Du alle 16 gelben Knöpfe drücken. Bitte merke Dir "
+"die Nummern gut, Du wirst sie noch brauchen :)"
+
+#: tlu_polltest/templates/tlu_polltest/level_02.html:3
+msgid "Level 02: Your next step: Cursor"
+msgstr "Level 02: Lerne den Cursor kennen"
+
+#: tlu_polltest/templates/tlu_polltest/level_02.html:5
+msgid ""
+"In this level you have to press all 4 cursor keys (in green) to test them ;) "
+"Dont forget to change the DIP-settings!<br>Timelimit: 4 seconds"
+msgstr ""
+"Hier müssen jetzt alle 4 grünen Cursor-Knöpfe gedrückt werden. Bitte passe "
+"die Dip-Einstellungen an :)<br>Zeitlimit: 4 Sekunden"
+
+#: tlu_polltest/templates/tlu_polltest/level_base.html:28
+msgid "This is your task to solve the puzzle:"
+msgstr "Dieses ist Deine Herausforderung:"
+
+#: tlu_polltest/templates/tlu_polltest/level_base.html:36
+msgid "dip settings"
+msgstr "DIP-Einstellungen"
+
+#: tlu_polltest/templates/tlu_polltest/level_base.html:37
+msgid ""
+"The two dip-switches have to be set as below in order to get this level done:"
+msgstr ""
+"Die beiden DIP-Schalter müssen wir folgt gesetzt sein, damit Du das Level "
+"schaffst:"
+
+#: tlu_polltest/templates/tlu_polltest/level_base.html:38
+msgid "Your progress"
+msgstr "Dein Fortschritt"
+
+#: tlu_polltest/templates/tlu_polltest/level_base.html:45
+msgid "Some information"
+msgstr "Einige Informationen für Dich:"
+
+#: tlu_polltest/templates/tlu_polltest/level_error.html:24
+msgid "An error occured"
+msgstr "Es trat ein Fehler auf"
+
+#: tlu_polltest/templates/tlu_polltest/level_error.html:25
+msgid "We are sorry, but the following error occured"
+msgstr "Tschuldigung, aber der folgende Fehler trat auf:"
+
+#: tlu_polltest/templates/tlu_polltest/level_error.html:29
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:49
+msgid "Restart the game"
+msgstr "Neustart"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:24
+msgid "Overview"
+msgstr "Überblick"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:25
+msgid "Please find some details below:"
+msgstr "Hier siend ein paar Details"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:30
+msgid "Item"
+msgstr "Eintrag"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:31
+msgid "Value"
+msgstr "Wert"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:36
+msgid "current level"
+msgstr "Level"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:40
+msgid "last played"
+msgstr "Zuletzt gespielt"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:44
+msgid "achieved points"
+msgstr "Punkte"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:50
+msgid "You have no levels passed to list"
+msgstr "Es gibt noch keine alten Levels von Dir..."
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:52
+msgid "Your levels played so far"
+msgstr "Deine bisherigen Levels:"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:57
+msgid "Level"
+msgstr "Level"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:58
+msgid "Started"
+msgstr "Gestartet"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:59
+msgid "Ended"
+msgstr "Beendet"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:60
+msgid "Points"
+msgstr "Punkte"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:61
+msgid "Time"
+msgstr "Zeit"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:62
+msgid "Result"
+msgstr "Ergebnis"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:63
+msgid "Action"
+msgstr "Aktion"
+
+#: tlu_polltest/templates/tlu_polltest/level_overview.html:75
+msgid "Delete"
+msgstr "Löschen"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:24
+msgid "Heading text"
+msgstr "Überschrift"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:25
+msgid "There is no need to login again, you may lig-out if you wish."
+msgstr ""
+"Es gibt keinen Grund sich erneut anzumelden, aber vielleicht willst Du dich "
+"abmelden..."
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:26
+msgid "Log out"
+msgstr "Abmeldung"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:29
+msgid "Please log in"
+msgstr "Bitte melde dich an"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:30
+msgid "Please enter some details below:"
+msgstr "Bitte gebe ein paar Details an"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:33
+msgid "Login"
+msgstr "Anmeldung"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:35
+msgid "Not yet registered?"
+msgstr "Noch nicht registriert"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:36
+msgid ""
+"Please fill in some login details to get started. Press the button below..."
+msgstr "Wir benötigen nur wenige Angaben. Bitte drücke den Knopf..."
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:36
+msgid "Register now!"
+msgstr "Melde dich jetzt an!"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:38
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_form.html:25
+msgid "Forgot your password?"
+msgstr "Passwort vergessen?"
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:39
+msgid "In case you do not remember your password, please press button below:"
+msgstr "Falls Du dein Kennwort vergessen hast, drücke bitte den Knopf."
+
+#: tlu_polltest/templates/tlu_polltest/registration/login.html:39
+msgid "Reset Password"
+msgstr "Passwort zurücksetzen"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_change.html:24
+#: tlu_polltest/templates/tlu_polltest/registration/password_change_form.html:25
+msgid "Change your password"
+msgstr "Passwort ändern"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_change.html:25
+#: tlu_polltest/templates/tlu_polltest/registration/password_change_form.html:26
+msgid "Please enter your old and new password below:"
+msgstr "Bitte gib dein altes und dein neues Passwort ein:"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_change.html:28
+#: tlu_polltest/templates/tlu_polltest/registration/password_change_form.html:29
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_confirm.html:29
+msgid "Change my password"
+msgstr "Ändere mein Passwort"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_change_done.html:24
+msgid "Password change complete"
+msgstr "Passwortänderung abgeschlossen"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_change_done.html:25
+msgid "Your password has been changed. You can log in now on the "
+msgstr "Dein Passwort wurde geändert, du kannst dich jetzt anmelden."
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_change_done.html:25
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_complete.html:26
+msgid "Login page"
+msgstr "Login"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_complete.html:24
+msgid "Password reset complete"
+msgstr "Passwortänderung abgeschlossen"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_complete.html:25
+msgid "You are now ready to go ahead"
+msgstr "Du kannst jetzt fortfahren"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_complete.html:26
+msgid "Your new password has been set. You can log in now on the "
+msgstr "Dein Passwort wurde geändert, du kannst dich jetzt anmelden."
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_confirm.html:24
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_confirm.html:25
+msgid "Please enter your new password"
+msgstr "Bitte gebe Dein neues Passwort ein"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_confirm.html:26
+msgid "Please enter your new &nbsp;password twice:"
+msgstr "Bitte gebe Dein neues Passwort zweimal ein:"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_done.html:24
+msgid "Password reset email sent"
+msgstr "Du hast eine Nachricht zum Passwortändern bekommen."
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_done.html:25
+msgid "Please now check your inbox"
+msgstr "Bitte schaue in Deinen Posteingang"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_done.html:26
+msgid ""
+"We've emailed you instructions for setting your password. You should receive "
+"this email shortly!"
+msgstr "Wir haben Dir eben eine Email zum Setzen des Kennwortes geschickt."
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_form.html:24
+msgid "Password reset"
+msgstr "Passwort zurücksetzen"
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_form.html:26
+msgid ""
+"Please enter your email below and we will send you some instructions for "
+"getting a new one:"
+msgstr ""
+"Bitte gebe Deine email unten ein und wir schicken Dir Informationen zum "
+"neuen Anmelden zu."
+
+#: tlu_polltest/templates/tlu_polltest/registration/password_reset_form.html:29
+msgid "Send me instructions"
+msgstr "Bitte sende mir die Anweisung"
+
+#: tlu_polltest/templates/tlu_polltest/registration/register.html:24
+msgid "Registration"
+msgstr "Registrierung"
+
+#: tlu_polltest/templates/tlu_polltest/registration/register.html:25
+msgid ""
+"The sign-up is only needed to store your results and to give you a name. It "
+"won't be used anywere outside of this &nbsp;game, nor will it be used to get "
+"into contact with you."
+msgstr ""
+"Die Anmeldung wird ausschließlich intern verwendet damit wir Deine "
+"Ergebnisse verwalten können und damit du einen Namen hast."
+
+#: tlu_polltest/templates/tlu_polltest/registration/register.html:26
+msgid "Please register yourself and enter some details below:"
+msgstr "Bitte registriere dich und gebe wenige Details ein:"
+
+#: tlu_polltest/templates/tlu_polltest/registration/register.html:29
+msgid "Register"
+msgstr "Registrierung"
+
+#: tlu_polltest/templates/tlu_polltest/setup.html:24
+msgid "Define inital settings"
+msgstr "Grundeinstellungen"
+
+#: tlu_polltest/templates/tlu_polltest/setup.html:25
+msgid ""
+"In order to start the application the below mentioned parameter have to be "
+"checked and adopted to fit your needs. Most of them are only needed to allow "
+"to send an email in order to allow for the password reset functionality"
+msgstr ""
+"Damit das Spiel funktioniert, gebe bitte ein paar Einstellungen ein. Die "
+"brauchen wir hauptsächlich damit der Passwortänderungsprozess funktioniert!"
+
+#: tlu_polltest/templates/tlu_polltest/setup.html:29
+msgid "Set parameter"
+msgstr "Setze Parameter"
+
+#: tlu_polltest/templates/tlu_polltest/setup_check.html:24
+msgid "Test your email settings"
+msgstr "Teste die Emaileinstellungen!"
+
+#: tlu_polltest/templates/tlu_polltest/setup_check.html:25
+msgid ""
+"As you just have defined some basic email handling it would be great to "
+"check if the paramter given do work as expected. This could be checked on "
+"this page by the click of a button."
+msgstr ""
+"Da du gerade einige Email-Einstellungen vorgenommen hast, macht es Sinn die "
+"jetzt zu prüfen. Das kann mit einem Druck auf den Knopf erledigt werden :)"
+
+#: tlu_polltest/templates/tlu_polltest/setup_check.html:26
+msgid ""
+"If you did receive the email by the method decided please confirm by "
+"checkmarking and we will let you go :)"
+msgstr ""
+"Wenn Du jetzt eine Email bekommen hast, hake das Kästchen ab und wir lassen "
+"Dich gehen :)"
+
+#: tlu_polltest/templates/tlu_polltest/setup_check.html:38
+msgid "Perform the check or move ahead"
+msgstr "Bitte führe die Prüfung aus und fahre fort."
+
+#: tlu_polltest/templates/tlu_polltest/setup_check.html:39
+msgid "Change settings"
+msgstr "Ändere Einstellungen"
+
+#: tlu_polltest/views.py:133
+msgid "Play level again"
+msgstr "Spiele Level erneut"
+
+#: tlu_polltest/views.py:141
+msgid "Not yet played"
+msgstr "Noch nicht gespielt"
+
+#: tlu_polltest/views.py:144
+msgid "Start now"
+msgstr "Starte jetzt"
+
+#: tlu_polltest/views.py:190
+msgid ""
+"You just started from the beginning, so level has to be one, please restart "
+"the game!"
+msgstr ""
+"Da Du gerade vom Anfang gestartet bist, muss das level 1 sein. Bitte starte "
+"neu!"
+
+#: tlu_polltest/views.py:197
+msgid ""
+"The requested level is not in line with our expectations, please restart the "
+"game!"
+msgstr ""
+"Tschuldigung, aber das in der URL verstecke Level passt nicht zu deinem "
+"Spielstand. Schummeln ist nicht, also Neustart ;)"
+
+#: tlu_polltest/views.py:215 tlu_polltest/views.py:246
+#: tlu_polltest/views.py:267 tlu_polltest/views.py:292
+#: tlu_polltest/views.py:316
+msgid ""
+"We are sorry, but the provided level-id does not fit your overall progress, "
+"you have to restart."
+msgstr ""
+"Tschuldigung, aber das in der URL verstecke Level passt nicht zu deinem "
+"Spielstand. Schummeln ist nicht, also Neustart ;)"
+
+#: tlu_polltest/views.py:218
+msgid "left:"
+msgstr "Links:"
+
+#: tlu_polltest/views.py:219
+msgid "right:"
+msgstr "Rechts:"
+
+#: tlu_polltest/views.py:221
+msgid "Please press start and check the DIP-settings..."
+msgstr "Bitte drücke Start und prüfe die DIP-Einstellungen..."
+
+#: tlu_polltest/views.py:222 tlu_polltest/views.py:352
+msgid "Start Level"
+msgstr "Starte das Level"
+
+#: tlu_polltest/views.py:250 tlu_polltest/views.py:271
+#: tlu_polltest/views.py:296
+msgid ""
+"We are sorry, but the user has to be known/logged in, you have to restart."
+msgstr ""
+"Tschuldigung, aber Dein Benutzer muss bekannt und angemeldet sein. Schummeln "
+"ist nicht, also Neustart ;)"
+
+#: tlu_polltest/views.py:335
+msgid "The user seems to be unknown, please log in and restart"
+msgstr "Der Benutzer ist unbekannt, bitte neu anmelden und starten."
+
+#: tlu_polltest/views.py:340
+msgid "log in"
+msgstr "Anmeldung"
+
+#: tlu_polltest/views.py:356
+msgid "No info available..."
+msgstr "Keine Informationen da..."
+
+#: tlu_polltest/views.py:360
+msgid "Abort Level?"
+msgstr "Level abbrechen?"
+
+#: tlu_polltest/views.py:367
+msgid "Next Level"
+msgstr "Weiter geht's."
+
+#: tlu_polltest/views.py:370
+msgid "Restart?"
+msgstr "Neustart?"
+
+#: tlu_polltest/views.py:374
+msgid "Retry"
+msgstr "Wiederholung"
+
+#: tlu_polltest/views.py:378
+msgid "Level failed somehow, please try again, result="
+msgstr "Das Spiel hat einen internen Fehler. Fehlercode="
+
+#: tlu_polltest/views.py:379
+msgid "Retry Level?"
+msgstr "Level wiederholen?"
+
+#: tlu_polltest/views.py:404
+msgid ""
+"We are sorry, but the provided level-id is no longer available, you have to "
+"restart."
+msgstr ""
+"Tschuldigung, aber das in der URL verstecke Level passt nicht zu deinem "
+"Spielstand. Schummeln ist nicht, also Neustart ;)"
+
+#: tlu_polltest/views.py:449
+msgid "You didn't select a choice."
+msgstr "Hier musst du eine Auswahl treffen"
+
+#: tlu_polltest/views.py:494
+msgid ""
+"The Mail has been successfully transmitted! Please check your inbox or the "
+"choosen medium."
+msgstr ""
+"Wir haben dir eben erfolgreich eine email geschickt. Bitte prüfe deinen "
+"Posteingang."
+
+#: tlu_polltest/views.py:497
+msgid "The Mail could not be delivered!"
+msgstr "Die Test-email kam leider nicht an..."
+
+#: tlu_polltest/views.py:504
+msgid ""
+"We have encountered an unknown error during trying to submit the test-"
+"message: "
+msgstr "Upps, da gab es tatsächlich einen unbekannten Fehler: "
+
+#: tlu_polltest/views.py:510
+msgid "Some parameter are wrong, please correct and try again"
+msgstr "Da stimmt was nicht, bitte korrigiere das.."
+
+#: tlu_services/tlu_local_settings.py:162
+msgid "Usual email"
+msgstr "Normale email"
+
+#: tlu_services/tlu_local_settings.py:163
+msgid "Email to console"
+msgstr "Email auf Konsole"
+
+#: tlu_services/tlu_local_settings.py:164
+msgid "Email to file"
+msgstr "Email in Datei"
+
+#: tlu_services/tlu_local_settings.py:167
+msgid "Backend"
+msgstr "Backend"
+
+#: tlu_services/tlu_local_settings.py:168
+msgid "Host"
+msgstr "Host"
+
+#: tlu_services/tlu_local_settings.py:169
+msgid "Login User"
+msgstr "Anmeldebenutzer"
+
+#: tlu_services/tlu_local_settings.py:170
+msgid "Login user password"
+msgstr "Anmeldename und Kennwort"
+
+#: tlu_services/tlu_local_settings.py:171
+msgid "Port"
+msgstr "Port"
+
+#: tlu_services/tlu_local_settings.py:172
+msgid "Using TLS?"
+msgstr "TLS?"
+
+#: tlu_services/tlu_local_settings.py:173
+msgid "Path for email-file to be written"
+msgstr "Pfad für eine lokale Emaildatei"
+
+#: tlu_services/tlu_local_settings_check.py:35
+msgid "Subject"
+msgstr "Überschrift"
+
+#: tlu_services/tlu_local_settings_check.py:35
+msgid "Testmail"
+msgstr "Testpost"
+
+#: tlu_services/tlu_local_settings_check.py:36
+msgid "Some Text"
+msgstr "Irgendwas"
+
+#: tlu_services/tlu_local_settings_check.py:36
+msgid "This is a simple testmail."
+msgstr "Dieses ist eine Test-email."
+
+#: tlu_services/tlu_local_settings_check.py:37
+msgid "From(email)"
+msgstr "Absender-email"
+
+#: tlu_services/tlu_local_settings_check.py:37
+#: tlu_services/tlu_local_settings_check.py:38
+msgid "me@test.com"
+msgstr "ich@test.de"
+
+#: tlu_services/tlu_local_settings_check.py:38
+msgid "To(email)"
+msgstr "Empfangs-email"
+
+#: tlu_services/tlu_local_settings_check.py:39
+msgid "Email check passed without issues?"
+msgstr "Der Email-Check war erfolgreich!"
+
+#~ msgid ""
+#~ "Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, "
+#~ "dapibus ac facilisis in, egestas eget quam."
+#~ msgstr ""
+#~ "Blindtext d dolor id nibh ultricies vehicula ut id elit. Cras justo odio, "
+#~ "dapibus ac facilisis in, egestas eget quam."
+
+#~ msgid "Learn more"
+#~ msgstr "Starte jetzt"
+
+#~ msgid "Sorry, you have to log in"
+#~ msgstr "Sie müssen sich leider anmelden"
+
+#~ msgid ""
+#~ "In order to use the services provided you have to log in or register. "
+#~ "Otherwise we are not able to track your activities and to provide the "
+#~ "services as needed."
+#~ msgstr ""
+#~ "Um das Spiel zu spielen müssen Sie sich anmelden. Andernfalls können Ihre "
+#~ "Aktivitäten nicht verfolgt werden und der Status kann  nicht gespeichert "
+#~ "werden, was leider notwendig ist."
+
+#~ msgid "Log in"
+#~ msgstr "Anmeldung"
