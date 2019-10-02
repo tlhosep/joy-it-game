@@ -134,7 +134,7 @@ createDesktopIconStop() {
 Name=Stop joy-it game
 Comment=Stops the webserver
 Icon=$PWD/assets/RB-JoyPi-2g-stop.png
-Exec=lxterminal -t "Start the game" --working-directory=$PWD -e ./stop_game.sh 
+Exec=lxterminal -t "Stop the game" --working-directory=$PWD -e ./stop_game.sh 
 Type=Application
 Encoding=UTF-8
 Terminal=false
@@ -185,9 +185,16 @@ if [ "$NONRASPI" == "" ]; then
 fi
 echo "Migrate, just in case... (will also create the db)"
 "$PYTHON" manage.py migrate
-
+if [ $? != 0 ]; then
+	echo "Something went wrong with the deployment, please try again..."
+	exit 1
+fi
 echo "Checking or setting the superuser..."
 "$PYTHON" manage.py setup_adminuser --username=admin --email=fake@fake.com --password=test1234
+if [ $? != 0 ]; then
+	echo "Something went wrong with the deployment, please try again..."
+	exit 1
+fi
 echo ""
 echo "IMPORTANT:"
 echo "The user 'admin' with Password "test1234" has now been created and could be used to administer the system. Please note this down."
@@ -199,4 +206,3 @@ if [ "$NONRASPI" == "" ]; then
 fi
 
 echo "deployment of game finished!"
-.

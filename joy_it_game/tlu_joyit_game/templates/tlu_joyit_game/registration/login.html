@@ -21,8 +21,8 @@
 <body>{% include "header_inc.html" %}
     <div id="content">{% load i18n %}{% if user.is_authenticated %} 
         <div class="jumbotron" id="Loggedin">
-            <h1>{% trans 'Heading text' %}</h1>
-            <p>{% trans 'Welcome' %} {{ user.username }}! <br>{% trans "There is no need to login again, you may lig-out if you wish." %}</p>
+            <h1>{% trans 'Welcome' %} {{ user.username }}!</h1>
+            <p>{% trans "There is no need to login again, you may log out if you wish." %}</p>
             <p><a class="btn btn-primary" role="button" href="{% url 'logout' %}">{% trans "Log out" %}</a></p>
         </div>{% else %}
         <div class="jumbotron text-center" id="Loggedout">

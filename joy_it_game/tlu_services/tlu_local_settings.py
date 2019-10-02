@@ -13,6 +13,9 @@ import os
 from builtins import str
 from django import forms
 from django.utils.translation import gettext_lazy as _
+import logging
+
+logger = logging.getLogger(__name__)
 
     
 class local_settings():
@@ -32,6 +35,7 @@ class local_settings():
         self.SITE_ROOT = os.path.dirname(os.path.realpath(self.MYBASE_DIR)) #for below :)    
         self.SETTINGS_PATH = os.path.join(self.SITE_ROOT, 'joy_it_game')   #path for settings
         self.LOCAL_SETTINGS_File = os.path.join(self.SETTINGS_PATH, 'local_settings.py')
+        logging.debug("Site-RooT="+self.SITE_ROOT+" settings="+self.SETTINGS_PATH)
 
     def setDefaults(self):
         self.SETTINGS = {
@@ -66,6 +70,7 @@ class local_settings():
         '''
         Check if the local settings file already exists
         '''
+        logging.debug("Looking for settings-file: "+self.LOCAL_SETTINGS_File)
         if os.path.exists(self.LOCAL_SETTINGS_File) & os.path.isfile(self.LOCAL_SETTINGS_File):
             return True
         else:

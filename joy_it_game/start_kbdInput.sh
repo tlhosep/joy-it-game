@@ -1,6 +1,5 @@
 #!/bin/bash
 
-PIP="pip3"
 PYTHON="python3"
 ENVNAME="pythongame"
 PWD=`pwd`
@@ -36,5 +35,8 @@ else
 	echo "Created and activated $ENVNAME"
 fi	
 
-echo "emulate keyboard pressed..."
-"$PYTHON" manage.py emulate_key $1
+
+echo "Starting sendKeys..."
+"$PYTHON" manage.py sendKeys
+
+echo "sendKeys finished!"

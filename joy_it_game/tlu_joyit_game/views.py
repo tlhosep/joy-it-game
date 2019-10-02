@@ -23,7 +23,6 @@ from tlu_joyit_game.models import Level, getGameState, setGameState
 from django.template.defaulttags import register
 from django.contrib.auth.models import User
 from joy_it_game import settings
-from celery.bin.control import status
 from tlu_game.tlu_level00 import Level00
 from tlu_game.tlu_level01 import Level01
 from tlu_game.tlu_level02 import Level02
