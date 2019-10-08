@@ -11,7 +11,6 @@ This module provides the hardware commands to check for any key pressed
 
 from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 import logging
-import time
 from tlu_game import tlu_globals
 from tlu_services import tlu_queue
 from queue import Empty
