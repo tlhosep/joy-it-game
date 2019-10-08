@@ -35,4 +35,27 @@ game.
 For each of the steps to mitigate the "bomb" please check the Dip-settings as they 
 are displayed. If they are not correct, the game-level could not be played.
 
-Have fun!
+*Have fun!*
+
+## Detailed deployment
+
+You could start like this:
+![alt text](https://github.com/tlhosep/joy-it-game/blob/master/joy_it_game/assets/screen_joyit_deployment_start.jpg)
+
+On the commandline enter as follows:
+```
+pi@raspberrykoffer:~ $ cd Desktop/
+pi@raspberrykoffer:~/Desktop $ mkdir GAME
+pi@raspberrykoffer:~/Desktop $ cd GAME/
+pi@raspberrykoffer:~/Desktop/GAME $ git clone https://github.com/tlhosep/joy-it-game
+pi@raspberrykoffer:~/Desktop/GAME $ cd joy-it-game/
+pi@raspberrykoffer:~/Desktop/GAME/joy-it-game/joy_it_game $ ./deploy_game.sh 
+…
+deployment of game finished!
+pi@raspberrykoffer:~/Desktop/GAME/joy-it-game/joy_it_game $
+```
+This results in this desktop:
+![alt text](https://github.com/tlhosep/joy-it-game/blob/master/joy_it_game/assets/screen_joyit_deployment_done_commented.jpg)
+
+You will note the 2 new icons on the desktop. These are the ones to click to start and to end the game.
+When the game started a commandline window is left open. Once you have closed the browser, please press the ENTER-key once you have the window active in order to close it.
