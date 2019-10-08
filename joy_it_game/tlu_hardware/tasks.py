@@ -17,6 +17,7 @@ import logging
 from tlu_services.tlu_queue import tlu_queueobject, tlu_queue
 from threading import Thread
 from tlu_game import tlu_globals
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -46,15 +47,18 @@ class Countdown(Thread):
 
     def run(self, *args, **kwargs):
         logger.info("Countdown started with hundreds="+str(self.hundreds))
-        while self.hundreds>0:
-            self.sevenseg.set4digits(self.hundreds, 0)
+        t0=datetime.now()
+        diff=0
+        while diff < self.hundreds:
+            self.sevenseg.set4digits(self.hundreds-diff, 0)
             time.sleep(0.01)
-            self.hundreds -= 1
+            t1=datetime.now()
+            diff = int((t1-t0).total_seconds() * 100)
             if getattr(self, "is_aborted", False):
                 self.sevenseg.clear()
                 logger.info('Countdown aborted')
                 return 
-        logger.info('Countdown ended')
+        logger.info('Countdown ended with diff='+str(diff))
         queueobject=tlu_queueobject(tlu_queue.MSG_TIMEOUT)
         self.queue.send(queueobject)
         return Thread.run(self, *args, **kwargs)

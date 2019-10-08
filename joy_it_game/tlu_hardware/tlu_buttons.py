@@ -83,8 +83,8 @@ class tlu_buttons(tlu_hardwarebase):
             for i in range(len(self.rowPins)):
                 if GPIO.input(self.rowPins[i]) == 0:
                     btnIndex = self.buttonIDs[i][j]
-                    time.sleep(0.3) #prohibit multiple key-presses at the same time
-                    logger.info("button " + str(btnIndex) + " pressed")
+#                    time.sleep(0.3) #prohibit multiple key-presses at the same time
+#                    logger.info("button " + str(btnIndex) + " pressed")
                     return btnIndex
             GPIO.output(self.columnPins[j],1)
         return 0    #no button pressed
