@@ -11,12 +11,12 @@ import tlu_hardware.tlu_buzzer as tlu_buzzer
 import logging
 from tlu_hardware.tasks import Countdown, CheckKey, CheckCursor, AnimatedBuzzer, Buzzer
 from joy_it_game import settings
-from tlu_services.tlu_processes import abortProcess, startProcess
 from tlu_services.tlu_queue import tlu_queueobject
 from tlu_game.tlu_globals import ShowClock
 from tlu_services import tlu_queue
 from tlu_hardware.tlu_checkhardware import emulatekey
 from tlu_game import tlu_globals
+from tlu_services.tlu_threads import startThreadClass, abortThread
 
 logfile=settings.BASE_DIR+"/log/game.log"
 
@@ -26,7 +26,7 @@ class TestQueue(tlu_queue.tlu_queue):
     Simple class to test the queue-functionality.
     Supports only very basic signals
     '''
-    def myrun(self,testio):
+    def myrun(self,testio,countdown=None):
         '''
         Inner loop to process the contents of the queue
         :param testio: Outer testclass to allow asserts
@@ -48,6 +48,11 @@ class TestQueue(tlu_queue.tlu_queue):
                 # Timeout will be raised in test test_countdown_timeout
                 logging.debug("TIMEOUT message received")
                 return
+            elif queueobject.msg_num == self.MSG_TEST:
+                if countdown != None:
+                    countdown.restart()
+                    logging.debug("Timer had been reset now")
+                
 
 class TestIO(unittest.TestCase):
     """
@@ -81,13 +86,13 @@ class TestIO(unittest.TestCase):
         :param process: Process to be aborted
         :param msg: Log-Message in case anything got wrong
         '''
-        self.assertTrue(abortProcess(process,1,msg),"Task could not be stopped:"+str(msg))
+        self.assertTrue(abortThread(process,1,msg),"Task could not be stopped:"+str(msg))
     def mytest_clock(self):
         """
         Testing the clock-process
         """
         sc=ShowClock
-        startProcess(sc)
+        startThreadClass(sc)
         self.assertNotEqual(sc, None, "Process could not be established")
         self.stop(sc, "test_clock")
     def test_countdown(self):
@@ -96,7 +101,7 @@ class TestIO(unittest.TestCase):
         '''
         queue=TestQueue()
         cd=Countdown(queue, 1.0)
-        startProcess(cd)
+        startThreadClass(cd)
         self.assertNotEqual(cd, None, "Process could not be established")
         self.stop(cd, "test_countdown")
     def test_countdown_timeout(self):
@@ -105,11 +110,23 @@ class TestIO(unittest.TestCase):
         '''
         queue=TestQueue()
         cd=Countdown(queue, 0.2)
-        startProcess(cd)
+        startThreadClass(cd)
         self.assertNotEqual(cd, None, "Process could not be established")
         queue.myrun(self) #breaks/terminates once timeout reached
         self.stop(cd, "test_countdown_timeout")
-        
+    def test_countdown_reset(self):
+        '''
+        Test countdown with reset-event
+        '''
+        queue=TestQueue()
+        cd=Countdown(queue, 0.1)
+        startThreadClass(cd)
+        self.assertNotEqual(cd, None, "Process could not be established")
+        queueobject=tlu_queueobject(tlu_queue.tlu_queue.MSG_TEST,1)
+        queue.send(queueobject) #forces timer reset
+        queue.myrun(self,cd) #breaks/terminates once timeout reached
+        self.stop(cd, "test_countdown_reset")
+       
     def test_checkkey(self):
         '''
         Test to press the upper left key or by keyboard using the '1'
@@ -119,7 +136,7 @@ class TestIO(unittest.TestCase):
         if not emulatekey:
             print('Press the upper left key of the 16key-field')
         ck=CheckKey(queue, 10.0)
-        startProcess(ck)
+        startThreadClass(ck)
         self.assertNotEqual(ck, None, "Process could not be established")
         queue.myrun(self) #breaks/terminates once timeout reached or key pressed ;)
         logging.debug('test_checkkey had key')
@@ -140,16 +157,16 @@ class TestIO(unittest.TestCase):
         '''
         buz=Buzzer(0.1)
         self.assertNotEqual(buz, None, "Process could not be established")
-        startProcess(buz)
-        abortProcess(buz,0.5, "test_buzzerProcess")
+        startThreadClass(buz)
+        abortThread(buz,0.5, "test_buzzerProcess")
     def test_animatedbuzzer(self):
         '''
         Test if the buzzer makes a sound while the led display showns sign
         '''
         ab=AnimatedBuzzer(1.0)
         self.assertNotEqual(ab, None, "Process could not be established")
-        startProcess(ab)
-        abortProcess(ab,1,"animatedBuzzer_class")
+        startThreadClass(ab)
+        abortThread(ab,1,"animatedBuzzer_class")
         self.assertFalse(ab.is_alive(),"AnimatedBuzzer should have been stopped...")
     def test_checkcursor(self):
         '''
@@ -159,7 +176,7 @@ class TestIO(unittest.TestCase):
         if not emulatekey:
             print('Please press any of the four cursor-keys to continue')
         cc=CheckCursor(queue, 5.0)
-        startProcess(cc)
+        startThreadClass(cc)
         self.assertNotEqual(cc, None, "Process could not be established")
         queue.myrun(self) #breaks/terminates once timeout reached or key pressed ;)
         logging.debug('test_checkkey had cursor')

@@ -1,17 +1,15 @@
-''' module: tlu_level02
-
-*** Content ***
-Class to form the second level of the game
+""" module: tlu_level03
+** Content **
+Class to form the third level of the game
 
 ** Details **
-The game consists of some actions to be performed on the joy-it toolset in order to stop the bomb before it is going to explode :)
-The second level introduces simply the 4 cursor keys
+In this level the player has to press 20 randomly selected keys. Each key has to be pressed within 1.5 seconds.
+If one key was wrong, the  whole level fails
 
 
 @author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
-@created: 2019-09-17 
-'''
-
+@created: 2019-10-14 
+"""
 
 import logging
 from django.utils.translation import gettext as _
@@ -20,35 +18,43 @@ from tlu_joyit_game.models import Level
 
 from tlu_joyit_game import models
 
-from tlu_hardware.tasks import Countdown, CheckCursor, Buzzer
+from tlu_hardware.tasks import Countdown, CheckKey, Buzzer
 from tlu_game.tlu_levelbase import LevelBase
-import time
-from tlu_hardware.tlu_cursor import tlu_cursor
 import threading
 from tlu_services.tlu_threads import abortThread, startThreadClass
 from tlu_game import tlu_globals
+from random import randint
 
 logger=logging.getLogger(__name__)
 
 
-class Level02(LevelBase):
-    ''' First Level of the game
-    You have to press each button once
+class Level03(LevelBase):
+    ''' Third Level of the game
+    You have to press each named button once
     '''
     class GameQueue(LevelBase.GameQueue):
-        def run(self, stop_event, gameProcess, hardware):  # @UnusedVariable
-            ''' Main loop for Level2
+        def run(self, stop_event, gameProcess, hardware):
+            ''' Queue loop for level 3
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
             '''
-            keymatrix={}
+            key=-1
+            numkeys=0
             thread=threading.currentThread()
+            (timer, kbd,) = hardware  # @UnusedVariable
             while True:
-                if len(keymatrix)==4:
+                if numkeys>19:
                     stop_event.set()
                     break
+                if key == -1:
+                    key=randint(1,16)
+                    status=models.getGameState(gameProcess.user_id)
+                    status.msg=_("You have to press Key #")+str(key)
+                    status.level_progress=int(numkeys/20*100)
+                    models.setGameState(gameProcess.user_id, status)
+                
                 (queueobject,breakIndicator)=self.getQueueObject(stop_event, gameProcess, thread)
                 if breakIndicator:
                     break
@@ -59,27 +65,23 @@ class Level02(LevelBase):
                     break
                 elif queueobject.msg_num == self.MSG_KEYPRESSED:
                     glob=tlu_globals.globMgr.tlu_glob()
-                    glob.lcdMessagebyline(_("Level: ")+"02", _("Cursor = ")+tlu_cursor.cursorname(None, queueobject.msg_info))
-                    keymatrix[queueobject.msg_info]=1
-                    symbolname='space'
-                    if queueobject.msg_info==100:
-                        symbolname='arrow_up'
-                    elif queueobject.msg_info==200:
-                        symbolname='arrow_right'
-                    elif queueobject.msg_info==300:
-                        symbolname='arrow_down'
-                    elif queueobject.msg_info==400:
-                        symbolname='arrow_left'
-                    
-                    glob.matrixShow_symbol(symbolname)
-                    status=models.getGameState(gameProcess.user_id)
-                    status.msg=_("You have just pressed cursor - ")+tlu_cursor.cursorname(None, queueobject.msg_info)
-                    status.level_progress=int(len(keymatrix)/4*100)
-                    models.setGameState(gameProcess.user_id, status)
-                    time.sleep(0.5) #wait for messages to settle
+                    glob.lcdMessagebyline(_("Level: ")+"03", _("Key = ")+str(queueobject.msg_info))
+                    if key != queueobject.msg_info:
+                        status=models.getGameState(gameProcess.user_id)
+                        status.level_progress=0
+                        status.result=Level.FAILED
+                        models.setGameState(gameProcess.user_id, status)
+                        logging.debug("Wrong Key:"+str(key+" instead of:"+str(queueobject.msg_info)))
+                    else:
+                        numkeys += 1
+                        status=models.getGameState(gameProcess.user_id)
+                        status.level_progress=int(numkeys/20*100)
+                        models.setGameState(gameProcess.user_id, status)
+                        logging.debug("Correct key pressed :)")
+                        timer.restart()
                 elif queueobject.msg_num == self.MSG_KEYRELEASED:
                     pass
-        
+    
     def prepareGame(self, status, queue) -> ():
         '''Prepare Level
         Do hardware-preparations
@@ -87,43 +89,43 @@ class Level02(LevelBase):
         :param queue: Message-Q for hardware.messages to be launched
         return list of hardware-processes started here
         '''
-        cc=CheckCursor(queue)
-        startThreadClass(cc)
-        timer=Countdown(queue,4)
-        status.msg=_("Level 2 starts..")
+        kbd=CheckKey(queue)
+        startThreadClass(kbd)
+        timer=Countdown(queue,1.5)
+        status.msg=_("Level03 starts..")
         models.setGameState(self.user_id, status)
         startThreadClass(timer)
         glob=tlu_globals.globMgr.tlu_glob()
-        glob.lcdMessagebyline(_("Level: ")+"02", _("Cursorkeys... ")+":)")
-        status.msg=(_("Level 2 running"))
-        status.level_progress=0
+        glob.lcdMessagebyline(_("Level: ")+"03", _("Random Keys"))
+        status.msg=(_("Level 3 running"))
         status.level_start=timezone.now()
+        status.level_progress=0
         models.setGameState(self.user_id, status)
-        return (timer,cc,)
+        return (timer,kbd,)
     def finishGame(self, status, hardware):
         '''End game-level
-        Close down hardware-activitiues started
+        Close down hardware-activities started
         :param status: current state of the game, used for web-frontend
         :param hardware: List of hardware-processes that should be terminated here
         '''
-        (timer,cc,)=hardware
+        (timer,kbd,)=hardware
         glob=tlu_globals.globMgr.tlu_glob()
         buz=None
         if status.result != None and status.result!=Level.PASSED:
             buz=Buzzer(0.1)
             startThreadClass(buz)
-            status.msg=str(_("Level 2 failed"))
+            status.msg=str(_("Level 3 failed"))
             status.level_progress=0
             glob.matrixShow_symbol('triangle_down')
         else:
-            status.msg=str(_("You have passed Level 2 :)"))
+            status.msg=str(_("You have passed Level 3 :)"))
             status.level_progress=100
             status.result=Level.PASSED
             status.points=5
             glob.matrixShow_symbol('smiley')
         status.level_ended=timezone.now()
         models.setGameState(self.user_id, status)
-        abortThread(cc, 1, "aborting Cursor")
+        abortThread(kbd, 1, "aborting Keyboard")
         abortThread(timer, 1, "aborting countdown")
         abortThread(buz, 0.5, "aborting Buzzer")
     

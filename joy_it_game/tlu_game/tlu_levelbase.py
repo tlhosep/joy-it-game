@@ -136,11 +136,13 @@ class LevelBase(Process):
                 return True
             return False
             
-        def run(self,stop_event, gameProcess):
-            ''' Main game-loop
+        def run(self,stop_event, gameProcess, hardware):
+            '''
+            Main game-loop
             Use this code as a *template* for your implementation only
             :param stop_event: the event from the main-level that would be "set" here in case the level ended or terminated
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+            :param hardware: list of started threads
             '''
 
             thread=threading.currentThread()
@@ -252,12 +254,16 @@ class LevelBase(Process):
         queue=self.GameQueue()
         stop_event=Event()
         hardware=self.prepareGame(status, queue)
-        qThread=startThread(queue.run, args=(stop_event,self,), name="queue_for_level") #needed to loop through the messages
+        qThread=startThread(queue.run, args=(stop_event,self,hardware,), name="queue_for_level") #needed to loop through the messages
         
         stop_event.wait() #wait until queues stops processing or level gets terminated
         stop_event.clear()
         status=getGameState(self.user_id)
         self.finishGame(status, hardware)
+        status=getGameState(self.user_id)
+        logger.info('Level State= '+str(status))
+        logger.debug('Level ended')
+
         queue.close()
         abortThread(qThread, 1, "aborting message-Queue")
         glob=tlu_globals.globMgr.tlu_glob()

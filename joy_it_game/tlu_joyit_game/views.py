@@ -27,13 +27,15 @@ from tlu_game.tlu_level00 import Level00
 from tlu_game.tlu_level01 import Level01
 from tlu_game.tlu_level02 import Level02
 from tlu_game import tlu_globals
+from tlu_game.tlu_level03 import Level03
 
 logfile=settings.BASE_DIR+"/log/game.log"
 logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
 logger = logging.getLogger(__name__)
  
 # List of levels that form the game, the first level (00) is for internal testings only! 
-levels=(Level00,Level01,Level02)
+# Please make sure to update "models.py" as well for the level
+levels=(Level00,Level01,Level02,Level03)
 
 def suspendCurrentGame(request):
     '''

@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
             
 class Countdown(Thread):
     '''
-    Provides a countdown disoplay (hundreds seconds) on 7-segment
+    Provides a countdown display (hundreds seconds) on 7-segment
     Once timer is run to zero a timeout message would be send to the provided queue
     '''
     def __init__(self, queue, seconds):
@@ -36,6 +36,7 @@ class Countdown(Thread):
         '''
         Thread.__init__(self)
         self.is_aborted=False
+        self.has_to_restart=False
         if seconds > 99:
             seconds = 99
         self.hundreds=seconds*100
@@ -50,6 +51,11 @@ class Countdown(Thread):
         t0=datetime.now()
         diff=0
         while diff < self.hundreds:
+            if getattr(self, "has_to_restart", False):
+                t0=datetime.now()
+                logger.info('Countdown restarted')
+                diff=0
+                self.has_to_restart=False
             self.sevenseg.set4digits(self.hundreds-diff, 0)
             time.sleep(0.01)
             t1=datetime.now()
@@ -66,6 +72,8 @@ class Countdown(Thread):
         self.is_aborted=True
         self.sevenseg.clear()
         logger.info('Countdown termination requested')
+    def restart(self):
+        self.has_to_restart=True
  
 class CheckKey(Thread):
     '''

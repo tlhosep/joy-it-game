@@ -15,11 +15,12 @@ if [ $? != 0 ]; then
 fi
 cd ../..
 git pull
-cd $PWD
 if [ $? == 0 ]; then
 	echo "Your game is now up to date..."
+	cd $PWD
 else
 	echo "The update failed somehow, please read the instructions on top..."
+	cd $PWD
 	exit 1
 fi
 

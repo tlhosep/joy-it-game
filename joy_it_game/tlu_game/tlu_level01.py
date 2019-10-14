@@ -7,9 +7,8 @@ The game consists of some actions to be performed on the joy-it toolset in order
 The first level introduces simply the 16 keys
 
 
-Created on 17. Sep 2019
-
-@author: thomas lueth
+@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-09-17 
 """
 
 
@@ -22,7 +21,6 @@ from tlu_joyit_game import models
 
 from tlu_hardware.tasks import Countdown, CheckKey, Buzzer
 from tlu_game.tlu_levelbase import LevelBase
-import time
 import threading
 from tlu_services.tlu_threads import abortThread, startThreadClass
 from tlu_game import tlu_globals
@@ -35,11 +33,12 @@ class Level01(LevelBase):
     You have to press each button once
     '''
     class GameQueue(LevelBase.GameQueue):
-        def run(self, stop_event, gameProcess):
+        def run(self, stop_event, gameProcess, hardware):  # @UnusedVariable
             ''' Queue loop for level 1
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+            :param hardware: list of started threads
             '''
             keymatrix={}
             thread=threading.currentThread()
@@ -63,7 +62,6 @@ class Level01(LevelBase):
                     status.msg=_("You have just pressed Key #")+str(queueobject.msg_info)
                     status.level_progress=int(len(keymatrix)/16*100)
                     models.setGameState(gameProcess.user_id, status)
-                    time.sleep(0.3) #wait for messages to settle
                 elif queueobject.msg_num == self.MSG_KEYRELEASED:
                     pass
     
@@ -113,7 +111,5 @@ class Level01(LevelBase):
         abortThread(kbd, 1, "aborting Keyboard")
         abortThread(timer, 1, "aborting countdown")
         abortThread(buz, 0.5, "aborting Buzzer")
-        logger.info('Level01 State= '+str(status))
-        logger.debug('Level01 ended')
     
     

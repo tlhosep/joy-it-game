@@ -21,6 +21,7 @@ from tlu_hardware.tasks import Countdown
 from tlu_game.tlu_levelbase import LevelBase
 from tlu_services.tlu_processes import startProcess, abortProcess
 import threading
+import time
 
 logger=logging.getLogger(__name__)
 
@@ -31,19 +32,22 @@ class Level00(LevelBase):
     end-user interaction
     '''
     class GameQueue(LevelBase.GameQueue):
-        def run(self, stop_event, gameProcess):
+        def run(self, stop_event, gameProcess, hardware):
             ''' Main loop for Testing the game
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+            :param hardware: list of started threads
             '''
 
             thread=threading.currentThread()
+            (timer,)=hardware  # @UnusedVariable
             while True:
                 (queueobject,breakIndicator)=self.getQueueObject(stop_event, gameProcess, thread)
                 if breakIndicator:
                     break
                 if queueobject == None:
+                    time.sleep(0.2)
                     continue
                 self.queue.task_done() #release object from queue
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
@@ -86,7 +90,5 @@ class Level00(LevelBase):
         status.level_ended=timezone.now()
         models.setGameState(self.user_id, status)
         abortProcess(timer)
-        logger.info('Level00 State= '+str(status))
-        logger.debug('Level00 ended')
     
     

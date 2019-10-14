@@ -163,8 +163,8 @@ class Game(models.Model):
     The dipswitch_settings and frequent_updates are required for each level. This is needed
     to lookup the correct task and to forward the frequency for the updates on the web (in ms)
     '''
-    dipswitch_settings=(tlu_buttons(),tlu_buttons(),tlu_cursor())
-    frequent_updates=(2000,1000,500)
+    dipswitch_settings=(tlu_buttons(),tlu_buttons(),tlu_cursor(),tlu_buttons())
+    frequent_updates=(2000,1000,500,500)
       
     def __str__(self):
         ret= "id:"+str(self.id)+"user:"+str(self.user)+" lev:"+str(self.current_level)+" process-id:"+str(self.process_pid)
