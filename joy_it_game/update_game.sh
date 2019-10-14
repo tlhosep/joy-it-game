@@ -8,7 +8,7 @@ ADAFRUIT_PATH="adafruit"
 NONRASPI=$1
 
 echo "Trying to download the most recent version of the game..."
-"$PWD" | grep "joy-it-game/joy_it_game" > /dev/nul
+echo "$PWD" | grep "joy-it-game/joy_it_game" > /dev/null
 if [ $? != 0 ]; then
 	echo "Please cd into the directory containing this shell-script and try again"
 	exit 1
