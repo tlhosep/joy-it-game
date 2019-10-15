@@ -13,14 +13,11 @@ if [ $? != 0 ]; then
 	echo "Please cd into the directory containing this shell-script and try again"
 	exit 1
 fi
-cd ../..
 git pull
 if [ $? == 0 ]; then
 	echo "Your game is now up to date..."
-	cd $PWD
 else
 	echo "The update failed somehow, please read the instructions on top..."
-	cd $PWD
 	exit 1
 fi
 
