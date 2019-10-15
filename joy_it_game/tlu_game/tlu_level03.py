@@ -30,7 +30,7 @@ logger=logging.getLogger(__name__)
 
 class Level03(LevelBase):
     ''' Third Level of the game
-    You have to press each named button once
+    You have to press each named button once, within decreasing timelimits
     '''
     class GameQueue(LevelBase.GameQueue):
         def run(self, stop_event, gameProcess, hardware):
@@ -78,7 +78,14 @@ class Level03(LevelBase):
                         status.level_progress=int(numkeys/20*100)
                         models.setGameState(gameProcess.user_id, status)
                         logging.debug("Correct key pressed :)")
-                        timer.restart()
+                        newseconds=4
+                        if numkeys > 5:
+                            newseconds = 3
+                        if numkeys > 10:
+                            newseconds = 2.5
+                        if numkeys > 15:
+                            newseconds = 2
+                        timer.changeSecondsAndRestart(newseconds)
                 elif queueobject.msg_num == self.MSG_KEYRELEASED:
                     pass
     
@@ -91,7 +98,7 @@ class Level03(LevelBase):
         '''
         kbd=CheckKey(queue)
         startThreadClass(kbd)
-        timer=Countdown(queue,1.5)
+        timer=Countdown(queue,4)
         status.msg=_("Level03 starts..")
         models.setGameState(self.user_id, status)
         startThreadClass(timer)

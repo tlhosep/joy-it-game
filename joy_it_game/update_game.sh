@@ -147,7 +147,7 @@ fi
 
 if [ "$NONRASPI" == "" ]; then
 	echo "Change settings to no debug..."
-	sed -i 's/DEBUG = True/DEBUG = False/g' $PWD/tlu_joyit_game/settings.py
+	sed -i 's/DEBUG = True/DEBUG = False/g' $PWD/joyit_game/settings.py
 fi
 echo "Migrate, just in case... (will also create the db)"
 "$PYTHON" manage.py migrate

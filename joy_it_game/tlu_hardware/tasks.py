@@ -39,6 +39,8 @@ class Countdown(Thread):
         self.has_to_restart=False
         if seconds > 99:
             seconds = 99
+        if seconds <= 0:
+            seconds = 0.01
         self.hundreds=seconds*100
         self.queue=queue
         self.sevenseg=tlu_led.seven_segment()
@@ -73,6 +75,13 @@ class Countdown(Thread):
         self.sevenseg.clear()
         logger.info('Countdown termination requested')
     def restart(self):
+        self.has_to_restart=True
+    def changeSecondsAndRestart(self, seconds):
+        if seconds > 99:
+            seconds = 99
+        if seconds <= 0:
+            seconds = 0.01
+        self.hundreds=seconds*100
         self.has_to_restart=True
  
 class CheckKey(Thread):
