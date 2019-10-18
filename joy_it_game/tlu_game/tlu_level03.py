@@ -63,23 +63,24 @@ class Level03(LevelBase):
                 self.queue.task_done() #release object from queue
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
                     break
-                elif queueobject.msg_num == self.MSG_KEYPRESSED:
-                    glob=tlu_globals.globMgr.tlu_glob()
-                    glob.lcdMessagebyline(_("Level: ")+"03", _("Key = ")+str(queueobject.msg_info))
+                glob=tlu_globals.globMgr.tlu_glob()
+                if queueobject.msg_num == self.MSG_KEYPRESSED:
+                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key = ")+str(queueobject.msg_info))
                     if key != queueobject.msg_info:
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=0
                         status.result=Level.FAILED
                         status.msg=_("That was the wrong key, level terminates!")
                         models.setGameState(gameProcess.user_id, status)
-                        logging.debug("Wrong Key:"+str(key)+" instead of:"+str(queueobject.msg_info))
+                        logging.info("Wrong Key:"+str(key)+" instead of:"+str(queueobject.msg_info))
                     else:
                         numkeys += 1
+                        glob.matrixShow_symbol('root')
                         key=-1 #generate next key
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=int(numkeys/20*100)
                         models.setGameState(gameProcess.user_id, status)
-                        logging.debug("Correct key pressed :)")
+                        logging.info("Correct key pressed :)")
                         newseconds=4
                         if numkeys > 5:
                             newseconds = 3
@@ -89,7 +90,8 @@ class Level03(LevelBase):
                             newseconds = 2
                         timer.changeSecondsAndRestart(newseconds)
                 elif queueobject.msg_num == self.MSG_KEYRELEASED:
-                    pass
+                    glob.matrixShow_symbol('space')
+
     
     def prepareGame(self, status, queue) -> ():
         """Prepare Level
