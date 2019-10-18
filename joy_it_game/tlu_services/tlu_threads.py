@@ -54,7 +54,10 @@ def abortThread(thread,timeout=10,msg=""):
     thread.is_aborted=True
     thread.join(timeout/2) #usually waits until terminated, or if timeout (in seconds) reached
     count=5*timeout
-    threadlist.remove(thread.name)
+    try:
+        threadlist.remove(thread.name)
+    except:
+        logger.error("The following thread could not be found in the global thread list: "+str(thread.name))
     while count>0:
         time.sleep(0.1)
         if not thread.is_alive():

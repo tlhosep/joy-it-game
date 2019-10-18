@@ -75,7 +75,7 @@ class seven_segment(tlu_hardwarebase):
         # Write the display buffer to the hardware.  This must be called to
         # update the actual display LEDs.
         self.segment.write_display()
-        logger.info("4 digits set for "+str(number))
+        logger.debug("4 digits set for "+str(number))
     def set2numbers(self,left,right,colon):
         """
         Sets two distinct numbers (each range 0..99)
@@ -92,7 +92,7 @@ class seven_segment(tlu_hardwarebase):
         self.segment.set_digit(3, right % 10)         # Ones
         self.segment.set_colon(colon)
         self.segment.write_display()
-        logger.info("2 numbers set. #1:"+str(left)+" #2:"+str(right))
+        logger.debug("2 numbers set. #1:"+str(left)+" #2:"+str(right))
     def current_time(self,colon):
         """
         Show the current local time (hours/minutes) and allow the colon to blink for the seconds
