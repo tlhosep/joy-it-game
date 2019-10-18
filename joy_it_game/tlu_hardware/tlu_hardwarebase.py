@@ -11,7 +11,6 @@ we also define the port-numbers we need to setup the GPI correctly
 """ 
 import inspect
 from tlu_hardware import tlu_hardware_global
-from threading import Lock
 try: 
 # Check and import real RPi.GPIO library
     import RPi.GPIO as GPIO
@@ -68,7 +67,7 @@ class tlu_hardwarebase(object):
         number_of_hardware_starts = glob.increaseHardwareStarts()
         if number_of_hardware_starts == 1:
             GPIO.setmode(GPIO.BCM)
-            logging.debug("GPIO hardware now initialized, count="+str(number_of_hardware_starts)+" called via "+self.caller_name()+" called by "+self.prev_caller_name())
+            logging.info("GPIO hardware now initialized, count="+str(number_of_hardware_starts)+" called via "+self.caller_name()+" called by "+self.prev_caller_name())
     
     def __del__(self):
         """
@@ -83,7 +82,7 @@ class tlu_hardwarebase(object):
         number_of_hardware_starts = glob.decreaseHardwareStarts()
         if number_of_hardware_starts == 0:
             GPIO.cleanup()    
-            logging.debug("GPIO hardware now cleaned, count="+str(number_of_hardware_starts))
+            logging.info("GPIO hardware now cleaned, count="+str(number_of_hardware_starts))
         
     def lefthand_dip_setting(self) -> int:
         """
