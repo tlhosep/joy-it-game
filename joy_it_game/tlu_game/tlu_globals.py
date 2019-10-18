@@ -57,7 +57,7 @@ class Global_vars():
     global_lcd = None
     global_matrix=None
     def __init__(self):
-        logging.debug("Global_vars: Init")
+        logging.info("Global_vars: Init")
         tlu_hardware_global.init()
         self.global_lcd = tlu_lcd.lcd_panel()
         self.global_matrix = tlu_matrix.tlu_matrix()

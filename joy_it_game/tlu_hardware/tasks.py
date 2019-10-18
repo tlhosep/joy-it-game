@@ -260,10 +260,12 @@ class CheckCursor(Thread):
                     #released
                     queueobject=tlu_queueobject(tlu_queue.MSG_KEYRELEASED,self.currentKey)
                     self.queue.send(queueobject)
+                    logging.info("Cursor released: "+str(self.currentKey))
                 if (cursorkey > 0):
                     #pressed
                     queueobject=tlu_queueobject(tlu_queue.MSG_KEYPRESSED,cursorkey)
                     self.queue.send(queueobject)
+                    logging.info("Cursor presssed: "+str(cursorkey))
                 self.currentKey=cursorkey
         return Thread.run(self, *args, **kwargs)
     def terminate(self, *args, **kwargs):

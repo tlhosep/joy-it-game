@@ -94,7 +94,7 @@ class Level02(LevelBase):
         models.setGameState(self.user_id, status)
         startThreadClass(timer)
         glob=tlu_globals.globMgr.tlu_glob()
-        glob.lcdMessagebyline(_("Level: ")+"02", _("Cursorkeys... ")+":)")
+        glob.lcdMessagebyline(_("Level: ")+"02", _("Cursorkeys... "))
         status.msg=(_("Level 2 running"))
         status.level_progress=0
         status.level_start=timezone.now()
