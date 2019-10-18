@@ -15,7 +15,8 @@ if [ $? != 0 ]; then
 fi
 git pull
 if [ $? == 0 ]; then
-	echo "Your game is now up to date..."
+	echo "Your game is now up to date!"
+	echo "next we check for deployed packages and potential database updates..."
 else
 	echo "The update failed somehow, please read the instructions on top..."
 	exit 1

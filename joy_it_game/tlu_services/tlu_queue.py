@@ -9,13 +9,11 @@ Class to manage a global queue for various tasks
 @created: 2019-08-26 
 """ 
 
-from joy_it_game import settings
 import logging
 import sys
 import threading
 from multiprocessing import JoinableQueue
-logfile=settings.BASE_DIR+"/log/game.log"
-logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
+logger = logging.getLogger(__name__)
 
 def log_info(info=""):
     """

@@ -28,7 +28,7 @@ import multiprocessing
 from tlu_hardware import tlu_hardware_global
 
 logfile=settings.BASE_DIR+"/log/game.log"
-logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
+logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
 
 manager = Manager()
 states = manager.dict()

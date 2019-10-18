@@ -41,7 +41,12 @@ fi
 
 
 if [ "$NOAPPSTART" == "" ]; then
-	echo "starting the web-server..."
+	echo "Trying to clear the log..."
+	rm "./log/game.log"
+	if [ $? == 0 ]; then
+		echo "log cleared now!"
+	fi
+	echo "Starting the web-server..."
 	"$PYTHON" manage.py runserver &
 	echo $! > ./tlu_pid
 
@@ -51,7 +56,9 @@ if [ "$NOAPPSTART" == "" ]; then
 	xdg-open --help &> /dev/null
 	if [ $? == 0 ]; then
 		xdg-open http://127.0.0.1:8000/tlu_joyit_game & &> /dev/null
+		echo "+++ +++ +++"
 		echo "App started in browser, please continue there..."
+		echo "+++ +++ +++"
 	else
 	
 		open http://127.0.0.1:8000/tlu_joyit_game &> /dev/null
@@ -59,5 +66,6 @@ if [ "$NOAPPSTART" == "" ]; then
 	fi
 
 fi
+echo "!!!!!!!!!! ++++ !!!!!!!!!!!!"
 read -p "Press Enter to close this window"
 

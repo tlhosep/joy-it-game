@@ -31,7 +31,6 @@ from tlu_game.tlu_level03 import Level03
 from tlu_hardware import tlu_hardware_global
 
 logfile=settings.BASE_DIR+"/log/game.log"
-logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
 logger = logging.getLogger(__name__)
  
 # List of levels that form the game, the first level (00) is for internal testings only! 
