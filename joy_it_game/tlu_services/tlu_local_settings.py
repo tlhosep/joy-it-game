@@ -19,9 +19,9 @@ logger = logging.getLogger(__name__)
 
     
 class local_settings():
-    '''
+    """
     Class to set, modify and check the presence of a local settings file
-    '''
+    """
     SITE_ROOT = "" #root of application
     SETTINGS_PATH="" #path of settings-file
     LOCAL_SETTINGS_File="" # local settings file with individual settings
@@ -50,10 +50,10 @@ class local_settings():
      
 # See settingsForm class below as well, if you make changes here! 
     def setValues(self, parmdict):
-        '''
+        """
         setup the SETTINGS dictionary from the values given by the parameterdict
         :param parmdict: settings returned from form
-        '''
+        """
         backend=parmdict.get('emailBackend')
         self.SETTINGS['EMAIL_BACKEND']=backend
         if backend == 'django.core.mail.backends.smtp.EmailBackend':
@@ -67,9 +67,9 @@ class local_settings():
             self.SETTINGS['EMAIL_FILE_PATH']=parmdict.get('emailFilePath')
       
     def presence(self) -> bool:
-        '''
+        """
         Check if the local settings file already exists
-        '''
+        """
         logging.debug("Looking for settings-file: "+self.LOCAL_SETTINGS_File)
         if os.path.exists(self.LOCAL_SETTINGS_File) & os.path.isfile(self.LOCAL_SETTINGS_File):
             return True
@@ -77,10 +77,10 @@ class local_settings():
             return False
         
     def read(self):
-        '''
+        """
         Read the local settings file and copy its contents into the
         local SETTINGS
-        '''
+        """
         try:
             self.lsfile=open(self.LOCAL_SETTINGS_File,"r")
         except FileNotFoundError:
@@ -106,9 +106,9 @@ class local_settings():
                         
             
     def save(self):
-        '''
+        """
         Save anything held in local SETTINGS to a fresh created local settings file
-        '''
+        """
         self.lsfile=open(self.LOCAL_SETTINGS_File, "w+")
         for item in self.SETTINGS.keys():
             if type(self.SETTINGS[item]) is str:
@@ -123,15 +123,15 @@ class local_settings():
            
     
     def close(self):
-        '''
+        """
         Close the local settings file
-        '''
+        """
         self.lsfile.close()
         
     def remove(self):
-        '''
+        """
         Delete the local settings file
-        '''
+        """
         self.setDefaults()
         try:
             os.remove(self.LOCAL_SETTINGS_File)
@@ -140,15 +140,15 @@ class local_settings():
         return  
     
 class PasswordField(forms.CharField):
-    '''
+    """
     Specific field with password-formatting setup properly
-    '''
+    """
     widget = forms.PasswordInput()
     
 class settingsForm(forms.Form):
-    '''
+    """
     Create the form fields for the settings view
-    '''
+    """
         
     def get_urlType(self,url):
         pos=url.find('://')

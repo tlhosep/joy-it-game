@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tests.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tests.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tests</p>
+<p>This module shall try to test most of the provided io functionalities</p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">tlu_hardware.tlu_buzzer</span> <span class="kn">as</span> <span class="nn">tlu_buzzer</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tasks</span> <span class="kn">import</span> <span class="n">Countdown</span><span class="p">,</span> <span class="n">CheckKey</span><span class="p">,</span> <span class="n">CheckCursor</span><span class="p">,</span> <span class="n">AnimatedBuzzer</span><span class="p">,</span> <span class="n">Buzzer</span>
+<span class="kn">from</span> <span class="nn">joy_it_game</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_queue</span> <span class="kn">import</span> <span class="n">tlu_queueobject</span>
+<span class="kn">from</span> <span class="nn">tlu_game.tlu_globals</span> <span class="kn">import</span> <span class="n">ShowClock</span>
+<span class="kn">from</span> <span class="nn">tlu_services</span> <span class="kn">import</span> <span class="n">tlu_queue</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_checkhardware</span> <span class="kn">import</span> <span class="n">emulatekey</span>
+<span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_threads</span> <span class="kn">import</span> <span class="n">startThreadClass</span><span class="p">,</span> <span class="n">abortThread</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware</span> <span class="kn">import</span> <span class="n">tlu_hardware_global</span>
+
+<span class="n">logfile</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BASE_DIR</span><span class="o">+</span><span class="s2">&quot;/log/game.log&quot;</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1">;</span><span class="si">%(filename)-16.16s</span><span class="s1">;</span><span class="si">%(lineno)04d</span><span class="s1">;</span><span class="si">%(levelname)-8s</span><span class="s1">;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Simple class to test the queue-functionality.
+Supports only very basic signals</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TestQueue</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">tlu_queue</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Inner loop to process the contents of the queue
+:param testio: Outer testclass to allow asserts</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">myrun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">testio</span><span class="p">,</span><span class="n">countdown</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">queueobject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_STOP</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;STOP message received&quot;</span><span class="p">)</span>
+                <span class="n">testio</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="bp">False</span><span class="p">,</span><span class="s2">&quot;Stop instead of Key received&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;KEYPRESSED message received with number &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">))</span>
+                <span class="n">key_num</span><span class="o">=</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span>
+                <span class="n">ok</span><span class="o">=</span><span class="n">key_num</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="mi">400</span><span class="p">]</span>
+                <span class="n">testio</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ok</span><span class="p">,</span><span class="s2">&quot;Key has to be 1 or any cursor&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_TIMEOUT</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Timeout will be raised in test test_countdown_timeout</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;TIMEOUT message received&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_TEST</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">countdown</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">countdown</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Timer had been reset now&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Test most of the I/O modules</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TestIO</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tlu_globals</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">emulatekey</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="o">==</span><span class="s2">&quot;test_checkkey&quot;</span> <span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">tlu_globals</span><span class="o">.</span><span class="n">kbQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">emulatekey</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="o">==</span><span class="s2">&quot;test_checkcursor&quot;</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+            <span class="n">tlu_globals</span><span class="o">.</span><span class="n">kbQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Test some basic buzzer settings</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_buzzer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test started&#39;</span><span class="p">)</span>
+        <span class="n">buz</span><span class="o">=</span><span class="n">tlu_buzzer</span><span class="o">.</span><span class="n">tlu_buz</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">buz</span><span class="o">.</span><span class="n">noise</span><span class="p">,</span> <span class="s2">&quot;The startup status has to be false&quot;</span><span class="p">)</span>
+        <span class="n">buz</span><span class="o">.</span><span class="n">sound</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">buz</span><span class="o">.</span><span class="n">noise</span><span class="p">,</span> <span class="s2">&quot;Buzzer should sound now&quot;</span><span class="p">)</span>
+        <span class="n">buz</span><span class="o">.</span><span class="n">sound</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">buz</span><span class="o">.</span><span class="n">noise</span><span class="p">,</span> <span class="s2">&quot;The ending status has to be false&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test may have passed&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Service-function to abort the running process
+:param process: Process to be aborted
+:param msg: Log-Message in case anything got wrong</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">process</span><span class="p">,</span><span class="n">msg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">abortThread</span><span class="p">(</span><span class="n">process</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">msg</span><span class="p">),</span><span class="s2">&quot;Task could not be stopped:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Testing the clock-process</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mytest_clock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">sc</span><span class="o">=</span><span class="n">ShowClock</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="s2">&quot;test_clock&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Test countdown display process in general</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_countdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">queue</span><span class="o">=</span><span class="n">TestQueue</span><span class="p">()</span>
+        <span class="n">cd</span><span class="o">=</span><span class="n">Countdown</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">cd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="s2">&quot;test_countdown&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Test countdown with timeout-event</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_countdown_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">queue</span><span class="o">=</span><span class="n">TestQueue</span><span class="p">()</span>
+        <span class="n">cd</span><span class="o">=</span><span class="n">Countdown</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">cd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">myrun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1">#breaks/terminates once timeout reached</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="s2">&quot;test_countdown_timeout&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Test countdown with reset-event</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_countdown_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">queue</span><span class="o">=</span><span class="n">TestQueue</span><span class="p">()</span>
+        <span class="n">cd</span><span class="o">=</span><span class="n">Countdown</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">cd</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_TEST</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span> <span class="c1">#forces timer reset</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">myrun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cd</span><span class="p">)</span> <span class="c1">#breaks/terminates once timeout reached</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span> <span class="s2">&quot;test_countdown_reset&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Test to press the upper left key or by keyboard using the &lsquo;1&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_checkkey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;test_checkkey started&#39;</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">=</span><span class="n">TestQueue</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">emulatekey</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Press the upper left key of the 16key-field&#39;</span><span class="p">)</span>
+        <span class="n">ck</span><span class="o">=</span><span class="n">CheckKey</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">ck</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">ck</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">myrun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1">#breaks/terminates once timeout reached or key pressed ;)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;test_checkkey had key&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">ck</span><span class="p">,</span> <span class="s2">&quot;test_checkkey&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;test_checkkey ended&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>test the general queue-functionality</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_checkkequeue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">queue</span><span class="o">=</span><span class="n">TestQueue</span><span class="p">()</span>
+        <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">myrun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Test if the buzzer makes a sound</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_buzzerProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">buz</span><span class="o">=</span><span class="n">Buzzer</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">buz</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">buz</span><span class="p">)</span>
+        <span class="n">abortThread</span><span class="p">(</span><span class="n">buz</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;test_buzzerProcess&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Test if the buzzer makes a sound while the led display showns sign</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_animatedbuzzer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">ab</span><span class="o">=</span><span class="n">AnimatedBuzzer</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+        <span class="n">abortThread</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;animatedBuzzer_class&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ab</span><span class="o">.</span><span class="n">is_alive</span><span class="p">(),</span><span class="s2">&quot;AnimatedBuzzer should have been stopped...&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Wait for any of the 4 cursor-keys being pressed</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_checkcursor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">queue</span><span class="o">=</span><span class="n">TestQueue</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">emulatekey</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Please press any of the four cursor-keys to continue&#39;</span><span class="p">)</span>
+        <span class="n">cc</span><span class="o">=</span><span class="n">CheckCursor</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Process could not be established&quot;</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">myrun</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1">#breaks/terminates once timeout reached or key pressed ;)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;test_checkkey had cursor&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="s2">&quot;test_checkcursor&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

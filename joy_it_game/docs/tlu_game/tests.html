@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tests.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tests.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tests</p>
+<p>This module shall try to test most of the provided game functionalities</p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">get_user_model</span>
+<span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Game</span><span class="p">,</span> <span class="n">getGameState</span><span class="p">,</span> <span class="n">setGameState</span><span class="p">,</span> <span class="n">userOk</span><span class="p">,</span> <span class="n">Level</span><span class="p">,</span>\
+    <span class="n">getCleanGameState</span>
+<span class="kn">from</span> <span class="nn">joy_it_game</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">tlu_game.tlu_level00</span> <span class="kn">import</span> <span class="n">Level00</span>
+<span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_checkhardware</span> <span class="kn">import</span> <span class="n">emulatekey</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware</span> <span class="kn">import</span> <span class="n">tlu_hardware_global</span>
+
+<span class="n">logfile</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BASE_DIR</span><span class="o">+</span><span class="s2">&quot;/log/game.log&quot;</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1">;</span><span class="si">%(filename)-16.16s</span><span class="s1">;</span><span class="si">%(lineno)04d</span><span class="s1">;</span><span class="si">%(levelname)-8s</span><span class="s1">;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Test most of the  tlu_game methods</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TestGame</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Service function to setup an individual user per test, so each test gets unique :)
+:param username: Name of the testcase to setup exactly this user for the test</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">getGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s2">&quot;TestXYZ987&quot;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;getGame called&#39;</span><span class="p">)</span>
+        <span class="n">User</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_superuser</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                                          <span class="n">email</span><span class="o">=</span><span class="s2">&quot;1@test.de&quot;</span><span class="p">,</span>
+                                          <span class="n">password</span><span class="o">=</span><span class="s2">&quot;test1234!@t.de&quot;</span><span class="p">)</span>
+        <span class="n">userset</span><span class="o">=</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span> <span class="c1">#get created user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">userset</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The user has to be found&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">userset</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;We expect exact one user here, found: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">userset</span><span class="o">.</span><span class="n">count</span><span class="p">())</span><span class="o">+</span><span class="s2">&quot; content:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">userset</span><span class="p">))</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">userset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#get first user, we do not expect more ;)</span>
+        <span class="n">game</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">game</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">current_level</span><span class="o">=</span><span class="bp">None</span> <span class="c1">#start from scratch</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">game</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Test the status object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_status started&#39;</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getGame</span><span class="p">(</span><span class="s1">&#39;test_status&#39;</span><span class="p">)</span>
+        <span class="n">gamestate</span><span class="o">=</span><span class="n">getCleanGameState</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">gamestate</span><span class="o">.</span><span class="n">level_progress</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;The initial Progress has to be 0&quot;</span><span class="p">)</span>
+        <span class="n">gamestate</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;HALLO&quot;</span>
+        <span class="n">gamestate</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">55</span>
+        <span class="n">setGameState</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="n">gamestate</span><span class="p">)</span>
+        <span class="n">gamestate</span><span class="o">=</span><span class="n">getGameState</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">gamestate</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;HALLO&quot;</span><span class="p">,</span> <span class="s2">&quot;The messages differ :(&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">gamestate</span><span class="o">.</span><span class="n">level_progress</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="s2">&quot;The Progress has to be 55&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test status ended&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Test to create the gamestate</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_create_game</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_create_game started&#39;</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getGame</span><span class="p">(</span><span class="s1">&#39;test_create_game&#39;</span><span class="p">)</span>
+        <span class="n">gamestate</span><span class="o">=</span><span class="n">getCleanGameState</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">gamestate</span><span class="o">.</span><span class="n">level_progress</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;The initial Progress has to be 0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">current_level</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="s2">&quot;Level not assigned yet&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">userOk</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="s2">&quot;User has to be logged on at the start of this test&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Test to startup the game (level 0)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_start_game</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tlu_globals</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="c1">#in case not called before ;)</span>
+        <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_start_game started&#39;</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getGame</span><span class="p">(</span><span class="s1">&#39;test_start_game&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;test_start_game: b4 start:  Game=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">game</span><span class="p">))</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">Level00</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;test_start_game: after start:  Game=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">game</span><span class="p">))</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span> <span class="c1">#wait until game times out internally after 1 second, then continue here</span>
+        <span class="n">res</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">,</span> <span class="s2">&quot;Expected result of game00-run is &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">))</span>
+        <span class="n">levelobject</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">current_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level has to be known&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">levelnum</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Level has to be 0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;5 points achieved&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;results have to match&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">level_start</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level should have a starting time&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">level_ended</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level should have a ending time&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">prevLevel</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The previous level has to be empty&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Test to abort the game during its operation (level 0)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_abort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tlu_globals</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="c1">#in case not called before ;)</span>
+        <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_abort started&#39;</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getGame</span><span class="p">(</span><span class="s1">&#39;test_abort&#39;</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">Level00</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_abort ended, analysis starts&#39;</span><span class="p">)</span>
+        <span class="n">levelobject</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">current_level</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_abort result is: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">levelobject</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level has to be known&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">levelnum</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Level has to be 0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;No points achieved&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">level_start</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level should have a starting time&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">level_ended</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level should have a ending time&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">ABORT</span><span class="p">,</span> <span class="s2">&quot;results have to match (aborted)=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Level</span><span class="o">.</span><span class="n">ABORT</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Test to simulate a retry-wish of the player</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_retry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tlu_globals</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="c1">#in case not called before ;)</span>
+        <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_retry started&#39;</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getGame</span><span class="p">(</span><span class="s1">&#39;test_retry&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;test_retry: b4 start:  Game=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">game</span><span class="p">))</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">Level00</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1">#allow the game top start</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;test_retry: after start: Game=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">game</span><span class="p">))</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">retry</span><span class="p">()</span>
+        <span class="n">levelobject</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">current_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level has to be known&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">levelnum</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Level has to be 0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;No points achieved&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">RETRY</span><span class="p">,</span> <span class="s2">&quot;results have to match (retry)=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Level</span><span class="o">.</span><span class="n">RETRY</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Test a successful run of level 0</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tlu_globals</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="c1">#in case not called before ;)</span>
+        <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Test test_success started&#39;</span><span class="p">)</span>
+        <span class="n">game</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getGame</span><span class="p">(</span><span class="s1">&#39;test_success&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;game created: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">game</span><span class="p">))</span>
+        <span class="n">task</span><span class="o">=</span><span class="n">Level00</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;test_success: b4 start:  Game=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">game</span><span class="p">))</span>
+        <span class="n">game</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">task</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;test_success: after start:  Game=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">game</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">is_running</span><span class="p">(),</span> <span class="s2">&quot;Started game has to run (for at least 2.5 seconds)&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span> <span class="c1">#wait a bit to terminate the level internally</span>
+        <span class="n">res</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="c1">#wait for level to terminate</span>
+        <span class="n">games</span><span class="o">=</span><span class="n">Game</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">games</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">,</span> <span class="s2">&quot;Expected result is &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">))</span>
+        <span class="n">levelobject</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">current_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level has to be known&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">levelnum</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Level has to be 0&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;5 points achieved&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">level_start</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level should have a starting time&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">level_ended</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;The level should have a ending time&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">levelobject</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">,</span> <span class="s2">&quot;results have to match (passed)=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Test the global-functionality provided by tlu_globals</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">test_globals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tlu_globals</span><span class="o">.</span><span class="n">init</span><span class="p">()</span> <span class="c1">#in case not called before ;)</span>
+        <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">test</span><span class="p">(),</span> <span class="s2">&quot;The test has to pass...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">emulatekey</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">kbQueue</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Keyboardqueue should not be null on mac&quot;</span><span class="p">)</span>
+        
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

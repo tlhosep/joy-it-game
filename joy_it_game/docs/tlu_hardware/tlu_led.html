@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_led.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_led.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_led
+<strong> Content </strong>
+Module to support the 7-segment LED display</p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-07-31 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_hardwarebase</span> <span class="kn">import</span> <span class="n">tlu_hardwarebase</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Get an instance of a logger</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">fakeIO</span><span class="o">=</span><span class="bp">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">Adafruit_LED_Backpack</span> <span class="kn">import</span> <span class="n">SevenSegment</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">fakeIO</span><span class="o">=</span><span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">class</span> <span class="nc">SevenSegment</span><span class="p">():</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="mh">0x00</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;address&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="o">=</span><span class="n">value</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">begin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;7 segments now initialized&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Clear called&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">set_digit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">digit</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">pass</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <pre><code>       logger.info("digit #"+str(digit)+" set to:"+str(value))
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">set_colon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">on</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Colon set to:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">on</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">write_display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Show display&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Class to handle the 7-segment LED display</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">seven_segment</span><span class="p">(</span><span class="n">tlu_hardwarebase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">segment</span><span class="o">=</span><span class="bp">None</span>
+    <span class="n">stop</span><span class="o">=</span><span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Initializes the hardware</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fakeIO</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">segment</span> <span class="o">=</span> <span class="n">SevenSegment</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">led_7seg_address</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">segment</span> <span class="o">=</span> <span class="n">SevenSegment</span><span class="o">.</span><span class="n">SevenSegment</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">led_7seg_address</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">write_display</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Show the number (range 0&hellip;9999) given
+:param number: number to display
+:param colon: show the colon in the middle if True</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">set4digits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">number</span><span class="p">,</span><span class="n">colon</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Set left 2 digits</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span>     <span class="c1"># Thousands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span><span class="p">))</span>      <span class="c1"># Hundreds</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Set right 2 digits</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">((</span><span class="n">number</span><span class="o">%</span><span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="p">))</span> <span class="c1"># Tens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">number</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span>            <span class="c1"># Ones</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_colon</span><span class="p">(</span><span class="n">colon</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Write the display buffer to the hardware.  This must be called to
+update the actual display LEDs.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">write_display</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;4 digits set for &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Sets two distinct numbers (each range 0..99)
+:param left: lefthand number
+:param right: righthand number
+:param colon: show the colon in the middle if True</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">set2numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">left</span><span class="p">,</span><span class="n">right</span><span class="p">,</span><span class="n">colon</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Set left two digits</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">left</span> <span class="o">/</span> <span class="mi">10</span><span class="p">))</span>     <span class="c1"># Tens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">left</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span>          <span class="c1"># Ones</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Set right 2 digits</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">right</span> <span class="o">/</span> <span class="mi">10</span><span class="p">))</span>    <span class="c1"># Tens</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">right</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span>         <span class="c1"># Ones</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_colon</span><span class="p">(</span><span class="n">colon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">write_display</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;2 numbers set. #1:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; #2:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">right</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Show the current local time (hours/minutes) and allow the colon to blink for the seconds
+:param colon: True: display colon</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">current_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">colon</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">hour</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">hour</span>
+        <span class="n">minute</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">minute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set2numbers</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">,</span> <span class="n">colon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">write_display</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Show the current time and let the colon blink
+This method has to be called at least every 0.5 seconds to have a working time</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">showClock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">second</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">second</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_time</span><span class="p">(</span><span class="n">second</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Resets the display to show nothing</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">write_display</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

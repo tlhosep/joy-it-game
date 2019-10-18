@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_matrix.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_matrix.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_matrix
+<strong> Content </strong>
+This module wraps the matrix-hardware componend and provides helper to show specific items
+In case no hardware is found, the functionality would be emulated</p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-07-31 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tlu_hardware.tlu_hardwarebase</span> <span class="kn">import</span> <span class="n">tlu_hardwarebase</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">tlu_hardware.tlu_threadDecorator</span>
+
+<span class="n">FakeIO</span><span class="o">=</span><span class="bp">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">luma.led_matrix.device</span> <span class="kn">import</span> <span class="n">max7219</span>
+    <span class="kn">from</span> <span class="nn">luma.core.interface.serial</span> <span class="kn">import</span> <span class="n">spi</span><span class="p">,</span> <span class="n">noop</span>
+    <span class="kn">from</span> <span class="nn">luma.core.render</span> <span class="kn">import</span> <span class="n">canvas</span>
+    <span class="kn">from</span> <span class="nn">luma.core.virtual</span> <span class="kn">import</span> <span class="n">viewport</span>
+    <span class="kn">from</span> <span class="nn">luma.core.legacy</span> <span class="kn">import</span> <span class="n">text</span><span class="p">,</span> <span class="n">show_message</span>
+    <span class="kn">from</span> <span class="nn">luma.core.legacy.font</span> <span class="kn">import</span> <span class="n">proportional</span><span class="p">,</span> <span class="n">CP437_FONT</span><span class="p">,</span> <span class="n">TINY_FONT</span><span class="p">,</span> <span class="n">SINCLAIR_FONT</span><span class="p">,</span> <span class="n">LCD_FONT</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">FakeIO</span><span class="o">=</span><span class="bp">True</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Class for the matrix-LED-display</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">tlu_matrix</span><span class="p">(</span><span class="n">tlu_hardwarebase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">serial</span><span class="o">=</span><span class="bp">None</span> 
+    <span class="n">device</span><span class="o">=</span><span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Initializer, mainly sets hardware</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>create matrix device
+cascaded = Number of cascaded MAX7219 LED matrices, default=1
+block_orientation = choices 0, 90, -90, Corrects block orientation when wired vertically, default=0
+rotate = choices 0, 1, 2, 3, Rotate display 0=0°, 1=90°, 2=180°, 3=270°, default=0</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">FakeIO</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Init&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">spi</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gpio</span><span class="o">=</span><span class="n">noop</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">max7219</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span> <span class="n">cascaded</span><span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">block_orientation</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span> <span class="mi">0</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Display the message (one by one) with a delay-rate of 4 on the one-char-display
+:param msg: Message to show</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">FakeIO</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Message:&quot;</span><span class="o">+</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">proportional</span><span class="p">(</span><span class="n">CP437_FONT</span><span class="p">),</span> <span class="n">scroll_delay</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Run demo provided by joy-it scrips as a Thread
+Included to show the abilities of this module</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nd">@tlu_hardware.tlu_threadDecorator.start_new_thread</span>
+    <span class="k">def</span> <span class="nf">demo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">FakeIO</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;demo started&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;MAX7219 LED Matrix Demo&quot;</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">proportional</span><span class="p">(</span><span class="n">CP437_FONT</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Fast scrolling: Lorem ipsum dolor sit amet, consectetur adipiscing</span><span class="se">\</span>
+<span class="s2">            elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut</span><span class="se">\</span>
+<span class="s2">            enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut</span><span class="se">\</span>
+<span class="s2">            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in</span><span class="se">\</span>
+<span class="s2">            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint</span><span class="se">\</span>
+<span class="s2">            occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit</span><span class="se">\</span>
+<span class="s2">            anim id est laborum.&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot; +&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">proportional</span><span class="p">(</span><span class="n">LCD_FONT</span><span class="p">),</span> <span class="n">scroll_delay</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Slow scrolling: The quick brown fox jumps over the lazy dog&quot;</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">proportional</span><span class="p">(</span><span class="n">LCD_FONT</span><span class="p">),</span> <span class="n">scroll_delay</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+        
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Vertical scrolling&quot;</span><span class="p">)</span>
+            <span class="n">words</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;Victor&quot;</span><span class="p">,</span> <span class="s2">&quot;Echo&quot;</span><span class="p">,</span> <span class="s2">&quot;Romeo&quot;</span><span class="p">,</span> <span class="s2">&quot;Tango&quot;</span><span class="p">,</span> <span class="s2">&quot;India&quot;</span><span class="p">,</span> <span class="s2">&quot;Charlie&quot;</span><span class="p">,</span> <span class="s2">&quot;Alpha&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Lima&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;Sierra&quot;</span><span class="p">,</span> <span class="s2">&quot;Charlie&quot;</span><span class="p">,</span> <span class="s2">&quot;Romeo&quot;</span><span class="p">,</span> <span class="s2">&quot;Oscar&quot;</span><span class="p">,</span> <span class="s2">&quot;Lima&quot;</span><span class="p">,</span> <span class="s2">&quot;Lima&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;India&quot;</span><span class="p">,</span> <span class="s2">&quot;November&quot;</span><span class="p">,</span> <span class="s2">&quot;Golf&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span>
+            <span class="p">]</span>
+        
+            <span class="n">virtual</span> <span class="o">=</span> <span class="n">viewport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">canvas</span><span class="p">(</span><span class="n">virtual</span><span class="p">)</span> <span class="k">as</span> <span class="n">draw</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+                    <span class="n">text</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">8</span><span class="p">),</span> <span class="n">word</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">proportional</span><span class="p">(</span><span class="n">CP437_FONT</span><span class="p">))</span>
+        
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">virtual</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
+                <span class="n">virtual</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Brightness&quot;</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+        
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">canvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">as</span> <span class="n">draw</span><span class="p">:</span>
+                <span class="n">text</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+        
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">intensity</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">contrast</span><span class="p">(</span><span class="n">intensity</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        
+            <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">contrast</span><span class="p">(</span><span class="mh">0x80</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Alternative font!&quot;</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">SINCLAIR_FONT</span><span class="p">)</span>
+        
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Proportional font - characters are squeezed together!&quot;</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">proportional</span><span class="p">(</span><span class="n">SINCLAIR_FONT</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>http://www.squaregear.net/fonts/tiny.shtml</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Tiny is, I believe, the smallest possible font </span><span class="se">\</span>
+<span class="s2">            (in pixel size). It stands at a lofty four pixels </span><span class="se">\</span>
+<span class="s2">            tall (five if you count descenders), yet it still </span><span class="se">\</span>
+<span class="s2">            contains all the printable ASCII characters.&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot; +&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">proportional</span><span class="p">(</span><span class="n">TINY_FONT</span><span class="p">))</span>
+        
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;CP437 Characters&quot;</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">show_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+        
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">canvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">as</span> <span class="n">draw</span><span class="p">:</span>
+                    <span class="n">text</span><span class="p">(</span><span class="n">draw</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Show the demo as a background-Thread</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">demo_background</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">demo</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Show a symbol on the display, provided by a specific name
+:param name: please see &lsquo;symbols&rsquo; below for the current abilities</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">show_symbol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>see https://en.wikipedia.org/wiki/Code_page_437</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">symbols</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;smiley&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> 
+                   <span class="s1">&#39;arrow_left&#39;</span><span class="p">:</span><span class="mi">27</span><span class="p">,</span>
+                   <span class="s1">&#39;arrow_right&#39;</span><span class="p">:</span><span class="mi">26</span><span class="p">,</span>
+                   <span class="s1">&#39;arrow_up&#39;</span><span class="p">:</span><span class="mi">24</span><span class="p">,</span>
+                   <span class="s1">&#39;arrow_down&#39;</span><span class="p">:</span><span class="mi">25</span><span class="p">,</span>
+                   <span class="s1">&#39;triangle_up&#39;</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span>
+                   <span class="s1">&#39;triangle_down&#39;</span><span class="p">:</span><span class="mi">31</span><span class="p">,</span>
+                   <span class="s1">&#39;root&#39;</span><span class="p">:</span><span class="mi">251</span><span class="p">,</span>
+                   <span class="s1">&#39;sound&#39;</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span>
+                   <span class="s1">&#39;space&#39;</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span>
+                   <span class="p">}</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">symbols</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;show symbol: &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot; -&gt; symbol unknown!!!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">FakeIO</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;show symbol: &quot;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot; -&gt; &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">symbols</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">canvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">as</span> <span class="n">draw</span><span class="p">:</span>
+                <span class="n">text</span><span class="p">(</span><span class="n">draw</span><span class="p">,(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="nb">chr</span><span class="p">(</span><span class="n">symbols</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Control the brightness of the display, 2 seems to be valuable
+:param level: any level between 0 and 5</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">brightness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">level</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">lev</span><span class="o">=</span><span class="n">level</span>
+        <span class="k">if</span> <span class="n">lev</span><span class="o">&gt;</span><span class="mi">5</span> <span class="ow">or</span> <span class="n">lev</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">lev</span><span class="o">=</span><span class="mi">5</span>
+        <span class="k">if</span> <span class="n">FakeIO</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;brightness: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">level</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">contrast</span><span class="p">(</span><span class="n">lev</span><span class="o">*</span><span class="mi">16</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -29,17 +29,17 @@ logger=logging.getLogger(__name__)
 
 
 class Level01(LevelBase):
-    ''' First Level of the game
+    """ First Level of the game
     You have to press each button once
-    '''
+    """
     class GameQueue(LevelBase.GameQueue):
         def run(self, stop_event, gameProcess, hardware):  # @UnusedVariable
-            ''' Queue loop for level 1
+            """ Queue loop for level 1
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
-            '''
+            """
             keymatrix={}
             thread=threading.currentThread()
             while True:
@@ -66,12 +66,12 @@ class Level01(LevelBase):
                     pass
     
     def prepareGame(self, status, queue) -> ():
-        '''Prepare Level 1
+        """Prepare Level 1
         Do hardware-preparations
         :param status: current state of the game, used for web-frontend
         :param queue: Message-Q for hardware.messages to be launched
         return list of hardware-processes started here
-        '''
+        """
         kbd=CheckKey(queue)
         startThreadClass(kbd)
         timer=Countdown(queue,16)
@@ -86,11 +86,11 @@ class Level01(LevelBase):
         models.setGameState(self.user_id, status)
         return (timer,kbd,)
     def finishGame(self, status, hardware):
-        '''End game-level 1
+        """End game-level 1
         Close down hardware-activities started
         :param status: current state of the game, used for web-frontend
         :param hardware: List of hardware-processes that should be terminated here
-        '''
+        """
         (timer,kbd,)=hardware
         glob=tlu_globals.globMgr.tlu_glob()
         buz=None

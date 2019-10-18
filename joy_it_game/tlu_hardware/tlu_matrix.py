@@ -31,15 +31,15 @@ logger.setLevel(logging.DEBUG)
 
 
 class tlu_matrix(tlu_hardwarebase):
-    '''
+    """
     Class for the matrix-LED-display
-    '''
+    """
     serial=None 
     device=None
     def __init__(self):
-        '''
+        """
         Initializer, mainly sets hardware
-        '''
+        """
         tlu_hardwarebase.__init__(self)
         # create matrix device
         # cascaded = Number of cascaded MAX7219 LED matrices, default=1
@@ -52,10 +52,10 @@ class tlu_matrix(tlu_hardwarebase):
             self.device = max7219(self.serial, cascaded= 1, block_orientation=90, rotate= 0)
         
     def message(self,msg):
-        '''
+        """
         Display the message (one by one) with a delay-rate of 4 on the one-char-display
         :param msg: Message to show
-        '''
+        """
         if FakeIO:
             logger.info("Message:"+msg)
         else:
@@ -63,10 +63,10 @@ class tlu_matrix(tlu_hardwarebase):
         
     @tlu_hardware.tlu_threadDecorator.start_new_thread
     def demo(self):
-        '''
+        """
         Run demo provided by joy-it scrips as a Thread
         Included to show the abilities of this module
-        '''
+        """
         if FakeIO:
             logger.info("demo started")
         else:
@@ -154,15 +154,15 @@ class tlu_matrix(tlu_hardwarebase):
                     time.sleep(0.1)
             
     def demo_background(self):
-        '''
+        """
         Show the demo as a background-Thread
-        '''
+        """
         self.demo()
     def show_symbol(self,name):
-        '''
+        """
         Show a symbol on the display, provided by a specific name
         :param name: please see 'symbols' below for the current abilities
-        '''
+        """
         # see https://en.wikipedia.org/wiki/Code_page_437
         symbols = {'smiley':1, 
                    'arrow_left':27,
@@ -185,10 +185,10 @@ class tlu_matrix(tlu_hardwarebase):
                 text(draw,(0,0), chr(symbols[name]), fill="white")
                 
     def brightness(self,level):
-        '''
+        """
         Control the brightness of the display, 2 seems to be valuable
         :param level: any level between 0 and 5
-        '''
+        """
         lev=level
         if lev>5 or lev<0:
             lev=5

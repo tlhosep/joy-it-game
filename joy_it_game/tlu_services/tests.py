@@ -18,9 +18,9 @@ class Test(unittest.TestCase):
     localsettings=None
 
     def testRead_noFile(self):
-        '''
+        """
         Test the settings-defauls without writing to file
-        '''
+        """
         ls = tlu_local_settings.local_settings()
         if ls.presence():
             ls.read()
@@ -38,9 +38,9 @@ class Test(unittest.TestCase):
             
 
     def testRead_FileCycle(self):
-        '''
+        """
         Test creating and removing a settings-file
-        '''
+        """
         ls = tlu_local_settings.local_settings()
         if ls.presence():
             ls.read()
@@ -63,9 +63,9 @@ class Test(unittest.TestCase):
             localsettings=None
 
     def testRemove(self):
-        '''
+        """
         Test removing the settings-file
-        '''
+        """
         ls = tlu_local_settings.local_settings()
         ls.read()
         localsettings=copy.deepcopy(ls.SETTINGS)

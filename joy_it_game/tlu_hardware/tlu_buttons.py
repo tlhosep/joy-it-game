@@ -28,15 +28,14 @@ logger = logging.getLogger(__name__)
 
 
 class tlu_buttons(tlu_hardwarebase):
-    '''
+    """
     Wrap button functionality. In case we miss the hardware, allows a keyboard-emulation
-    '''
+    """
     def __init__(self):
-        '''
+        """
         Initializes the class
-        '''
+        """
         tlu_hardwarebase.__init__(self)
-        GPIO.setmode(GPIO.BCM)
 
         # Die IDs der Buttons werden festgelegt
         self.buttonIDs = [[4,3,2,1],[8,7,6,5],[12,11,10,9],[16,15,14,13]]
@@ -55,12 +54,15 @@ class tlu_buttons(tlu_hardwarebase):
             GPIO.output(self.columnPins[j], 1)
 
     def lefthand_dip_setting(self):
+        """
+        Hex setting for the left DIP: All up
+        """
         return 0xFF
        
     def button_pressed(self) -> int:
-        '''
+        """
         Checks for a button pressed (1..16), if none, returns 0
-        '''
+        """
         if emulatekey:
             q=tlu_globals.kbQueue
             try:
@@ -88,8 +90,3 @@ class tlu_buttons(tlu_hardwarebase):
             GPIO.output(self.columnPins[j],1)
         return 0    #no button pressed
  
-    def cleanup(self):
-        '''
-        Resets GPIO
-        '''
-        GPIO.cleanup()

@@ -14,16 +14,16 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class tlu_Menu(Menu):
-    '''
+    """
     Class for the menu-handling
-    '''
+    """
 
     def get_nodes(self, request):
-        '''
+        """
         produce the node-infrastructure for the menu.
         Will be rendered in the view 
         :param request: The http-request, needed to check for login and user name
-        '''
+        """
         nodes = []
         n1 = NavigationNode(_('About me'), "https://tlc-it-consulting.com/index.php/de/ueber-mich", 1)
         n2 = NavigationNode(_('Home'), "/tlu_joyit_game/", 2)

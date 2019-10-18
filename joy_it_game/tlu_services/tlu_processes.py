@@ -12,16 +12,16 @@ logger=logging.getLogger(__name__)
 processlist=[]
 
 def numberOfProcesses():
-    '''
+    """
     Return the number of currently started processes
-    '''
+    """
     return len(processlist)
 
 def startProcess(process):
-    '''
+    """
     Start a given process
     :param process: process to start
-    '''
+    """
     global processlist
     process.daemon=True
     process.start()
@@ -30,12 +30,12 @@ def startProcess(process):
     return process
 
 def abortProcess(process,timeout=10,msg=""):
-    '''
+    """
     Abort the named process
     :param process: process to be aborted
     :param timeout: seconds to wait before going for a hard termination
     :param msg: Log-Message (optional)
-    '''
+    """
     global processlist
     count=10*timeout
     processlist.remove(process.name)
@@ -51,10 +51,10 @@ def abortProcess(process,timeout=10,msg=""):
     return True
     
 def is_running(self,process):
-    '''
+    """
     Check if the given process is still running
     :param process: Process to examine
-    '''
+    """
     if (process != None):
         logging.debug("Alive-State of "+str(process.ident)+" is:"+str(process.is_alive()))
         if process.is_alive():

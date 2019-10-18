@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_local_settings_check.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_local_settings_check.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_local_settings</p>
+<p><strong> Content </strong>
+Checks the mail connectivity</p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-07-24 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.core.mail.message</span> <span class="kn">import</span> <span class="n">EmailMessage</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Check if the configured mail functionality works as desired
+:param subject: subject of test-email
+:param message: message for test-email
+:param from_email: sender
+:param to_mail: receiver</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">checkMailOk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Testmail&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Testmessage&#39;</span><span class="p">,</span> <span class="n">from_email</span><span class="o">=</span><span class="s1">&#39;test@test.de&#39;</span><span class="p">,</span> <span class="n">to_mail</span><span class="o">=</span><span class="s1">&#39;to@test.de&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">email</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">(</span>
+        <span class="n">subject</span><span class="p">,</span>
+        <span class="n">message</span><span class="p">,</span>
+        <span class="n">from_email</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">to_mail</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">email</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">fail_silently</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">settingsCheckForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">emailSubject</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Subject&quot;</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Testmail&quot;</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">emailMessage</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">Textarea</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rows&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;cols&quot;</span><span class="p">:</span><span class="mi">40</span><span class="p">}),</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Some Text&quot;</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;This is a simple testmail.&quot;</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">emailFrom</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">EmailField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;From(email)&quot;</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;me@test.com&quot;</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">emailTo</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">EmailField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;To(email)&quot;</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;me@test.com&quot;</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">emailSuccess</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Email check passed without issues?&quot;</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,4 +1,4 @@
-''' module: tlu_level02
+""" module: tlu_level02
 
 *** Content ***
 Class to form the second level of the game
@@ -10,7 +10,7 @@ The second level introduces simply the 4 cursor keys
 
 @author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
 @created: 2019-09-17 
-'''
+"""
 
 
 import logging
@@ -32,17 +32,17 @@ logger=logging.getLogger(__name__)
 
 
 class Level02(LevelBase):
-    ''' First Level of the game
+    """ First Level of the game
     You have to press each button once
-    '''
+    """
     class GameQueue(LevelBase.GameQueue):
         def run(self, stop_event, gameProcess, hardware):  # @UnusedVariable
-            ''' Main loop for Level2
+            """ Main loop for Level2
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
-            '''
+            """
             keymatrix={}
             thread=threading.currentThread()
             while True:
@@ -81,12 +81,12 @@ class Level02(LevelBase):
                     pass
         
     def prepareGame(self, status, queue) -> ():
-        '''Prepare Level
+        """Prepare Level
         Do hardware-preparations
         :param status: current state of the game, used for web-frontend
         :param queue: Message-Q for hardware.messages to be launched
         return list of hardware-processes started here
-        '''
+        """
         cc=CheckCursor(queue)
         startThreadClass(cc)
         timer=Countdown(queue,4)
@@ -101,11 +101,11 @@ class Level02(LevelBase):
         models.setGameState(self.user_id, status)
         return (timer,cc,)
     def finishGame(self, status, hardware):
-        '''End game-level
+        """End game-level
         Close down hardware-activitiues started
         :param status: current state of the game, used for web-frontend
         :param hardware: List of hardware-processes that should be terminated here
-        '''
+        """
         (timer,cc,)=hardware
         glob=tlu_globals.globMgr.tlu_glob()
         buz=None

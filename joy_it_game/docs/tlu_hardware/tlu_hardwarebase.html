@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_hardwarebase.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_hardwarebase.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_hardwarebase
+<strong> Content </strong>
+This module provides the base for all hardware-bound classes</p>
+<p><strong> Details </strong>
+Besides defining the dip-settings that are needed in order to get the hardware working,
+we also define the port-numbers we need to setup the GPI correctly</p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-07-31 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware</span> <span class="kn">import</span> <span class="n">tlu_hardware_global</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
+<span class="k">try</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Check and import real RPi.GPIO library</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kn">import</span> <span class="nn">RPi.GPIO</span> <span class="kn">as</span> <span class="nn">GPIO</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">FakeRPi.GPIO</span> <span class="kn">as</span> <span class="nn">GPIO</span>
+
+<span class="kn">import</span> <span class="nn">logging</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Get an instance of a logger</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Class used as a baseclass to perform certain hardware-bound activities
+Please note that the GPIO is working in BCM Mode only as the modes could not be mixed!</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">tlu_hardwarebase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>buttons in bcm notation</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">button_up</span> <span class="o">=</span> <span class="mi">26</span>
+    <span class="n">button_down</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">button_left</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">button_right</span> <span class="o">=</span> <span class="mi">19</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>buzzer</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">buzzer_bcm</span> <span class="o">=</span> <span class="mi">18</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>lcd panel</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">lcd_address</span> <span class="o">=</span> <span class="mh">0x21</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Define LCD column and row size for 16x2 LCD.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">lcd_columns</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">lcd_rows</span>    <span class="o">=</span> <span class="mi">2</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>led 7 segment display</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">led_7seg_address</span> <span class="o">=</span> <span class="mh">0x70</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">caller_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">frame</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span>
+        <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span>
+        <span class="n">code</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">f_code</span>
+        <span class="k">return</span> <span class="n">code</span><span class="o">.</span><span class="n">co_filename</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">prev_caller_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">frame</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span>
+        <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span>
+        <span class="n">code</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">f_code</span>
+        <span class="k">return</span> <span class="n">code</span><span class="o">.</span><span class="n">co_filename</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Initializer, sets mode of GPIO at the first call</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">glob</span><span class="o">=</span><span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">globHardwareMgr</span><span class="o">.</span><span class="n">tlu_hardware_glob</span><span class="p">()</span>
+        <span class="n">number_of_hardware_starts</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">increaseHardwareStarts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">number_of_hardware_starts</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">GPIO</span><span class="o">.</span><span class="n">setmode</span><span class="p">(</span><span class="n">GPIO</span><span class="o">.</span><span class="n">BCM</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;GPIO hardware now initialized, count=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">number_of_hardware_starts</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; called via &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">caller_name</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; called by &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_caller_name</span><span class="p">())</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Resets GPIO if needed</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">try</span><span class="p">:</span>
+            <span class="n">glob</span><span class="o">=</span><span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">globHardwareMgr</span><span class="o">.</span><span class="n">tlu_hardware_glob</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="c1">#in case server already stopped at cleanup-phase</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <pre><code>   lock = Lock()
+   with lock:
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">number_of_hardware_starts</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">decreaseHardwareStarts</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">number_of_hardware_starts</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">GPIO</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>    
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;GPIO hardware now cleaned, count=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">number_of_hardware_starts</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Default for the left DIP-switch: all buttons down (0)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">lefthand_dip_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="mh">0x00</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Default for the right DIP-switch: all buttons down (0)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">righthand_dip_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="mh">0x00</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Show the DIP-setting in a human readable format
+:param diphex: 8-bit code for the DIP-switch, 0=down, 1 = up</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">showdip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diphex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">setting</span><span class="o">=</span><span class="mh">0x80</span>
+        <span class="n">result</span> <span class="o">=</span><span class="s2">&quot;|&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>  <span class="c1"># @UnusedVariable</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">setting</span> <span class="o">&amp;</span> <span class="n">diphex</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;°|&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="s2">&quot;_|&quot;</span>
+            <span class="n">setting</span> <span class="o">=</span> <span class="n">setting</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">result</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Show the setting for the lefthand switch in human readable format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">showleft_dip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">showdip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lefthand_dip_setting</span><span class="p">())</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Show the setting for the righthand switch in human readable format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">showright_dip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">showdip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">righthand_dip_setting</span><span class="p">())</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

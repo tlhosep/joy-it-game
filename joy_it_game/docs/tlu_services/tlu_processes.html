@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_processes.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_processes.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_processes</p>
+<p>This module provides wrapper and services to use processes</p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">processlist</span><span class="o">=</span><span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Return the number of currently started processes</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">numberOfProcesses</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">processlist</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Start a given process
+:param process: process to start</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">startProcess</span><span class="p">(</span><span class="n">process</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">global</span> <span class="n">processlist</span>
+    <span class="n">process</span><span class="o">.</span><span class="n">daemon</span><span class="o">=</span><span class="bp">True</span>
+    <span class="n">process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">processlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Process started: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">process</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Abort the named process
+:param process: process to be aborted
+:param timeout: seconds to wait before going for a hard termination
+:param msg: Log-Message (optional)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">abortProcess</span><span class="p">(</span><span class="n">process</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">global</span> <span class="n">processlist</span>
+    <span class="n">count</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">timeout</span>
+    <span class="n">processlist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">count</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">process</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;the process with id &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">ident</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; could not be gracefully terminated:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Check if the given process is still running
+:param process: Process to examine</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">process</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">process</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Alive-State of &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">ident</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; is:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">process</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

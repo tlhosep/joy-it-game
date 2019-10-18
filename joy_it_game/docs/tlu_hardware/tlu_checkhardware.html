@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_checkhardware.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_checkhardware.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_checkhardware</p>
+<p>This module shall test, if the application runs on supported hardware
+If not: set emulatekey to false</p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="n">emulatekey</span><span class="o">=</span><span class="bp">False</span>
+<span class="k">try</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Check and import real RPi.GPIO library</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kn">import</span> <span class="nn">RPi.GPIO</span> <span class="kn">as</span> <span class="nn">GPIO</span>  <span class="c1"># @UnusedImport</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">emulatekey</span><span class="o">=</span><span class="bp">True</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -17,10 +17,10 @@ logger=logging.getLogger(__name__)
 threadlist=[]
 
 def startThreadClass(threadclass):
-    '''Start a Threading Class-object
+    """Start a Threading Class-object
     
     :param threadclass: The class that should be started
-    '''
+    """
     global threadlist
     threadclass.start()
     threadlist.append(threadclass.name)
@@ -28,10 +28,10 @@ def startThreadClass(threadclass):
     return threadclass
 
 def startThread(thread, **kwargs):
-    '''Start a usual Method as a Thread
+    """Start a usual Method as a Thread
     
     :param thread: The method that should be used for threading
-    '''
+    """
     global threadlist
     task=threading.Thread(target=thread, **kwargs)
     task.start()
@@ -40,13 +40,13 @@ def startThread(thread, **kwargs):
     return task
     
 def abortThread(thread,timeout=10,msg=""):
-    '''Terminate the thread (if given)
+    """Terminate the thread (if given)
     
     abort thread, if timeout reached, terminate
     :param thread: The thread that should be terminated
     :param timeout: seconds to wait before returning
     :param msg: Message for logging purposes in case we had a problem
-    '''
+    """
     if thread == None:
         return # not running ;)
     global threadlist
@@ -68,10 +68,10 @@ def abortThread(thread,timeout=10,msg=""):
     return True
     
 def is_running(self,thread):
-    '''Check if the thread is still alive
+    """Check if the thread is still alive
     
     :param thread: The thread that should be checked
-    '''
+    """
     if (thread != None):
         logging.debug("Alive-State of "+str(thread.name)+" is:"+str(thread.is_alive()))
         if thread.is_alive():

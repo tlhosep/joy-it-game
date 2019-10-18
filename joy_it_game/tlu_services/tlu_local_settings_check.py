@@ -14,13 +14,13 @@ from django.utils.translation import gettext_lazy as _
 from django.core.mail.message import EmailMessage
     
 def checkMailOk(self, subject='Testmail', message='Testmessage', from_email='test@test.de', to_mail='to@test.de') -> bool:
-    '''
+    """
     Check if the configured mail functionality works as desired
     :param subject: subject of test-email
     :param message: message for test-email
     :param from_email: sender
     :param to_mail: receiver
-    '''
+    """
     email = EmailMessage(
         subject,
         message,

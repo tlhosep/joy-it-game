@@ -15,6 +15,7 @@ import time
 from tlu_game.tlu_level00 import Level00
 from tlu_game import tlu_globals
 from tlu_hardware.tlu_checkhardware import emulatekey
+from tlu_hardware import tlu_hardware_global
 
 logfile=settings.BASE_DIR+"/log/game.log"
 
@@ -25,10 +26,10 @@ class TestGame(unittest.TestCase):
     Test most of the  tlu_game methods
     """
     def getGame(self, username="TestXYZ987"):
-        '''
+        """
         Service function to setup an individual user per test, so each test gets unique :)
         :param username: Name of the testcase to setup exactly this user for the test
-        '''
+        """
         logging.debug('getGame called')
         User = get_user_model()
         if not User.objects.filter(username=username).exists():
@@ -62,9 +63,9 @@ class TestGame(unittest.TestCase):
      
 
     def test_create_game(self):
-        '''
+        """
         Test to create the gamestate
-        '''
+        """
         logging.debug('Test test_create_game started')
         game= self.getGame('test_create_game')
         gamestate=getCleanGameState(game.user.id)
@@ -73,10 +74,11 @@ class TestGame(unittest.TestCase):
         self.assertTrue(userOk(game.user.id), "User has to be logged on at the start of this test")
          
     def test_start_game(self):
-        '''
+        """
         Test to startup the game (level 0)
-        '''
+        """
         tlu_globals.init() #in case not called before ;)
+        tlu_hardware_global.init()
         logging.debug('Test test_start_game started')
         game=self.getGame('test_start_game')
         logging.debug("test_start_game: b4 start:  Game="+str(game))
@@ -95,10 +97,11 @@ class TestGame(unittest.TestCase):
         self.assertEqual(levelobject.prevLevel, None, "The previous level has to be empty")
 
     def test_abort(self):
-        '''
+        """
         Test to abort the game during its operation (level 0)
-        '''
+        """
         tlu_globals.init() #in case not called before ;)
+        tlu_hardware_global.init()
         logging.debug('Test test_abort started')
         game=self.getGame('test_abort')
         game.start(Level00,0)
@@ -114,10 +117,11 @@ class TestGame(unittest.TestCase):
         self.assertEqual(levelobject.result, Level.ABORT, "results have to match (aborted)="+str(Level.ABORT))
        
     def test_retry(self):
-        '''
+        """
         Test to simulate a retry-wish of the player
-        '''
+        """
         tlu_globals.init() #in case not called before ;)
+        tlu_hardware_global.init()
         logging.debug('Test test_retry started')
         game=self.getGame('test_retry')
         logging.debug("test_retry: b4 start:  Game="+str(game))
@@ -133,10 +137,11 @@ class TestGame(unittest.TestCase):
         
        
     def test_success(self):
-        '''
+        """
         Test a successful run of level 0
-        '''
+        """
         tlu_globals.init() #in case not called before ;)
+        tlu_hardware_global.init()
         logging.debug('Test test_success started')
         game=self.getGame('test_success')
         logging.debug('game created: '+str(game))
@@ -160,10 +165,11 @@ class TestGame(unittest.TestCase):
         self.assertEqual(levelobject.result, Level.PASSED, "results have to match (passed)="+str(Level.PASSED))
 
     def test_globals(self):
-        ''' Test the global-functionality provided by tlu_globals
+        """ Test the global-functionality provided by tlu_globals
         
-        '''
+        """
         tlu_globals.init() #in case not called before ;)
+        tlu_hardware_global.init()
         glob=tlu_globals.globMgr.tlu_glob()
         self.assertTrue(glob.test(), "The test has to pass...")
         if emulatekey:

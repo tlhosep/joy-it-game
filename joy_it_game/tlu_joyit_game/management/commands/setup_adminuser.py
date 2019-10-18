@@ -14,9 +14,9 @@ from django.contrib.auth import get_user_model
 
 
 class Command(BaseCommand):
-    '''
+    """
     Commandline interface to check and add an admin, if not already existing
-    '''
+    """
     help = "Creates an admin user non-interactively if it doesn't exist"
 
     def add_arguments(self, parser):
@@ -25,9 +25,9 @@ class Command(BaseCommand):
         parser.add_argument('--password', help="Admin's password", required=True)
 
     def handle(self, *args, **options):
-        '''
+        """
         Main loop to process the commandline
-        '''
+        """
         User = get_user_model()
         if not User.objects.filter(username=options['username']).exists():
             User.objects.create_superuser(username=options['username'],

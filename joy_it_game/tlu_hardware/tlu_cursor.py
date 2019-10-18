@@ -27,15 +27,14 @@ logger = logging.getLogger(__name__)
 
 
 class tlu_cursor(tlu_hardwarebase):
-    '''
+    """
     Provide cursorkey functionalities
-    '''
+    """
     def __init__(self):
-        '''
+        """
         Initializer, mainly sets GPIO
-        '''
+        """
         tlu_hardwarebase.__init__(self)
-        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.button_up, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.button_down, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.button_left, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -46,11 +45,11 @@ class tlu_cursor(tlu_hardwarebase):
         return 0x0F
     
     def cursorname(self,cursornum) -> str:
-        '''
+        """
         Helper function to translate the cursorkey number provided
         into readable text
         :param cursornum: number of key pressed
-        '''
+        """
         if cursornum == 100:
             return str(_("up"))
         elif cursornum == 200:
@@ -61,10 +60,10 @@ class tlu_cursor(tlu_hardwarebase):
             return str(_("left"))
         
     def cursor_pressed(self) -> int:
-        '''
+        """
         Check if key has been pressed, if so returns code, if not returns 0
         In case no hardware is found, we will use the keyboard emulation here via remote queue
-        '''
+        """
         if emulatekey:
             q=tlu_globals.kbQueue
             try:
@@ -89,9 +88,3 @@ class tlu_cursor(tlu_hardwarebase):
         if GPIO.input(self.button_left) == 0:
             return 400
         return 0    #no button pressed
-
-    def cleanup(self):
-        '''
-        Basically GPIO cleanup
-        '''
-        GPIO.cleanup()

@@ -25,6 +25,7 @@ import time
 from multiprocessing import Manager
 from tlu_services.tlu_processes import abortProcess, startProcess
 import multiprocessing
+from tlu_hardware import tlu_hardware_global
 
 logfile=settings.BASE_DIR+"/log/game.log"
 logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
@@ -33,10 +34,10 @@ manager = Manager()
 states = manager.dict()
 
 class gameState(object):
-    ''' Class to hold the status of a level played
+    """ Class to hold the status of a level played
     This class is needed to allow to post the current status on the web. The game provides frequent updates to the state.
     These are then taken by the Ajax-call that request updates for the frontend
-    '''
+    """
     msg = ""
     level_progress = 0
     result=None
@@ -44,10 +45,10 @@ class gameState(object):
     level_ended=None
     points=0
     def cleanup(self):
-        ''' Kind of basic initialization
+        """ Kind of basic initialization
         This is needed to have a clenan state when a level would be started as the same state would be used
         for all levels for a particular use        
-        '''
+        """
         self.msg=""
         self.level_progress=0
         self.result=None
@@ -56,16 +57,16 @@ class gameState(object):
         self.points=0
        
     def __init__(self):
-        '''
+        """
         Calls cleanup
-        '''
+        """
         self.cleanup()
     def fromUserId(self,user_id):
-        '''
+        """
         Initializes class-object by a recorded state if available
         Else calls cleanup
         :param user_id: ID to identify the user of the game
-        '''
+        """
         global states
         status_dict=None
         if user_id in states:
@@ -81,11 +82,11 @@ class gameState(object):
         self.level_ended=status_dict['LEVEL_ENDED']
         self.points=status_dict['POINTS']
     def saveUserId(self,user_id):
-        '''
+        """
         Saves the current state of the game in the global states dictionary
         by using the user-id as the key
         :param user_id: Key to identify the user
-        '''
+        """
         global states
         status_dict={}
         status_dict['MSG']=self.msg
@@ -101,34 +102,34 @@ class gameState(object):
         return str(vars(self))
     
 def getGameState(user_id) -> gameState:
-    '''
+    """
     Service to return the gamestate of the user given
     :param user_id: Key to identify the state
-    '''
+    """
     state=gameState()
     state.fromUserId(user_id)
     return state
 def getCleanGameState(user_id) -> gameState:
-    '''
+    """
     Provides and sets a fresh gameState
     :param user_id: Key to identify the state
-    '''
+    """
     state=gameState()
     state.saveUserId(user_id)
     return state
 def setGameState(user_id,gamestate):
-    '''
+    """
     sets the updated state, service function to wrap the gamestate call
     :param user_id: Key to identify the state
     :param gamestate: gamestate that should be saved
-    '''
+    """
     gamestate.saveUserId(user_id)
 
 def userOk(user_id):
-    ''' Check if user is allowed to play
+    """ Check if user is allowed to play
     The user has to be logged in/authenticated in order to play the levels
     :param user_id: The user in question
-    '''
+    """
     try:
         user=User.objects.get(pk=user_id)
     except:
@@ -140,9 +141,9 @@ def userOk(user_id):
     
  
 def getProcess(pid):
-    '''
+    """
     retrieve the process by id
-    '''
+    """
     for p in multiprocessing.active_children():
         if p.pid ==pid:
             logging.debug("Process for pid:"+str(pid)+" is:"+str(p))
@@ -152,73 +153,78 @@ def getProcess(pid):
  
 
 class Game(models.Model):
-    ''' The Game - Main class
+    """ The Game - Main class
     Major class to play the game. Controls the Levels, starts and stops the processes
-    '''
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     current_level = models.ForeignKey('Level', on_delete=models.SET_NULL, null=True,default=None, related_name='active_levels')
     process_pid = models.IntegerField(null=True,default=None)
     
-    '''some constants
+    """some constants
     The dipswitch_settings and frequent_updates are required for each level. This is needed
     to lookup the correct task and to forward the frequency for the updates on the web (in ms)
-    '''
-    dipswitch_settings=(tlu_buttons(),tlu_buttons(),tlu_cursor(),tlu_buttons())
+    """
+    dipswitch_settings=None
     frequent_updates=(2000,1000,500,500)
-      
+    
+    def __init__(self, *args, **kwargs):
+        tlu_hardware_global.init()
+        self.dipswitch_settings=(tlu_buttons(),tlu_buttons(),tlu_cursor(),tlu_buttons())
+        models.Model.__init__(self, *args, **kwargs)
+                    
     def __str__(self):
         ret= "id:"+str(self.id)+"user:"+str(self.user)+" lev:"+str(self.current_level)+" process-id:"+str(self.process_pid)
         return ret
     def setLevel(self,level):
-        '''
+        """
         Sets the level of the game
         :param level: levelobject to be set
-        '''
+        """
         self.current_level=level
     def getLevel(self):
-        '''
+        """
         Returns the current level-object
-        '''
+        """
         return self.current_level
     def endReached(self):
-        '''
+        """
         Check if the end of the game is reached now.
         Returns True if so.
-        '''
+        """
         if self.current_level != None:
             return self.current_level.levelnum >= (len(self.frequent_updates)-1)
         return False
     def completed(self,level_num): 
-        '''
+        """
         Check if the given level-number indicates the end of the game
         :param level_num: number to check for end of game
-        '''
+        """
         return level_num>(len(self.frequent_updates)-1)
     def getFrequentUpdatesMs(self,level_num):
-        '''
+        """
         Returns the number of miliseconds that we wait until the next Ajax-Call has to be made.
         There is one number defined for each level, as each level is different
         :param level_num: number of level that has to be examined
-        '''
+        """
         return self.frequent_updates[level_num]
     def getDipSwitch(self,level_num):
-        '''
+        """
         Return the hex-code for the 2 dip-switches. Their setting depend on the hardware that would be used for the level.
         :param level_num: number of level to request the setting
-        '''
+        """
         return self.dipswitch_settings[level_num]
     def getOverallProgress(self):
-        '''
+        """
         Calculate the overall progress in percent of the game based on the current level and current progress
-        '''
+        """
         state=getGameState(self.user.id)
         if self.current_level == None:
             return 0
         return int((100/(len(self.frequent_updates)-1))*(self.current_level.levelnum-1))+int(state.level_progress/100*(100/(len(self.frequent_updates)-1)))
     def getAchievedPoints(self):
-        '''
+        """
         Calculate the total number of achieved points by iterating through all successfully passed levels so far
-        '''
+        """
         achievedPoints=0
         level = self.current_level
         while level != None:
@@ -227,17 +233,17 @@ class Game(models.Model):
             level = level.prevLevel
         return achievedPoints
     def getState(self):
-        '''
+        """
         Service wrapper to return the game-state
-        '''
+        """
         state=getGameState(self.user.id)
         return state
     def _abortTask(self,msg,timeout=3):
-        ''' Internal method to abort the level played
+        """ Internal method to abort the level played
         
         :param msg: msg for logging purposes while aborting the process
         :param timeout: time in seconds to wait for a process to abort
-        '''
+        """
         #simply aborts a task
         process=None
         if self.process_pid != None:
@@ -247,10 +253,10 @@ class Game(models.Model):
             abortProcess(process,timeout,msg)
             self.process_pid=None    
     def startFromScratch(self,task):
-        '''
+        """
         Restart the game from scratch at the task provided
         :param task: Level that should be used to start the game
-        '''
+        """
         process=None
         if self.process_pid != None:
             process=getProcess(self.process_pid)
@@ -262,18 +268,18 @@ class Game(models.Model):
         return self.start(task)
      
     def restart(self):
-        '''
+        """
         Force restart of the game by setting the current level to none
-        '''
+        """
         self.current_level=None
         self.save()
         
     def start(self,task,level_num):
-        ''' Start the game-level
+        """ Start the game-level
         
         :param task: the level-process to be played
         :param level_num: the number of the level to be played
-        '''
+        """
         process=None
         if self.process_pid != None:
             process=getProcess(self.process_pid)
@@ -294,11 +300,11 @@ class Game(models.Model):
         self.save()
         return proc
     def _end(self,msg, status):
-        ''' Internal used method to end the current game-level
+        """ Internal used method to end the current game-level
         
         :param msg: debugging message for aborting the game
         :param status: status for the termination, any of the states provided by the Level-class
-        '''
+        """
         self._abortTask(msg)
         gamestate=getGameState(self.user.id)
         if (status==Level.ABORT) and (gamestate.result == Level.NOT_STARTED):
@@ -313,14 +319,14 @@ class Game(models.Model):
         self.current_level.setFromGameState(gamestate)
         self.current_level.save()
     def abort(self):
-        ''' short for _end with Level.ABORT
+        """ short for _end with Level.ABORT
         
-        '''
+        """
         self._end("while aborting", Level.ABORT)
     def retry(self):
-        '''
+        """
         Sets result of previous level to retry
-        '''
+        """
         process=None
         if self.process_pid != None:
             process=getProcess(self.process_pid)
@@ -331,11 +337,11 @@ class Game(models.Model):
             self.current_level.result=Level.RETRY
             self.current_level.save()
     def result(self,timeout=60):
-        ''' Wait for the level to end
+        """ Wait for the level to end
         Wait until task produces a result or timeout(in seconds) runs out
         Retrieves the result of a level
         :param timeout: Seconds to wait b4 terminating the process, default 60 seconds
-        '''
+        """
         logging.info("requesting result of level")
         state=getGameState(self.user.id)
         process=None
@@ -367,8 +373,8 @@ class Game(models.Model):
             self.save()
         return state.result
     def is_running(self):
-        ''' Check if Game is running
-        '''
+        """ Check if Game is running
+        """
         process=None
         if self.process_pid != None:
             process=getProcess(self.process_pid)
@@ -388,7 +394,7 @@ def save_game(sender, instance, **kwargs):
     instance.game.save()
     
 class Level(models.Model):
-    ''' The Level played for the game
+    """ The Level played for the game
     Defines some constants for the status of the game-level:
     *NOT_STARTED=0
     *PASSED=1
@@ -399,7 +405,7 @@ class Level(models.Model):
  
     This is also the database representation of the current level.
     Forms a daisy-chain by referencing to the previous level, if available
-    '''
+    """
     NOT_STARTED=0
     PASSED=1
     RETRY=2
@@ -448,22 +454,22 @@ class Level(models.Model):
         self.game=game
 
     def setFromGameState(self,gameState):
-        ''' Load Level-status from state-object
+        """ Load Level-status from state-object
         As the state object only exists in memory this
         methos persists the state as part of the level-object in the database
         
         :param gameState: state that has to be persisted
-        '''
+        """
         self.level_start=gameState.level_start
         self.level_ended=gameState.level_ended
         self.points=gameState.points
         self.result=gameState.result
         
     def strFromResult(self,result):
-        '''
+        """
         Returns the string representation of the given result
         :param result: Number-Code of result of level
-        '''
+        """
         if result==None:
             return "NONE"
         if result < len(self.resultdict):

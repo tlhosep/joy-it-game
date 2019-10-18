@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tests.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tests.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tests</p>
+<p><strong> Content </strong>
+Test the settimgs functionality</p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-07-22 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">tlu_services</span> <span class="kn">import</span> <span class="n">tlu_local_settings</span>
+<span class="kn">import</span> <span class="nn">copy</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Test</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Test the settings-defauls without writing to file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">testRead_noFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">ls</span> <span class="o">=</span> <span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">():</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">localsettings</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">)</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1025</span><span class="p">,</span> <span class="s2">&quot;Default port does not match&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;Default host does not match&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="s2">&quot;Default bool TLS does not match&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Test creating and removing a settings-file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">testRead_FileCycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">ls</span> <span class="o">=</span> <span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">():</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">localsettings</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">)</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1111</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1111</span><span class="p">,</span> <span class="s2">&quot;Default port does not match&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;Default host does not match&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="s2">&quot;Default bool TLS does not match&quot;</span><span class="p">)</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Test removing the settings-file</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">testRemove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">ls</span> <span class="o">=</span> <span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="p">()</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">localsettings</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">)</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span>
+        
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>import sys;sys.argv = [&lsquo;&rsquo;, &lsquo;Test.testRead_noFile&rsquo;]</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

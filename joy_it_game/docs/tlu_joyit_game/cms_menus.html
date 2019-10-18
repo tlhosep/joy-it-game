@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>cms_menus.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>cms_menus.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: cms_menus
+<strong> Content </strong>
+This module provides the menu for the web-interface</p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-07-28</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">menus.base</span> <span class="kn">import</span> <span class="n">Menu</span><span class="p">,</span> <span class="n">NavigationNode</span>
+<span class="kn">from</span> <span class="nn">menus.menu_pool</span> <span class="kn">import</span> <span class="n">menu_pool</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">ugettext_lazy</span> <span class="k">as</span> <span class="n">_</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Class for the menu-handling</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">tlu_Menu</span><span class="p">(</span><span class="n">Menu</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>produce the node-infrastructure for the menu.
+Will be rendered in the view 
+:param request: The http-request, needed to check for login and user name</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;About me&#39;</span><span class="p">),</span> <span class="s2">&quot;https://tlc-it-consulting.com/index.php/de/ueber-mich&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Home&#39;</span><span class="p">),</span> <span class="s2">&quot;/tlu_joyit_game/&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">n3</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n3</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Settings&quot;</span><span class="p">),</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            
+        <span class="n">n4</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;email settings&#39;</span><span class="p">),</span> <span class="s2">&quot;/tlu_joyit_game/emailsettings&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">n5</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;change password&#39;</span><span class="p">),</span> <span class="s2">&quot;/accounts/password_change/&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">n6</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="s2">&quot;#DIVIDER#&quot;</span><span class="p">,</span><span class="s2">&quot;/&quot;</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">n6_1</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">),</span> <span class="s2">&quot;/accounts/login/&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">n6_2</span> <span class="o">=</span> <span class="n">NavigationNode</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;logout&#39;</span><span class="p">),</span> <span class="s2">&quot;/accounts/logout/&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n2</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n3</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n4</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n5</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n6</span><span class="p">)</span>
+        <span class="n">loggedIn</span><span class="o">=</span><span class="bp">False</span>
+        <span class="k">if</span> <span class="n">request</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">loggedIn</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span>
+
+        <span class="k">if</span> <span class="n">loggedIn</span><span class="p">:</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n6_2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n6_1</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">nodes</span>
+
+<span class="n">menu_pool</span><span class="o">.</span><span class="n">register_menu</span><span class="p">(</span><span class="n">tlu_Menu</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

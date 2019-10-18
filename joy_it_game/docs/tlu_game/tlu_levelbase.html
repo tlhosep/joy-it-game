@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_levelbase.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_levelbase.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_levelbase
+<strong> Content </strong>
+This module provides the base-functionalities of all levels.</p>
+<p><strong> Details </strong>
+It encapsulates most of the re-occuring checks to keep the level-implementations as small 
+as possible thus preventing them from copy/paste bugs.</p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-09-26 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Event</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
+
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_processes</span> <span class="kn">import</span> <span class="n">abortProcess</span><span class="p">,</span> <span class="n">startProcess</span><span class="p">,</span> <span class="n">processlist</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_threads</span> <span class="kn">import</span> <span class="n">abortThread</span><span class="p">,</span> <span class="n">startThread</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tasks</span> <span class="kn">import</span> <span class="n">Countdown</span>
+<span class="kn">from</span> <span class="nn">tlu_joyit_game</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Level</span><span class="p">,</span> <span class="n">userOk</span><span class="p">,</span> <span class="n">getGameState</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">tlu_services</span> <span class="kn">import</span> <span class="n">tlu_queue</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
+
+<span class="n">logger</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Baseclass for all levels of the game</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">LevelBase</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>Holds commonly needed functionalities and provides base methods that could be overwritten as needed
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Check if a thread should be aborted.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">checkAbort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thread</span><span class="p">,</span><span class="n">user_id</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <pre><code>    Each thread has now added an attribute "is_aborted", if set
+    the thread should terminate itself
+
+    :param thread: The thread in question
+    :param user_id: user that is currently active, needed for the gamestated
+    :param msg: Message that will be shown on the web once the task has been aborted
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span> <span class="s2">&quot;is_aborted&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getGameState</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">ABORT</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Queue object for the game to work on several messages</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">class</span> <span class="nc">GameQueue</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">tlu_queue</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>The Queue forms the processes of the game and serves as a kind of state machine
+   Has to be overwritten by the implementation of the level</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">set_abortmsg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">user_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Internal service function
+:param user_id: The user in question</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getGameState</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Game aborted :(&quot;</span><span class="p">)</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">ABORT</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Try to fetch an message from the queue (non-blocking!) and check if the process shall be terminated.
+Returns an list of the message (or None) and an indicator/bool to indicate if the processing shall be stopped
+:param stop_event: the event from the main-level that would be &ldquo;set&rdquo; here in case the level ended or terminated
+:param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+:param thread: The thread where the queue is looping in</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">getQueueObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stop_event</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">thread</span><span class="p">)</span><span class="o">-&gt;</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">try</span><span class="p">:</span>
+                <span class="n">queueobject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Gamequeue level x aborted while waiting for msg&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_abortmsg</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span><span class="s1">&#39;is_aborted&#39;</span><span class="p">,</span><span class="bp">False</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Queue-Thread shall be aborted/stopped&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_abortmsg</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                    <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">gameProcess</span><span class="o">.</span><span class="n">exit</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Game-Process shall be terminated&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_abortmsg</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                    <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Checks the current thread, queue and message object for an indication that we shall abort.
+Returns True in case we have to abort
+:param stop_event: the event from the main-level that would be &ldquo;set&rdquo; here in case the level ended or terminated
+:param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+:param thread: The thread where the queue is looping in
+:param queueobject: the message-object that we should check here</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">checkAbort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stop_event</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">thread</span><span class="p">,</span><span class="n">queueobject</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Gamequeue aborted&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_abortmsg</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span><span class="s1">&#39;is_aborted&#39;</span><span class="p">,</span><span class="bp">False</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Queue-Thread shall be aborted/stopped&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_abortmsg</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">elif</span> <span class="n">gameProcess</span><span class="o">.</span><span class="n">exit</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Game-Process shall be terminated&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_abortmsg</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">elif</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_STOP</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Gamequeue stopped via msg&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_abortmsg</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">elif</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_TIMEOUT</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Timeout raised in queue&#39;</span><span class="p">)</span>
+                <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Timeout reached :(&quot;</span><span class="p">)</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">TIMEOUT</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
+                <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+                <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="bp">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Main game-loop
+Use this code as a <em>template</em> for your implementation only
+:param stop_event: the event from the main-level that would be &ldquo;set&rdquo; here in case the level ended or terminated
+:param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+:param hardware: list of started threads</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">hardware</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">thread</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">breakIndicator</span><span class="p">)</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getQueueObject</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">breakIndicator</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">queueobject</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span> <span class="c1">#release object from queue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAbort</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">thread</span><span class="p">,</span><span class="n">queueobject</span><span class="p">):</span>
+                    <span class="k">break</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Constructor of the base-class</p>
+<p>:param user_id: ID of the user, needed for various parameter</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">Process</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="o">=</span><span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>terminates all tasks that have been started so far, assumes that we have a single player game here ;)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">clearprocesses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">active_children</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">processlist</span><span class="p">:</span>
+                <span class="n">abortProcess</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>stops all potentially running hardware activities and terminates all remaining tasks</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suspendall</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <pre><code>    sets hardware to a startup state
+
+    :param suspendall: if True, all tasks started by the app will be aborted
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
+        <span class="n">glob</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">suspendall</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clearprocesses</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Starts the hardware by performing a cleanup and showing the clock</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <pre><code>    Used from outside within the view at initialization
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
+        <span class="n">glob</span><span class="o">.</span><span class="n">startClock</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Method to be overwritten by implementation.
+Would be called before starting the processing of the message queue
+Use this as a <em>template</em> only!
+return list of started processes (needed to terminate them at the end)
+:param status: status object of the level
+:param queue: Message queu for game-messages</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">prepareGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">status</span><span class="p">,</span><span class="n">queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">timer</span><span class="o">=</span><span class="n">Countdown</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level00 starts..&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_start</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="n">startProcess</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">timer</span><span class="p">,)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Method to be overwritten by implementation.
+Would be called after ending the processing of the message queue
+Use this as a <em>template</em> only!</p>
+<p>:param status: status of the current level
+:param hardware: started processes to run the level, needed to terminate them</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">finishGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">status</span><span class="p">,</span><span class="n">hardware</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="p">(</span><span class="n">timer</span><span class="p">,)</span><span class="o">=</span><span class="n">hardware</span>
+        <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">!=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">:</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level x failed&quot;</span><span class="p">))</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level x passed&quot;</span><span class="p">))</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">points</span><span class="o">=</span><span class="mi">5</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_ended</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="n">abortProcess</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Level x State= &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Level x ended&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>The main process for this level
+Please overwrite the following methods and not this one:
+* prepareGame and 
+* finishGame besides 
+* GameQueue.run as 
+these 3 provide the necessary game-functionalities and not this &ldquo;run&rdquo; method</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;level started&#39;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getCleanGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level is running&quot;</span><span class="p">))</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">userOk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">):</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You have to login in order to play this level...&quot;</span><span class="p">)</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">queue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">GameQueue</span><span class="p">()</span>
+        <span class="n">stop_event</span><span class="o">=</span><span class="n">Event</span><span class="p">()</span>
+        <span class="n">hardware</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prepareGame</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
+        <span class="n">qThread</span><span class="o">=</span><span class="n">startThread</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span><span class="bp">self</span><span class="p">,</span><span class="n">hardware</span><span class="p">,),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;queue_for_level&quot;</span><span class="p">)</span> <span class="c1">#needed to loop through the messages</span>
+        
+        <span class="n">stop_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1">#wait until queues stops processing or level gets terminated</span>
+        <span class="n">stop_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">getGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finishGame</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">hardware</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">getGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Level State= &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Level ended&#39;</span><span class="p">)</span>
+
+        <span class="n">queue</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">abortThread</span><span class="p">(</span><span class="n">qThread</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;aborting message-Queue&quot;</span><span class="p">)</span>
+        <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
+        <span class="n">glob</span><span class="o">.</span><span class="n">startClock</span><span class="p">()</span> <span class="c1">#restart clock in case it had been stopped</span>
+        <span class="k">return</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>Terminate the game-process in case this was requested</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Level termination requested&#39;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># wait a bit to close the queue and the level safely</span>
+        <span class="k">return</span> <span class="n">Process</span><span class="o">.</span><span class="n">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1">#this line adds extra safety, if the soft termination inside the run function did not work within 2 seconds ;)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

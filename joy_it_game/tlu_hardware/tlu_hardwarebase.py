@@ -9,12 +9,27 @@ we also define the port-numbers we need to setup the GPI correctly
 @author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
 @created: 2019-07-31 
 """ 
+import inspect
+from tlu_hardware import tlu_hardware_global
+from threading import Lock
+try: 
+# Check and import real RPi.GPIO library
+    import RPi.GPIO as GPIO
+
+except ImportError:
+    import FakeRPi.GPIO as GPIO
+
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 
 class tlu_hardwarebase(object):
-    '''
+    """
     Class used as a baseclass to perform certain hardware-bound activities
     Please note that the GPIO is working in BCM Mode only as the modes could not be mixed!
-    '''
+    """
     #buttons in bcm notation
     button_up = 26
     button_down = 13
@@ -33,30 +48,60 @@ class tlu_hardwarebase(object):
     
     #led 7 segment display
     led_7seg_address = 0x70
+    
+    def caller_name(self):
+        frame=inspect.currentframe()
+        frame=frame.f_back.f_back
+        code=frame.f_code
+        return code.co_filename
+    def prev_caller_name(self):
+        frame=inspect.currentframe()
+        frame=frame.f_back.f_back.f_back
+        code=frame.f_code
+        return code.co_filename
 
     def __init__(self):
-        '''
-        Initializer, but nothing to do here
-        '''
-        pass
-
+        """
+        Initializer, sets mode of GPIO at the first call
+        """
+        glob=tlu_hardware_global.globHardwareMgr.tlu_hardware_glob()
+        number_of_hardware_starts = glob.increaseHardwareStarts()
+        if number_of_hardware_starts == 1:
+            GPIO.setmode(GPIO.BCM)
+            logging.debug("GPIO hardware now initialized, count="+str(number_of_hardware_starts)+" called via "+self.caller_name()+" called by "+self.prev_caller_name())
+    
+    def __del__(self):
+        """
+        Resets GPIO if needed
+        """
+        try:
+            glob=tlu_hardware_global.globHardwareMgr.tlu_hardware_glob()
+        except:
+            return #in case server already stopped at cleanup-phase
+#        lock = Lock()
+#        with lock:
+        number_of_hardware_starts = glob.decreaseHardwareStarts()
+        if number_of_hardware_starts == 0:
+            GPIO.cleanup()    
+            logging.debug("GPIO hardware now cleaned, count="+str(number_of_hardware_starts))
+        
     def lefthand_dip_setting(self) -> int:
-        '''
+        """
         Default for the left DIP-switch: all buttons down (0)
-        '''
+        """
         return 0x00
 
     def righthand_dip_setting(self) -> int:
-        '''
+        """
         Default for the right DIP-switch: all buttons down (0)
-        '''
+        """
         return 0x00
 
     def showdip(self, diphex) -> str:
-        '''
+        """
         Show the DIP-setting in a human readable format
         :param diphex: 8-bit code for the DIP-switch, 0=down, 1 = up
-        '''
+        """
         setting=0x80
         result ="|"
         for i in range(8):  # @UnusedVariable
@@ -68,14 +113,14 @@ class tlu_hardwarebase(object):
         return result
     
     def showleft_dip(self) -> str:
-        '''
+        """
         Show the setting for the lefthand switch in human readable format
-        '''
+        """
         return self.showdip(self.lefthand_dip_setting())
     
     def showright_dip(self) -> str:
-        '''
+        """
         Show the setting for the righthand switch in human readable format
-        '''
+        """
         return self.showdip(self.righthand_dip_setting())
     

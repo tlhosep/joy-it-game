@@ -27,18 +27,18 @@ logger=logging.getLogger(__name__)
 
 
 class Level00(LevelBase):
-    ''' Testlevel for unittest only...
+    """ Testlevel for unittest only...
     Not an official task, used only to test all surrounding functionalities as this task does not require
     end-user interaction
-    '''
+    """
     class GameQueue(LevelBase.GameQueue):
         def run(self, stop_event, gameProcess, hardware):
-            ''' Main loop for Testing the game
+            """ Main loop for Testing the game
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
-            '''
+            """
 
             thread=threading.currentThread()
             (timer,)=hardware  # @UnusedVariable
@@ -54,12 +54,12 @@ class Level00(LevelBase):
                     break
     
     def prepareGame(self, status, queue) -> ():
-        '''Prepare Test
+        """Prepare Test
         Do hardware-preparations
         :param status: current state of the game, used for web-frontend
         :param queue: Message-Q for hardware.messages to be launched
         return list of hardware-processes started here
-        '''
+        """
         timer=Countdown(queue,0.5)
         status.msg=_("Level00 starts..")
         status.level_start=timezone.now()
@@ -67,11 +67,11 @@ class Level00(LevelBase):
         startProcess(timer)
         return (timer,)
     def finishGame(self, status, hardware):
-        '''End game-level-test
+        """End game-level-test
         Close down hardware-activities started
         :param status: current state of the game, used for web-frontend
         :param hardware: List of hardware-processes that should be terminated here
-        '''
+        """
         (timer,)=hardware
         if status.result != None and status.result==Level.TIMEOUT:
             #for testing purposes timeout is the desired outcome

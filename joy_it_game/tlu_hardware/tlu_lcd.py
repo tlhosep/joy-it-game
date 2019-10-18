@@ -54,22 +54,22 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
         
 class lcd_panel(tlu_hardwarebase):
-    '''
+    """
     Class to control the LCD panel (2 lines with 16 chars)
-    '''
+    """
     lcd=None
     def __init__(self):
-        '''
+        """
         Initializes the module
-        '''
+        """
         tlu_hardwarebase.__init__(self)
         self.lcd = LCD.Adafruit_CharLCDBackpack(address=self.lcd_address)
 
     def backlight(self,on):
-        '''
+        """
         Turns backlight of the display on or off
         :param on: True=on
-        '''
+        """
         if on:
             self.lcd.set_backlight(0)
         else:
@@ -77,17 +77,17 @@ class lcd_panel(tlu_hardwarebase):
         logger.info("backlight turned on: "+str(on))
         
     def clear(self):
-        '''
+        """
         Clears the display (display nothing)
-        '''
+        """
         self.lcd.clear()
         self.backlight(False)
             
     def message(self, msg):
-        '''
+        """
         Show provided message (up to 32 chars)
         :param msg: Ascii-message to show, max 32 chars
-        '''
+        """
         if len(msg)<1:
             self.lcd.clear()
         else:
@@ -96,14 +96,14 @@ class lcd_panel(tlu_hardwarebase):
         logger.info("message set to: "+msg)
     
     def messagebyline(self,**kwargs):
-        '''
+        """
         As we may want to add formatting we could use this method.
         Parameters could be:
         *line1: The upper line
         *line2: the lower one
         *line1_format: left, center or rigth (to adjust the message)
         *line2_format: left, center or rigth (to adjust the message)
-        '''
+        """
         line1=""
         line2=""
         line1_format="left"
@@ -145,32 +145,32 @@ class lcd_panel(tlu_hardwarebase):
         self.message(line1+'\n'+line2)
             
     def show_cursor(self,on,blink):
-        '''
+        """
         Show a cursor to provide a sign that input may be required
         :param on: Turn the cursor on
         :param blink: Let the cursor blink
-        '''
+        """
         self.lcd.show_cursor(on)
         self.lcd.blink(blink)
         logger.info("cursor set to: "+str(on)+" Blink:"+str(blink))
             
     def move_msg(self,msg,left):
-        '''
+        """
         Move the message in a certain direction.
         This is useful for longer messages
         The method starts a thread for the move
         :param msg: Message to display
         :param left: move to left if true, else to the right
-        '''
+        """
         self.message(msg)
         
         @tlu_hardware.tlu_threadDecorator.start_new_thread
         def lcdmove(self,msg,left):
-            '''
+            """
             Thread to perform the movement. each move is displayed for 0.5 seconds
             :param msg: Messsage to shift
             :param left: Move to left, else right
-            '''
+            """
             # Demo scrolling message right/left.
             for i in range(self.lcd_columns-len(msg)):  # @UnusedVariable
                 time.sleep(0.5)

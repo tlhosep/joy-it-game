@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>urls.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>urls.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: urls
+<strong> Content </strong>
+This module holds all the used URLs of the game </p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-07-09 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">tlu_services</span> <span class="kn">import</span> <span class="n">tlu_local_settings</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">views</span>
+<span class="kn">from</span> <span class="nn">django.urls.conf</span> <span class="kn">import</span> <span class="n">re_path</span>
+
+<span class="n">app_name</span> <span class="o">=</span> <span class="s1">&#39;tlu_joyit_game&#39;</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>index is the same as the default view (blank)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>following is the setting and checksettings section (forms)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;settings&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;settingscheck&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">settings_check</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;settingscheck&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;emailsettings&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">SettingsView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;emailsettings&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;emailsettingscheck&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">SettingsCheckView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;emailsettingscheck&#39;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>demo-page (static, no login needed)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">DemoView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>some levels / the game</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;restart&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">restart</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;restart&#39;</span><span class="p">),</span> <span class="c1">#start from the beginning</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;levelOverview&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">LevelOverview</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;levelOverview&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;level/&lt;int:level_id&gt;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">LevelView</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;level&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;start/&lt;int:level_id&gt;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">startlevel</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;abort/&lt;int:level_id&gt;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">abortlevel</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;abort&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;retry/&lt;int:level_id&gt;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">retrylevel</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;retry&#39;</span><span class="p">),</span>
+    <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^ajax/level_update/$&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">level_update</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;level_update&#39;</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;deletelevel/&lt;int:level_id&gt;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">deletelevel</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;deletelevel&#39;</span><span class="p">),</span>
+<span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>below logic is needed to show up a config page at first startup to set some mail-settings for the user-handling</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">settings</span><span class="o">=</span><span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="o">.</span><span class="n">presence</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+    <span class="n">startuppath</span><span class="o">=</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;index_main&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>    
+    <span class="n">startuppath</span><span class="o">=</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">SettingsView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;setup&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>add the respective correct path to the list of urls  </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">urlpatterns</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">startuppath</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -11,7 +11,8 @@ We have a Countdown, Buzzer, Key, Cursor aso Object here...
 """ 
 from __future__ import absolute_import
 
-from tlu_hardware import tlu_led,tlu_buttons,tlu_buzzer,tlu_matrix, tlu_cursor
+from tlu_hardware import tlu_led,tlu_buttons,tlu_buzzer,tlu_matrix, tlu_cursor,\
+    tlu_hardware_global
 import time
 import logging
 from tlu_services.tlu_queue import tlu_queueobject, tlu_queue
@@ -24,16 +25,16 @@ logger = logging.getLogger(__name__)
 
             
 class Countdown(Thread):
-    '''
+    """
     Provides a countdown display (hundreds seconds) on 7-segment
     Once timer is run to zero a timeout message would be send to the provided queue
-    '''
+    """
     def __init__(self, queue, seconds):
-        '''
+        """
         Defines the queue where the timeout message would be send to and the amount of seconds the level should last
         :param queue: Message-Queue for Timeout message
         :param seconds: Seconds to wait until timeout, max 99 seconds allowed
-        '''
+        """
         Thread.__init__(self)
         self.is_aborted=False
         self.has_to_restart=False
@@ -45,8 +46,10 @@ class Countdown(Thread):
         self.queue=queue
         self.sevenseg=tlu_led.seven_segment()
         tlu_globals.init()
+        tlu_hardware_global.init()
         glob=tlu_globals.globMgr.tlu_glob()
         glob.stopClock() #terminate Clock in case it is showing
+    
 
     def run(self, *args, **kwargs):
         logger.info("Countdown started with hundreds="+str(self.hundreds))
@@ -72,7 +75,6 @@ class Countdown(Thread):
         return Thread.run(self, *args, **kwargs)
     def terminate(self, *args, **kwargs):
         self.is_aborted=True
-        self.sevenseg.clear()
         logger.info('Countdown termination requested')
     def restart(self):
         self.has_to_restart=True
@@ -85,16 +87,16 @@ class Countdown(Thread):
         self.has_to_restart=True
  
 class CheckKey(Thread):
-    '''
+    """
     Check for any key pressed on the board. Once a key is pressed or released a message will be 
     created and send to the provided queue
-    '''
+    """
     def __init__(self, queue, limit=None):
-        '''
+        """
         Initializes the Thread.
         :param queue: Queue to receive the key-messages or a tiemout , if set
         :param limit: Default none, else seconds to wait for a key before a timeout is sent to the queue
-        '''
+        """
         Thread.__init__(self)
         self.is_aborted=False
         self.buttons=tlu_buttons.tlu_buttons()
@@ -113,13 +115,12 @@ class CheckKey(Thread):
             if (self.count != None):
                 self.count -= 1
                 if self.count < 1:
-                    self.buttons.cleanup()
+                    self._end()
                     queueobject=tlu_queueobject(tlu_queue.MSG_TIMEOUT)
                     self.queue.send(queueobject)
                     logger.info("Buttons no longer checked due to timeout")
                     return
             if getattr(self, "is_aborted", False):
-                self.buttons.cleanup()
                 queueobject=tlu_queueobject(tlu_queue.MSG_STOP)
                 self.queue.send(queueobject)
                 logger.info("Buttons no longer checked due to abort")
@@ -145,18 +146,17 @@ class CheckKey(Thread):
         return Thread.run(self, *args, **kwargs)    
     def terminate(self, *args, **kwargs):
         self.is_aborted=True
-        self.buttons.cleanup()
         logger.info('CheckKey termination requested')
 
 class Buzzer(Thread):
-    '''
+    """
     Make the buzzer sound
-    '''
+    """
     def __init__(self,duration_seconds): 
-        '''
+        """
         Initialization
         :param duration_seconds: Duration of sound in seconds
-        '''
+        """
         Thread.__init__(self)
         self.is_aborted=False
         self.tenth=10*duration_seconds
@@ -176,15 +176,15 @@ class Buzzer(Thread):
         logger.info('animated buzzer termination requested')
 
 class AnimatedBuzzer(Thread):
-    '''
+    """
     Buzzer with symbols shown on the matrix.
     You see a note while the buzzer sounds, followed by a space once done
-    '''
+    """
     def __init__(self, duration_seconds):
-        '''
+        """
         Initialization
         :param duration_seconds: Duration of the sound in seconds
-        '''
+        """
         Thread.__init__(self)
         self.is_aborted=False
         logger.info('animated buzzer started with duration='+str(duration_seconds))
@@ -193,6 +193,7 @@ class AnimatedBuzzer(Thread):
         self.matrix.show_symbol('sound')
         self.buz=tlu_buzzer.tlu_buz()
         self.tenth=duration_seconds*10
+        
     def run(self):
         logger.info('animated buzzer started with duration='+str(self.tenth))
         self.buz.sound(True)
@@ -214,15 +215,15 @@ class AnimatedBuzzer(Thread):
         logger.info('animated buzzer termination requested')
  
 class CheckCursor(Thread):
-    '''
+    """
     Checks for cursor-key input
-    '''
+    """
     def __init__(self, queue, limit=None):
-        '''
+        """
         Initializes the Thread.
         :param queue: Queue to receive the cursorkey-messages or a tiemout , if set
         :param limit: Default none, else seconds to wait for a cursorkey before a timeout is sent to the queue
-        '''
+        """
         Thread.__init__(self)
         self.is_aborted=False
         self.cursorkeys=tlu_cursor.tlu_cursor()
@@ -245,7 +246,6 @@ class CheckCursor(Thread):
                     return
             time.sleep(0.1)
             if getattr(self, "is_aborted", False):
-                self.cursorkeys.cleanup()
                 logger.info("Cursor-Keys no longer checked")
                 queueobject=tlu_queueobject(tlu_queue.MSG_STOP)
                 self.queue.send(queueobject)
@@ -268,5 +268,4 @@ class CheckCursor(Thread):
         return Thread.run(self, *args, **kwargs)
     def terminate(self, *args, **kwargs):
         self.is_aborted=True
-        self.cursorkeys.cleanup()
         logger.info('CheckCursor termination requested')

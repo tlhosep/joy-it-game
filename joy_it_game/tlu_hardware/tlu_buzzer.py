@@ -23,18 +23,17 @@ class tlu_buz(tlu_hardwarebase):
     """
     noise=False
     def __init__(self):
-        GPIO.setmode(GPIO.BCM)
+        tlu_hardwarebase.__init__(self)
         GPIO.setup(self.buzzer_bcm, GPIO.OUT)
-       
+        
     def sound(self, on):
-        '''
+        """
         Turns sound on or off
         :param on: True: Make noise, else silence
-        '''
+        """
         if on:
             GPIO.output(self.buzzer_bcm, GPIO.HIGH)
             self.noise=True
         else:
             GPIO.output(self.buzzer_bcm, GPIO.LOW)
-            GPIO.cleanup()
             self.noise=False

@@ -29,8 +29,8 @@ def log_info(info=""):
     logging.debug(s)
 
 class tlu_queueobject(object):
-    ''' Class to hold the message-id and some associated infos, like messages or numbers
-    '''
+    """ Class to hold the message-id and some associated infos, like messages or numbers
+    """
     msg_num=0
     msg_info=None
     def __init__(self,msg_num=0,msg_info=None):
@@ -43,8 +43,8 @@ class tlu_queueobject(object):
         return ret
 
 class tlu_queue(object):
-    ''' This class provides the queue functionalities
-    '''
+    """ This class provides the queue functionalities
+    """
     queue=None
     MSG_NONE=0
     MSG_STOP=1
@@ -55,50 +55,50 @@ class tlu_queue(object):
     msgTranslate={0:'NONE',1:'STOP',2:'KEYPRESSED',3:'KEYRELEASED',4:'TIMEOUT',5:'TEST'}
     
     def __init__(self):
-        '''
+        """
         sets up queue
-        '''
+        """
 #        m=Manager()
         self.queue = JoinableQueue()
     def __str__(self, *args, **kwargs):
         return "tlu_queue: "+str(self.queue)
     
     def msgName(self,msg_num) -> str:
-        '''
+        """
         Service to translate the message-id into an human readable text
         :param msg_num: message-id
-        '''
+        """
         return self.msgTranslate[msg_num]
         
     def send(self,queueobject):
-        '''
+        """
         Wrapper for putting an object into the queue
         :param queueobject: this object shall be placed in the queue
-        '''
+        """
         self.queue.put(queueobject)
         log_info("send: {queueobject}".format(queueobject=str(queueobject)))
         
     def get(self, block=True, timeout=None):
-        '''
+        """
         Retrieve an queueobject from the queue
         :param block: True if this shall block until message becomes available
         :param timeout: seconds to wait until terminating attempt
-        '''
+        """
         return self.queue.get(block,timeout)
     
     def close(self):
-        '''
+        """
         Close the queue by sending an STOP-object to teh queue
-        '''
+        """
         log_info()
         queueobject=tlu_queueobject(self.MSG_STOP)
         self.send(queueobject)
         
     def run(self):
-        '''
+        """
         Very basic implementation of runner, has to be overwritten by
         the implementing class.
-        '''
+        """
         while True:
             queueobject = self.queue.get()
             if queueobject.msg_num == self.MSG_STOP:

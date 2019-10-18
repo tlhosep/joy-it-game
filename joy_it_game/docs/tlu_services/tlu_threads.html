@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_threads.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_threads.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_threads
+<strong> Content </strong>
+This module wraps the threading fiunctionalities in use</p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-10-01 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="n">logger</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">threadlist</span><span class="o">=</span><span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Start a Threading Class-object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">startThreadClass</span><span class="p">(</span><span class="n">threadclass</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>:param threadclass: The class that should be started</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">global</span> <span class="n">threadlist</span>
+    <span class="n">threadclass</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">threadlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">threadclass</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Thread started: &#39;</span><span class="o">+</span><span class="n">threadclass</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">threadclass</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Start a usual Method as a Thread</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">startThread</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>:param thread: The method that should be used for threading</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">global</span> <span class="n">threadlist</span>
+    <span class="n">task</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">thread</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">threadlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Thread started: &#39;</span><span class="o">+</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">task</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Terminate the thread (if given)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">abortThread</span><span class="p">(</span><span class="n">thread</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>abort thread, if timeout reached, terminate
+:param thread: The thread that should be terminated
+:param timeout: seconds to wait before returning
+:param msg: Message for logging purposes in case we had a problem</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">thread</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="c1"># not running ;)</span>
+    <span class="k">global</span> <span class="n">threadlist</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Thread terminated: &#39;</span><span class="o">+</span><span class="n">thread</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">thread</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">True</span>
+    <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="c1">#usually waits until terminated, or if timeout (in seconds) reached</span>
+    <span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="n">timeout</span>
+    <span class="n">threadlist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">thread</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">count</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>There is no option available to end the thread hardly, this is only possible for processes</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;thread &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">thread</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; is still alive, could not be shut down.. -&gt;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">return</span> <span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Check if the thread is still alive</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">thread</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>:param thread: The thread that should be checked</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">thread</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Alive-State of &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">thread</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; is:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

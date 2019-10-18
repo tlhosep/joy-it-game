@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_level00.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_level00.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_level00</p>
+<p><strong> Content </strong>
+A test-task to test the major functions of the game. 
+Each level comes with its own class</p>
+<p><strong> Details </strong>
+The game consists of some actions to be performed on the joy-it toolset in order to stop the bomb before it is going to explode :)</p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Level</span>
+<span class="kn">from</span> <span class="nn">tlu_joyit_game</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tasks</span> <span class="kn">import</span> <span class="n">Countdown</span>
+<span class="kn">from</span> <span class="nn">tlu_game.tlu_levelbase</span> <span class="kn">import</span> <span class="n">LevelBase</span>
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_processes</span> <span class="kn">import</span> <span class="n">startProcess</span><span class="p">,</span> <span class="n">abortProcess</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">logger</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Testlevel for unittest only&hellip;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Level00</span><span class="p">(</span><span class="n">LevelBase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>Not an official task, used only to test all surrounding functionalities as this task does not require
+end-user interaction
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">class</span> <span class="nc">GameQueue</span><span class="p">(</span><span class="n">LevelBase</span><span class="o">.</span><span class="n">GameQueue</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Main loop for Testing the game</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">hardware</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <pre><code>        Main
+        :param stop_event: event coming from main-loop, once set, level will terminate
+        :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+        :param hardware: list of started threads
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">thread</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span>
+            <span class="p">(</span><span class="n">timer</span><span class="p">,)</span><span class="o">=</span><span class="n">hardware</span>  <span class="c1"># @UnusedVariable</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">breakIndicator</span><span class="p">)</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getQueueObject</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">breakIndicator</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">queueobject</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span> <span class="c1">#release object from queue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAbort</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">thread</span><span class="p">,</span><span class="n">queueobject</span><span class="p">):</span>
+                    <span class="k">break</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Prepare Test</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">prepareGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Do hardware-preparations
+:param status: current state of the game, used for web-frontend
+:param queue: Message-Q for hardware.messages to be launched
+return list of hardware-processes started here</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">timer</span><span class="o">=</span><span class="n">Countdown</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level00 starts..&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_start</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="n">startProcess</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">timer</span><span class="p">,)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>End game-level-test</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">finishGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">hardware</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Close down hardware-activities started
+:param status: current state of the game, used for web-frontend
+:param hardware: List of hardware-processes that should be terminated here</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="p">(</span><span class="n">timer</span><span class="p">,)</span><span class="o">=</span><span class="n">hardware</span>
+        <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">==</span><span class="n">Level</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>for testing purposes timeout is the desired outcome</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level00 passed&quot;</span><span class="p">))</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">points</span><span class="o">=</span><span class="mi">5</span>
+        <span class="k">elif</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">!=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">:</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level00 failed&quot;</span><span class="p">))</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level00 passed&quot;</span><span class="p">))</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">points</span><span class="o">=</span><span class="mi">5</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_ended</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="n">abortProcess</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_mail.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_mail.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_mail
+<strong> Content </strong>
+This module shall send and receive emails</p>
+<p><strong> Details </strong></p>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-10-01 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">smtplib</span>
+<span class="kn">from</span> <span class="nn">email.mime.multipart</span> <span class="kn">import</span> <span class="n">MIMEMultipart</span>
+<span class="kn">from</span> <span class="nn">email.mime.text</span> <span class="kn">import</span> <span class="n">MIMEText</span>
+<span class="kn">import</span> <span class="nn">imaplib</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">email</span>
+<span class="kn">import</span> <span class="nn">logging</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Simply hold email-message content</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">tlu_mail_msg</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    
+    <span class="n">msg_from</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">msg_to</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">msg_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">msg_subject</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">msg_content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">msg_uid</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Initialization adds optional subject</p>
+<p>:param subject: Optional header of the message
+:type subject: str</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">subject</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">msg_subject</span><span class="o">=</span><span class="n">subject</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Provide sending and receiving emails with html-body via SSL-SMTP</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">tlu_mail</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Sends an email</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">send_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">to</span><span class="p">,</span><span class="n">subject</span><span class="p">,</span><span class="n">body</span><span class="p">,</span> 
+                   <span class="n">mail_user</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                   <span class="n">mail_server</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                   <span class="n">mail_port</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                   <span class="n">mail_pw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>This method is going to try to send an email using the parameters provided</p>
+<p><strong>Parameters</strong>:</p>
+<p>:param to:           The receiver of the email
+:param subject:      The headline
+:param body:         Content in html-notation
+:param mail_user:    login-user to the server, also sender-email
+:param mail_server:  URL of ssl-encoded SMTP-server
+:param mail_port:    ssl-port of SMTP-Server
+:param mail_pw:      Password in cleartype to log into the SMTP-Server
+:type to: str
+:type subject: str
+:type bodx: str
+:type mail_user: str
+:type mail_port: int
+:type mail_pw: str
+:returns: Nothing would be returned, although Exceptions may get raised <br />
+:rtype: None        </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">()</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;From&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mail_user</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;To&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;Subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subject</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">MIMEText</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">))</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="n">mail_server</span><span class="p">,</span> <span class="n">mail_port</span><span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">mail_user</span><span class="p">,</span> <span class="n">mail_pw</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">as_string</span><span class="p">()</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">mail_user</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Fetches email. If subject given, searches for the specified email.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">fetch_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mail_subject</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> 
+                    <span class="n">mail_user</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                    <span class="n">mail_server</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                    <span class="n">mail_port</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                    <span class="n">mail_pw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>@copyright  Contains Info from: https://stackoverflow.com/questions/2230037/how-to-fetch-an-email-body-using-imaplib-in-python&rdquo;</p>
+<p>:param mail_user: str   login-user to the server, also sender-email
+:param mail_server: str URL of ssl-encoded SMTP-server
+:param mail_port: int   ssl-port of SMTP-Server
+:param mail_pw: str     Password in cleartype to log into the SMTP-Server
+:rtype: [] Returns List of messages found. If empty then there are no messages found          </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        
+        <span class="n">ret</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">mail</span> <span class="o">=</span> <span class="n">imaplib</span><span class="o">.</span><span class="n">IMAP4_SSL</span><span class="p">(</span><span class="n">mail_server</span><span class="p">,</span> <span class="n">mail_port</span><span class="p">)</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">mail_user</span><span class="p">,</span> <span class="n">mail_pw</span><span class="p">)</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Inbox&#39;</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">mail</span><span class="o">.</span><span class="n">uid</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;UNSEEN&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Result of mail search was &#39;</span><span class="o">+</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">email_uid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">x</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">,</span> <span class="n">email_data</span> <span class="o">=</span> <span class="n">mail</span><span class="o">.</span><span class="n">uid</span><span class="p">(</span><span class="s1">&#39;fetch&#39;</span><span class="p">,</span> <span class="n">email_uid</span><span class="p">,</span> <span class="s1">&#39;(RFC822)&#39;</span><span class="p">)</span>
+            <span class="n">raw_email</span> <span class="o">=</span> <span class="n">email_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">raw_email_string</span> <span class="o">=</span> <span class="n">raw_email</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="n">email_message</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">message_from_string</span><span class="p">(</span><span class="n">raw_email_string</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Now header</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">email_subject</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">make_header</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">decode_header</span><span class="p">(</span><span class="n">email_message</span><span class="p">[</span><span class="s1">&#39;Subject&#39;</span><span class="p">])))</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mail_subject</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">email_subject</span> <span class="o">!=</span> <span class="n">mail_subject</span><span class="p">):</span>
+                <span class="k">continue</span> <span class="c1"># skip unwanted emails</span>
+            <span class="n">date_tuple</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">parsedate_tz</span><span class="p">(</span><span class="n">email_message</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">date_tuple</span><span class="p">:</span>
+                <span class="n">local_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">mktime_tz</span><span class="p">(</span><span class="n">date_tuple</span><span class="p">))</span>
+                <span class="n">local_message_date</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">local_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%a, </span><span class="si">%d</span><span class="s2"> %b %Y %H:%M:%S&quot;</span><span class="p">)))</span>
+            <span class="n">email_from</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">make_header</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">decode_header</span><span class="p">(</span><span class="n">email_message</span><span class="p">[</span><span class="s1">&#39;From&#39;</span><span class="p">])))</span>
+            <span class="n">email_to</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">make_header</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">decode_header</span><span class="p">(</span><span class="n">email_message</span><span class="p">[</span><span class="s1">&#39;To&#39;</span><span class="p">])))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Body details</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">email_message</span><span class="o">.</span><span class="n">walk</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">part</span><span class="o">.</span><span class="n">get_content_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">:</span>
+                    <span class="n">body</span> <span class="o">=</span> <span class="n">part</span><span class="o">.</span><span class="n">get_payload</span><span class="p">(</span><span class="n">decode</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            
+            <span class="n">found_email</span> <span class="o">=</span> <span class="n">tlu_mail_msg</span><span class="p">(</span><span class="n">mail_subject</span><span class="p">)</span>
+            <span class="n">found_email</span><span class="o">.</span><span class="n">msg_content</span><span class="o">=</span><span class="n">body</span>
+            <span class="n">found_email</span><span class="o">.</span><span class="n">msg_date</span><span class="o">=</span><span class="n">local_message_date</span>
+            <span class="n">found_email</span><span class="o">.</span><span class="n">msg_from</span><span class="o">=</span><span class="n">email_from</span>
+            <span class="n">found_email</span><span class="o">.</span><span class="n">msg_to</span><span class="o">=</span><span class="n">email_to</span>
+            <span class="n">found_email</span><span class="o">.</span><span class="n">msg_uid</span><span class="o">=</span><span class="n">email_uid</span>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="p">[</span><span class="n">found_email</span><span class="p">]</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">logout</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ret</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Removes email specified by msg</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">remove_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mail_msg</span><span class="p">,</span>
+                    <span class="n">mail_user</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                    <span class="n">mail_server</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                    <span class="n">mail_port</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> 
+                    <span class="n">mail_pw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>@copyright Contains Info from https://stackoverflow.com/questions/3180891/imap-deleting-messages</p>
+<p>:param mail_msg: tlu_mail_msg message that should be removed 
+:param mail_user: str   login-user to the server, also sender-email
+:param mail_server: str URL of ssl-encoded SMTP-server
+:param mail_port: int   ssl-port of SMTP-Server
+:param mail_pw: str     Password in cleartype to log into the SMTP-Server</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        
+        <span class="n">mail</span> <span class="o">=</span> <span class="n">imaplib</span><span class="o">.</span><span class="n">IMAP4_SSL</span><span class="p">(</span><span class="n">mail_server</span><span class="p">,</span> <span class="n">mail_port</span><span class="p">)</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">mail_user</span><span class="p">,</span> <span class="n">mail_pw</span><span class="p">)</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;inbox&#39;</span><span class="p">)</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">uid</span><span class="p">(</span><span class="s1">&#39;STORE&#39;</span><span class="p">,</span> <span class="n">mail_msg</span><span class="o">.</span><span class="n">msg_uid</span><span class="p">,</span> <span class="s1">&#39;+FLAGS&#39;</span><span class="p">,</span><span class="s1">&#39;(</span><span class="se">\\</span><span class="s1">Deleted)&#39;</span><span class="p">)</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">expunge</span><span class="p">()</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">mail</span><span class="o">.</span><span class="n">logout</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

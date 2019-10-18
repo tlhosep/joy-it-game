@@ -16,14 +16,14 @@ from tlu_services import tlu_queue
 import time
 
 def emulateKey(kbQueue):
-    '''
+    """
     Main loop to check for keyboard inputs
     :param kbQueue: Queue where the messages shall be placed
-    '''
+    """
     def print_help():
-        '''
+        """
         helper to display help
-        '''
+        """
         print('1..9 = Matrix-keys 1..9')
         print('a..g = Matrix-keys 10..16')
         print('i=cursor up')
@@ -78,19 +78,19 @@ def emulateKey(kbQueue):
 
 
 class Command(BaseCommand):
-    '''
+    """
     Commandline interface to scan for keys pressed.
     The Key will then be forwarded to the remote Queue for further processing
-    '''
+    """
     help = "Scans for keys until termination is requested"
 
     def add_arguments(self, parser):
         parser.add_argument('--port', help="Portnumber of the queue", required=False)
 
     def handle(self, *args, **options):
-        '''
+        """
         Main loop to process the commandline request
-        '''
+        """
         port=50200
         if options['port'] != None:
             port=int(options['port'])
