@@ -70,10 +70,12 @@ class Level03(LevelBase):
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=0
                         status.result=Level.FAILED
+                        status.msg=_("That was the wrong key, level terminates!")
                         models.setGameState(gameProcess.user_id, status)
-                        logging.debug("Wrong Key:"+str(key+" instead of:"+str(queueobject.msg_info)))
+                        logging.debug("Wrong Key:"+str(key)+" instead of:"+str(queueobject.msg_info))
                     else:
                         numkeys += 1
+                        key=-1 #generate next key
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=int(numkeys/20*100)
                         models.setGameState(gameProcess.user_id, status)
