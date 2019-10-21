@@ -380,10 +380,10 @@ def level_update(request):
                 if game.endReached():
                     button_text=_("Restart?")
                     button_url='/tlu_joyit_game/restart'
-            elif res==Level.TIMEOUT:
-                #timeout reached
+            elif (res==Level.TIMEOUT) or (res==Level.DIDNOTFINISH):
+                #timeout reached or level ende by an gamer error
                 button_text=_("Retry")
-                button_url='/tlu_joyit_game/retry/'+str(current_level_num)               
+                button_url='/tlu_joyit_game/retry/'+str(current_level_num)    
             else:
                 #failure somehow
                 info=str(_("Level failed somehow, please try again, result="))

@@ -417,7 +417,8 @@ class Level(models.Model):
     FAILED=4
     STARTED=5
     TIMEOUT=6
-    resultdict=(_("not started"), _('passed'), _('retry'), _('abort'), _('failed'), _("started"), _("timeout"))
+    DIDNOTFINISH=6
+    resultdict=(_("not started"), _('passed'), _('retry'), _('abort'), _('failed'), _("started"), _("timeout"),_("not finished"))
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True) #reference to the underlying game object
     prevLevel=models.ForeignKey('Level',on_delete=models.SET_NULL, null=True,default=None, related_name='all_levels') #daisy-chain for a game consisting of levels
     levelnum = models.IntegerField(default=-1) # Level-Number ranging from 00 (Test only), 1..99

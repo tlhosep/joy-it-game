@@ -142,8 +142,7 @@ class TestIO(unittest.TestCase):
         if not emulatekey:
             diphex=tlu_hardwarebase.getDipHex(tlu_buttons)
             print('\ncheck the dip-settings to be like this:')
-            print('Lefthand : '+tlu_hardwarebase.showleft_dip(diphex))
-            print('Righthand: '+tlu_hardwarebase.showright_dip(diphex))
+            print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
             time.sleep(5)
             print('Press the upper left key of the 16key-field')
         ck=CheckKey(queue, 10.0)
@@ -187,8 +186,7 @@ class TestIO(unittest.TestCase):
         if not emulatekey:
             diphex=tlu_hardwarebase.getDipHex(tlu_cursor)
             print('\ncheck the dip-settings to be like this:')
-            print('Lefthand : '+tlu_hardwarebase.showleft_dip(diphex))
-            print('Righthand: '+tlu_hardwarebase.showright_dip(diphex))
+            print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
             time.sleep(5)
             print('Please press any of the four cursor-keys to continue')
         cc=CheckCursor(queue, 5.0)
