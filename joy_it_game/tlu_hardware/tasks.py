@@ -115,7 +115,6 @@ class CheckKey(Thread):
             if (self.count != None):
                 self.count -= 1
                 if self.count < 1:
-                    self._end()
                     queueobject=tlu_queueobject(tlu_queue.MSG_TIMEOUT)
                     self.queue.send(queueobject)
                     logger.info("Buttons no longer checked due to timeout")

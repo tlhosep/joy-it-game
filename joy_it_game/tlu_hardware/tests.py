@@ -18,6 +18,9 @@ from tlu_hardware.tlu_checkhardware import emulatekey
 from tlu_game import tlu_globals
 from tlu_services.tlu_threads import startThreadClass, abortThread
 from tlu_hardware import tlu_hardware_global
+from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
+from tlu_hardware.tlu_cursor import tlu_cursor
+from tlu_hardware.tlu_buttons import tlu_buttons
 
 logfile=settings.BASE_DIR+"/log/game.log"
 
@@ -136,6 +139,10 @@ class TestIO(unittest.TestCase):
         logging.debug('test_checkkey started')
         queue=TestQueue()
         if not emulatekey:
+            diphex=tlu_hardwarebase.getDipHex(tlu_buttons)
+            print('check the dip-settings to be like this:')
+            print('Lefthand: '+tlu_hardwarebase.showleft_dip(diphex))
+            print('Righthand: '+tlu_hardwarebase.showright_dip(diphex))
             print('Press the upper left key of the 16key-field')
         ck=CheckKey(queue, 10.0)
         startThreadClass(ck)
@@ -176,6 +183,10 @@ class TestIO(unittest.TestCase):
         """
         queue=TestQueue()
         if not emulatekey:
+            diphex=tlu_hardwarebase.getDipHex(tlu_cursor)
+            print('check the dip-settings to be like this:')
+            print('Lefthand: '+tlu_hardwarebase.showleft_dip(diphex))
+            print('Righthand: '+tlu_hardwarebase.showright_dip(diphex))
             print('Please press any of the four cursor-keys to continue')
         cc=CheckCursor(queue, 5.0)
         startThreadClass(cc)
