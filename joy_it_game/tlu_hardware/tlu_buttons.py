@@ -15,6 +15,7 @@ from tlu_game import tlu_globals
 from tlu_services import tlu_queue
 from queue import Empty
 from tlu_hardware.tlu_checkhardware import emulatekey
+import time
 
 try: 
 # Check and import real RPi.GPIO library
@@ -86,7 +87,7 @@ class tlu_buttons(tlu_hardwarebase):
             for i in range(len(self.rowPins)):
                 if GPIO.input(self.rowPins[i]) == 0:
                     btnIndex = self.buttonIDs[i][j]
-#                    time.sleep(0.3) #prohibit multiple key-presses at the same time
+                    time.sleep(0.2) #prohibit multiple key-presses at the same time
 #                    logger.info("button " + str(btnIndex) + " pressed")
                     return btnIndex
             GPIO.output(self.columnPins[j],1)

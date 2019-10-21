@@ -114,6 +114,7 @@ class CheckKey(Thread):
         while True:
             if (self.count != None):
                 self.count -= 1
+                logger.debug("Requesting button with count = "+str(self.count))
                 if self.count < 1:
                     queueobject=tlu_queueobject(tlu_queue.MSG_TIMEOUT)
                     self.queue.send(queueobject)
@@ -124,24 +125,23 @@ class CheckKey(Thread):
                 self.queue.send(queueobject)
                 logger.info("Buttons no longer checked due to abort")
                 return
-            time.sleep(0.2) #reduce load
-            if self.count != None:
-                logger.debug("Requesting button with count = "+str(self.count))
+            time.sleep(0.1) #reduce load
             button=self.buttons.button_pressed()
             if button not in self.button_values:
                 continue
             if button != self.currentKey:
-                if (self.currentKey >= 0) and (button == 0):
-                    #released
-                    queueobject=tlu_queueobject(tlu_queue.MSG_KEYRELEASED,self.currentKey)
-                    self.queue.send(queueobject)
-                    logger.debug("Key released: "+str(self.currentKey))
-                if (button > 0):
+                if (self.currentKey == 0) and (button > 0):
                     #pressed
+                    self.currentKey=button
                     queueobject=tlu_queueobject(tlu_queue.MSG_KEYPRESSED,button)
                     self.queue.send(queueobject)
                     logger.debug("Key pressed: "+str(button))
-                self.currentKey=button
+                elif (self.currentKey > 0) and (button == 0):
+                    #released
+                    self.currentKey=button #indicate release
+                    queueobject=tlu_queueobject(tlu_queue.MSG_KEYRELEASED,self.currentKey)
+                    self.queue.send(queueobject)
+                    logger.debug("Key released: "+str(self.currentKey))
         return Thread.run(self, *args, **kwargs)    
     def terminate(self, *args, **kwargs):
         self.is_aborted=True

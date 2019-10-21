@@ -432,8 +432,8 @@ class Level(models.Model):
             ret += " start: "+str(self.level_start)
         if (self.level_ended != None):
             ret += " end: "+str(self.level_ended)
-        if (self.prevLevel != None):
-            ret+=" prev-Level= "+str(self.prevLevel)
+#        if (self.prevLevel != None):
+#            ret+=" prev-Level= "+str(self.prevLevel)
         return ret
     
     @classmethod

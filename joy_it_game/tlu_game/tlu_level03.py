@@ -65,14 +65,16 @@ class Level03(LevelBase):
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
                     break
                 if queueobject.msg_num == self.MSG_KEYPRESSED:
-                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key = ")+str(queueobject.msg_info))
+                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key = ")+str(queueobject.msg_info)+" -> "+str(key))
                     if key != queueobject.msg_info:
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=0
                         status.result=Level.FAILED
-                        status.msg=_("That was the wrong key, level terminates!")
+                        status.msg="#"+str(queueobject.msg_info)+_(" was the wrong key, level terminates!")
                         models.setGameState(gameProcess.user_id, status)
                         logging.info("Wrong Key:"+str(key)+" instead of:"+str(queueobject.msg_info))
+                        stop_event.set()
+                        break
                     else:
                         numkeys += 1
                         glob.matrixShow_symbol('root')
