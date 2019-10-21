@@ -129,6 +129,7 @@ class Global_vars():
         """
         stops all threads, turns hardware off        
         """
+        logging.info("Global cleanup performed")
         self.global_lcd.clear()
         self.global_matrix.show_symbol('space')  #turning it off
         self.stopClock()

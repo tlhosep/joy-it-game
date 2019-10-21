@@ -44,6 +44,7 @@ class Level03(LevelBase):
             numkeys=0
             thread=threading.currentThread()
             (timer, kbd,) = hardware  # @UnusedVariable
+            glob=tlu_globals.globMgr.tlu_glob()
             while True:
                 if numkeys>19:
                     stop_event.set()
@@ -51,7 +52,7 @@ class Level03(LevelBase):
                 if key == -1:
                     key=randint(1,16)
                     status=models.getGameState(gameProcess.user_id)
-                    status.msg=_("You have to press Key #")+str(key)
+                    status.msg=str(numkeys)+": "+_("You have to press Key #")+str(key)
                     status.level_progress=int(numkeys/20*100)
                     models.setGameState(gameProcess.user_id, status)
                 
@@ -63,7 +64,6 @@ class Level03(LevelBase):
                 self.queue.task_done() #release object from queue
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
                     break
-                glob=tlu_globals.globMgr.tlu_glob()
                 if queueobject.msg_num == self.MSG_KEYPRESSED:
                     glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key = ")+str(queueobject.msg_info))
                     if key != queueobject.msg_info:

@@ -42,6 +42,7 @@ class Level01(LevelBase):
             """
             keymatrix={}
             thread=threading.currentThread()
+            glob=tlu_globals.globMgr.tlu_glob()
             while True:
                 if len(keymatrix)==16:
                     stop_event.set()
@@ -55,7 +56,6 @@ class Level01(LevelBase):
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
                     break
                 elif queueobject.msg_num == self.MSG_KEYPRESSED:
-                    glob=tlu_globals.globMgr.tlu_glob()
                     glob.lcdMessagebyline(_("Level: ")+"01", _("Key = ")+str(queueobject.msg_info))
                     keymatrix[queueobject.msg_info]=1
                     status=models.getGameState(gameProcess.user_id)
