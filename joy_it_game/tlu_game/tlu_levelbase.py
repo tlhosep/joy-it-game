@@ -25,6 +25,12 @@ from tlu_services import tlu_queue
 import time
 import threading
 from tlu_game import tlu_globals
+try: 
+# Check and import real RPi.GPIO library
+    import RPi.GPIO as GPIO
+
+except ImportError:
+    import FakeRPi.GPIO as GPIO
 
 logger=logging.getLogger(__name__)
 
@@ -165,6 +171,19 @@ class LevelBase(Process):
         Process.__init__(self)
         self.exit=Event()
         self.user_id=user_id
+#        GPIO.cleanup() #set in/out pins to input mode
+        GPIO.setmode(GPIO.BCM)
+        logging.info("GPIO now initialized, all pins set to input mode")
+    
+    def __del__(self):
+        """
+        Destructor, clears GPIO-pins
+        """
+#        GPIO.cleanup() #set in/out pins to input mode
+        GPIO.setmode(GPIO.BCM)
+        logging.info("GPIO now cleaned, all pins set to input mode")
+#    There is no __del__ method for Process available
+#    Process.__del__(self)
         
     def clearprocesses(self):
         """

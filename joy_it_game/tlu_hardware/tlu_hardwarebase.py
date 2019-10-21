@@ -84,19 +84,36 @@ class tlu_hardwarebase(object):
             GPIO.cleanup()    
             logging.info("GPIO hardware now cleaned, count="+str(number_of_hardware_starts))
         
-    def lefthand_dip_setting(self) -> int:
+    @staticmethod
+    def lefthand_dip_setting() -> int:
         """
         Default for the left DIP-switch: all buttons down (0)
         """
         return 0x00
 
-    def righthand_dip_setting(self) -> int:
+    @staticmethod
+    def righthand_dip_setting() -> int:
         """
         Default for the right DIP-switch: all buttons down (0)
         """
         return 0x00
+    
+    @classmethod
+    def getDipHex(base_cls,cls) -> int:
+        left=base_cls.lefthand_dip_setting()
+        right=base_cls.righthand_dip_setting()
+        try:
+            left=cls.lefthand_dip_setting()
+        except:
+            pass
+        try:
+            right=cls.righthand_dip_setting()
+        except:
+            pass
+        return (left << 8) | right
 
-    def showdip(self, diphex) -> str:
+    @staticmethod
+    def showdip(diphex) -> str:
         """
         Show the DIP-setting in a human readable format
         :param diphex: 8-bit code for the DIP-switch, 0=down, 1 = up
@@ -111,15 +128,17 @@ class tlu_hardwarebase(object):
             setting = setting >> 1
         return result
     
-    def showleft_dip(self) -> str:
+    @staticmethod
+    def showleft_dip(diphex) -> str:
         """
         Show the setting for the lefthand switch in human readable format
         """
-        return self.showdip(self.lefthand_dip_setting())
+        return tlu_hardwarebase.showdip(diphex >> 8)
     
-    def showright_dip(self) -> str:
+    @staticmethod
+    def showright_dip(diphex) -> str:
         """
         Show the setting for the righthand switch in human readable format
         """
-        return self.showdip(self.righthand_dip_setting())
+        return tlu_hardwarebase.showdip(diphex & 0xFF)
     

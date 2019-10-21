@@ -15,6 +15,7 @@ from tlu_services import tlu_queue
 from queue import Empty
 from tlu_hardware.tlu_checkhardware import emulatekey
 from tlu_game import tlu_globals
+from builtins import staticmethod
 
 try: 
 # Check and import real RPi.GPIO library
@@ -39,9 +40,11 @@ class tlu_cursor(tlu_hardwarebase):
         GPIO.setup(self.button_down, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.button_left, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.button_right, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        logging.info("Cursor now initialized")
         
 
-    def lefthand_dip_setting(self):
+    @staticmethod
+    def lefthand_dip_setting():
         return 0x0F
     
     def cursorname(self,cursornum) -> str:

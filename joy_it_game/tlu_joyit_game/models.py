@@ -26,6 +26,7 @@ from multiprocessing import Manager
 from tlu_services.tlu_processes import abortProcess, startProcess
 import multiprocessing
 from tlu_hardware import tlu_hardware_global
+from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 
 logfile=settings.BASE_DIR+"/log/game.log"
 logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
@@ -169,7 +170,10 @@ class Game(models.Model):
     
     def __init__(self, *args, **kwargs):
         tlu_hardware_global.init()
-        self.dipswitch_settings=(tlu_buttons(),tlu_buttons(),tlu_cursor(),tlu_buttons())
+        self.dipswitch_settings=(tlu_hardwarebase.getDipHex(tlu_buttons),
+                                 tlu_hardwarebase.getDipHex(tlu_buttons),
+                                 tlu_hardwarebase.getDipHex(tlu_cursor),
+                                 tlu_hardwarebase.getDipHex(tlu_buttons))
         models.Model.__init__(self, *args, **kwargs)
                     
     def __str__(self):

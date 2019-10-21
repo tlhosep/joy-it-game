@@ -29,6 +29,7 @@ from tlu_game.tlu_level02 import Level02
 from tlu_game import tlu_globals
 from tlu_game.tlu_level03 import Level03
 from tlu_hardware import tlu_hardware_global
+from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 
 logfile=settings.BASE_DIR+"/log/game.log"
 logger = logging.getLogger(__name__)
@@ -221,8 +222,8 @@ def renderLevel(request, level_id):
         error=_("We are sorry, but the provided level-id does not fit your overall progress, you have to restart.")
         return render(request, template_name, {'error':error} )
     dips = game.getDipSwitch(level_id)
-    leftDip=_("left:")+" "+dips.showleft_dip()
-    rightDip=_("right:")+" "+dips.showright_dip()
+    leftDip=_("left:")+" "+tlu_hardwarebase.showleft_dip(dips)
+    rightDip=_("right:")+" "+tlu_hardwarebase.showright_dip(dips)
     overall_progress=game.getOverallProgress()
     info=_("Please press start and check the DIP-settings...")
     button_text=_("Start Level")+" "+str(level_id)
