@@ -19,6 +19,9 @@ if [ $? == 0 ]; then
 	echo "next we check for deployed packages and potential database updates..."
 else
 	echo "The update failed somehow, please read the instructions on top..."
+	echo "it might help to force an update via these 2 lines:"
+	echo "$ git fetch --all"
+	echo "$ git reset --hard origin/master"
 	exit 1
 fi
 

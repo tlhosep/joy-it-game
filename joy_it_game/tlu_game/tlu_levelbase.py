@@ -171,7 +171,7 @@ class LevelBase(Process):
         Process.__init__(self)
         self.exit=Event()
         self.user_id=user_id
-#        GPIO.cleanup() #set in/out pins to input mode
+        GPIO.cleanup() #set in/out pins to defined input mode
         GPIO.setmode(GPIO.BCM)
         logging.info("GPIO now initialized, all pins set to input mode")
     
@@ -181,7 +181,8 @@ class LevelBase(Process):
         """
 #        GPIO.cleanup() #set in/out pins to input mode
         GPIO.setmode(GPIO.BCM)
-        logging.info("GPIO now cleaned, all pins set to input mode")
+        logging.info("GPIO now set to BCM")
+#        logging.info("GPIO now cleaned, all pins set to input mode")
 #    There is no __del__ method for Process available
 #    Process.__del__(self)
         

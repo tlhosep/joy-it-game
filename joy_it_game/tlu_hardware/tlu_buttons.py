@@ -52,8 +52,10 @@ class tlu_buttons(tlu_hardwarebase):
         for j in range(len(self.columnPins)):
             GPIO.setup(self.columnPins[j], GPIO.OUT)
             GPIO.output(self.columnPins[j], 1)
+        logging.info("Button-hardware is now initialized")
 
-    def lefthand_dip_setting(self):
+    @staticmethod
+    def lefthand_dip_setting():
         """
         Hex setting for the left DIP: All up
         """

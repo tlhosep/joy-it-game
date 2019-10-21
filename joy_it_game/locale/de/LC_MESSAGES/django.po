@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-18 18:36+0200\n"
-"PO-Revision-Date: 2019-10-18 18:38+0200\n"
+"POT-Creation-Date: 2019-10-21 12:05+0200\n"
+"PO-Revision-Date: 2019-10-21 12:09+0200\n"
 "Last-Translator: Thomas Lüth <th.lueth@tlc-it-consulting.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -27,7 +27,7 @@ msgid "English"
 msgstr "Englisch"
 
 #: tlu_game/tlu_level00.py:64 tlu_game/tlu_level01.py:78
-#: tlu_game/tlu_levelbase.py:206
+#: tlu_game/tlu_levelbase.py:225
 msgid "Level00 starts.."
 msgstr "Level 2 startet..."
 
@@ -103,7 +103,7 @@ msgstr "Bitte drücke Taste #"
 
 #: tlu_game/tlu_level03.py:73
 msgid "That was the wrong key, level terminates!"
-msgstr ""
+msgstr "Das war die falsche Taste, das Level wird abgebrochen!"
 
 #: tlu_game/tlu_level03.py:106
 msgid "Level03 starts.."
@@ -111,7 +111,7 @@ msgstr "Level 3 startet..."
 
 #: tlu_game/tlu_level03.py:110
 msgid "Random Keys"
-msgstr ""
+msgstr "Zufallstasten"
 
 #: tlu_game/tlu_level03.py:111
 msgid "Level 3 running"
@@ -125,43 +125,43 @@ msgstr "Level 3 fehlerhaft"
 msgid "You have passed Level 3 :)"
 msgstr "Du hast Level 3 geschafft!"
 
-#: tlu_game/tlu_levelbase.py:67
+#: tlu_game/tlu_levelbase.py:73
 msgid "Game aborted :("
 msgstr "Spiel abgebrochen :("
 
-#: tlu_game/tlu_levelbase.py:131
+#: tlu_game/tlu_levelbase.py:137
 msgid "Timeout reached :("
 msgstr "Zeitüberschreitung :("
 
-#: tlu_game/tlu_levelbase.py:223
+#: tlu_game/tlu_levelbase.py:242
 msgid "Level x failed"
 msgstr "Level x fehlerhaft"
 
-#: tlu_game/tlu_levelbase.py:226
+#: tlu_game/tlu_levelbase.py:245
 msgid "Level x passed"
 msgstr "Level x erfolgreich"
 
-#: tlu_game/tlu_levelbase.py:247
+#: tlu_game/tlu_levelbase.py:266
 msgid "Level is running"
 msgstr "Level läuft"
 
-#: tlu_game/tlu_levelbase.py:251
+#: tlu_game/tlu_levelbase.py:270
 msgid "You have to login in order to play this level..."
 msgstr "Du mussst Dich anmelden um dieses Level zu spielen..."
 
-#: tlu_hardware/tlu_cursor.py:54
+#: tlu_hardware/tlu_cursor.py:57
 msgid "up"
 msgstr "hoch"
 
-#: tlu_hardware/tlu_cursor.py:56
+#: tlu_hardware/tlu_cursor.py:59
 msgid "right"
 msgstr "rechts"
 
-#: tlu_hardware/tlu_cursor.py:58
+#: tlu_hardware/tlu_cursor.py:61
 msgid "down"
 msgstr "runter"
 
-#: tlu_hardware/tlu_cursor.py:60
+#: tlu_hardware/tlu_cursor.py:63
 msgid "left"
 msgstr "links"
 
@@ -195,31 +195,31 @@ msgstr "Anmeldung"
 msgid "logout"
 msgstr "Abmeldung"
 
-#: tlu_joyit_game/models.py:416
+#: tlu_joyit_game/models.py:420
 msgid "not started"
 msgstr "Nicht gestartet"
 
-#: tlu_joyit_game/models.py:416
+#: tlu_joyit_game/models.py:420
 msgid "passed"
 msgstr "Erfolg"
 
-#: tlu_joyit_game/models.py:416
+#: tlu_joyit_game/models.py:420
 msgid "retry"
 msgstr "Wiederholung"
 
-#: tlu_joyit_game/models.py:416
+#: tlu_joyit_game/models.py:420
 msgid "abort"
 msgstr "Abbruch"
 
-#: tlu_joyit_game/models.py:416
+#: tlu_joyit_game/models.py:420
 msgid "failed"
 msgstr "Fehler"
 
-#: tlu_joyit_game/models.py:416
+#: tlu_joyit_game/models.py:420
 msgid "started"
 msgstr "Gestartet"
 
-#: tlu_joyit_game/models.py:416
+#: tlu_joyit_game/models.py:420
 msgid "timeout"
 msgstr "Zeitüberschreitung"
 
@@ -325,7 +325,7 @@ msgid ""
 "bottom right in order to note down their number.<br>Timelimit: 16 seconds"
 msgstr ""
 "In diesem Abschnitt musst Du alle 16 gelben Knöpfe drücken. Bitte merke Dir "
-"die Nummern gut, Du wirst sie noch brauchen :)"
+"die Nummern gut, Du wirst sie noch brauchen :)<br>Zeitlimit: 16 Sekunden"
 
 #: tlu_joyit_game/templates/tlu_joyit_game/level_02.html:3
 msgid "Level 02: Your next step: Cursor"
@@ -341,7 +341,7 @@ msgstr ""
 
 #: tlu_joyit_game/templates/tlu_joyit_game/level_03.html:3
 msgid "Level 03: Now... random keys"
-msgstr ""
+msgstr "Level 03: Zufallstasten"
 
 #: tlu_joyit_game/templates/tlu_joyit_game/level_03.html:5
 msgid ""
@@ -349,6 +349,9 @@ msgid ""
 "Each key has to be pressed within 4, down to 2 seconds ;)<br>Timelimit: 4..2 "
 "seconds each Key"
 msgstr ""
+"Wie versprochen musst Du nun 20 Zufallstasten ohne jeden Fehler drücken. "
+"Jede Taste muss innerhalb von 4, runter bis zu 2 Sekunden gedrückt werden."
+"<br>Zeitlimit: 4..2 Sekunden pro Taste"
 
 #: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:28
 msgid "This is your task to solve the puzzle:"
@@ -652,23 +655,23 @@ msgstr "Bitte führe die Prüfung aus und fahre fort"
 msgid "Change settings"
 msgstr "Ändere Einstellungen"
 
-#: tlu_joyit_game/views.py:120
+#: tlu_joyit_game/views.py:121
 msgid "Continue the game now"
 msgstr "Setze das Spiel fort"
 
-#: tlu_joyit_game/views.py:136
+#: tlu_joyit_game/views.py:137
 msgid "Play level again"
 msgstr "Spiele Level erneut"
 
-#: tlu_joyit_game/views.py:144
+#: tlu_joyit_game/views.py:145
 msgid "Not yet played"
 msgstr "Noch nicht gespielt"
 
-#: tlu_joyit_game/views.py:147
+#: tlu_joyit_game/views.py:148
 msgid "Start now"
 msgstr "Starte jetzt"
 
-#: tlu_joyit_game/views.py:195
+#: tlu_joyit_game/views.py:196
 msgid ""
 "You just started from the beginning, so level has to be one, please restart "
 "the game!"
@@ -676,7 +679,7 @@ msgstr ""
 "Da Du gerade vom Anfang gestartet bist, muss das level 1 sein. Bitte starte "
 "neu!"
 
-#: tlu_joyit_game/views.py:202
+#: tlu_joyit_game/views.py:203
 msgid ""
 "The requested level is not in line with our expectations, please restart the "
 "game!"
@@ -684,9 +687,9 @@ msgstr ""
 "Tschuldigung, aber das in der URL verstecke Level passt nicht zu deinem "
 "Spielstand. Schummeln ist nicht, also Neustart ;)"
 
-#: tlu_joyit_game/views.py:221 tlu_joyit_game/views.py:253
-#: tlu_joyit_game/views.py:275 tlu_joyit_game/views.py:301
-#: tlu_joyit_game/views.py:326
+#: tlu_joyit_game/views.py:222 tlu_joyit_game/views.py:254
+#: tlu_joyit_game/views.py:276 tlu_joyit_game/views.py:302
+#: tlu_joyit_game/views.py:327
 msgid ""
 "We are sorry, but the provided level-id does not fit your overall progress, "
 "you have to restart."
@@ -694,67 +697,67 @@ msgstr ""
 "Tschuldigung, aber das in der URL verstecke Level passt nicht zu deinem "
 "Spielstand. Schummeln ist nicht, also Neustart ;)"
 
-#: tlu_joyit_game/views.py:224
+#: tlu_joyit_game/views.py:225
 msgid "left:"
 msgstr "Links:"
 
-#: tlu_joyit_game/views.py:225
+#: tlu_joyit_game/views.py:226
 msgid "right:"
 msgstr "Rechts:"
 
-#: tlu_joyit_game/views.py:227
+#: tlu_joyit_game/views.py:228
 msgid "Please press start and check the DIP-settings..."
 msgstr "Bitte drücke Start und prüfe die DIP-Einstellungen..."
 
-#: tlu_joyit_game/views.py:228 tlu_joyit_game/views.py:362
+#: tlu_joyit_game/views.py:229 tlu_joyit_game/views.py:363
 msgid "Start Level"
 msgstr "Starte das Level"
 
-#: tlu_joyit_game/views.py:257 tlu_joyit_game/views.py:279
-#: tlu_joyit_game/views.py:305
+#: tlu_joyit_game/views.py:258 tlu_joyit_game/views.py:280
+#: tlu_joyit_game/views.py:306
 msgid ""
 "We are sorry, but the user has to be known/logged in, you have to restart."
 msgstr ""
 "Tschuldigung, aber Dein Benutzer muss bekannt und angemeldet sein. Schummeln "
 "ist nicht, also Neustart ;)"
 
-#: tlu_joyit_game/views.py:345
+#: tlu_joyit_game/views.py:346
 msgid "The user seems to be unknown, please log in and restart"
 msgstr "Der Benutzer ist unbekannt, bitte neu anmelden und starten"
 
-#: tlu_joyit_game/views.py:350
+#: tlu_joyit_game/views.py:351
 msgid "log in"
 msgstr "Anmeldung"
 
-#: tlu_joyit_game/views.py:366
+#: tlu_joyit_game/views.py:367
 msgid "No info available..."
 msgstr "Keine Informationen da..."
 
-#: tlu_joyit_game/views.py:370
+#: tlu_joyit_game/views.py:371
 msgid "Abort Level?"
 msgstr "Level abbrechen?"
 
-#: tlu_joyit_game/views.py:377
+#: tlu_joyit_game/views.py:378
 msgid "Next Level"
 msgstr "Weiter geht's"
 
-#: tlu_joyit_game/views.py:380
+#: tlu_joyit_game/views.py:381
 msgid "Restart?"
 msgstr "Neustart?"
 
-#: tlu_joyit_game/views.py:384
+#: tlu_joyit_game/views.py:385
 msgid "Retry"
 msgstr "Wiederholung"
 
-#: tlu_joyit_game/views.py:388
+#: tlu_joyit_game/views.py:389
 msgid "Level failed somehow, please try again, result="
 msgstr "Das Spiel hat einen internen Fehler. Fehlercode="
 
-#: tlu_joyit_game/views.py:390
+#: tlu_joyit_game/views.py:391
 msgid "Retry Level?"
 msgstr "Level wiederholen?"
 
-#: tlu_joyit_game/views.py:415
+#: tlu_joyit_game/views.py:416
 msgid ""
 "We are sorry, but the provided level-id is no longer available, you have to "
 "restart."
@@ -762,7 +765,7 @@ msgstr ""
 "Tschuldigung, aber das in der URL verstecke Level passt nicht zu deinem "
 "Spielstand. Schummeln ist nicht, also Neustart ;)"
 
-#: tlu_joyit_game/views.py:455
+#: tlu_joyit_game/views.py:456
 msgid ""
 "The Mail has been successfully transmitted! Please check your inbox or the "
 "choosen medium."
@@ -770,17 +773,17 @@ msgstr ""
 "Wir haben dir eben erfolgreich eine email geschickt. Bitte prüfe deinen "
 "Posteingang."
 
-#: tlu_joyit_game/views.py:458
+#: tlu_joyit_game/views.py:459
 msgid "The Mail could not be delivered!"
 msgstr "Die Test-email kam leider nicht an!"
 
-#: tlu_joyit_game/views.py:465
+#: tlu_joyit_game/views.py:466
 msgid ""
 "We have encountered an unknown error during trying to submit the test-"
 "message: "
 msgstr "Upps, da gab es tatsächlich einen unbekannten Fehler: "
 
-#: tlu_joyit_game/views.py:471
+#: tlu_joyit_game/views.py:472
 msgid "Some parameter are wrong, please correct and try again"
 msgstr "Da stimmt was nicht, bitte korrigiere das"
 

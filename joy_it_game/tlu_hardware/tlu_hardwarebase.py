@@ -88,6 +88,7 @@ class tlu_hardwarebase(object):
     def lefthand_dip_setting() -> int:
         """
         Default for the left DIP-switch: all buttons down (0)
+        To be overwritten by the hardware-class
         """
         return 0x00
 
@@ -95,11 +96,19 @@ class tlu_hardwarebase(object):
     def righthand_dip_setting() -> int:
         """
         Default for the right DIP-switch: all buttons down (0)
+        To be overwritten by the hardware-class
         """
         return 0x00
     
     @classmethod
     def getDipHex(base_cls,cls) -> int:
+        """
+        Get 16 bits for all 16 dip switches, leftmost 8 bits stand for the lefthand switch
+        :param base_cls: This is this simply this class
+        :type base_cls: class
+        :param cls: class of hardware to supply the settings
+        :type cls: class
+        """
         left=base_cls.lefthand_dip_setting()
         right=base_cls.righthand_dip_setting()
         try:
@@ -132,6 +141,9 @@ class tlu_hardwarebase(object):
     def showleft_dip(diphex) -> str:
         """
         Show the setting for the lefthand switch in human readable format
+        
+        :param diphex: 16 bits, leftmost 8 will be used here
+        :type diphex: int (16 bits)
         """
         return tlu_hardwarebase.showdip(diphex >> 8)
     
@@ -139,6 +151,9 @@ class tlu_hardwarebase(object):
     def showright_dip(diphex) -> str:
         """
         Show the setting for the righthand switch in human readable format
+        
+        :param diphex: 16 bits, rightmost 8 will be used here
+        :type diphex: int (16 bits)
         """
         return tlu_hardwarebase.showdip(diphex & 0xFF)
     
