@@ -179,10 +179,6 @@ else
 	checkModule "fake-rpi" "mandatory" "git+https://github.com/sn4k3/FakeRPi" "sudo"
 fi
 
-if [ "$NONRASPI" == "" ]; then
-	echo "Change settings to no debug..."
-	sed -i 's/DEBUG = True/DEBUG = False/g' $PWD/tlu_joyit_game/settings.py
-fi
 echo "Migrate, just in case... (will also create the db)"
 "$PYTHON" manage.py migrate
 if [ $? != 0 ]; then

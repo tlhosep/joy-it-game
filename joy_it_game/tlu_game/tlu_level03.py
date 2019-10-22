@@ -24,6 +24,7 @@ import threading
 from tlu_services.tlu_threads import abortThread, startThreadClass
 from tlu_game import tlu_globals
 from random import randint
+from tlu_services.tlu_queue import tlu_queue
 
 logger=logging.getLogger(__name__)
 
@@ -63,6 +64,8 @@ class Level03(LevelBase):
                     continue
                 self.queue.task_done() #release object from queue
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
+                    if queueobject.msg_num==tlu_queue.MSG_TIMEOUT:
+                        glob.lcdMessagebyline(_("Level: ")+"03", _("Timeout")+" :(")
                     break
                 if queueobject.msg_num == self.MSG_KEYPRESSED:
                     glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key=")+str(queueobject.msg_info)+"/"+str(key))
@@ -134,7 +137,7 @@ class Level03(LevelBase):
             status.msg=str(_("You have passed Level 3 :)"))
             status.level_progress=100
             status.result=Level.PASSED
-            status.points=5
+            status.points=15
             glob.matrixShow_symbol('smiley')
         status.level_ended=timezone.now()
         models.setGameState(self.user_id, status)

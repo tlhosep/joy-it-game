@@ -10,7 +10,6 @@ import tlu_hardware.tlu_buzzer as tlu_buzzer
 
 import logging
 from tlu_hardware.tasks import Countdown, CheckKey, CheckCursor, AnimatedBuzzer, Buzzer
-from joy_it_game import settings
 from tlu_services.tlu_queue import tlu_queueobject
 from tlu_game.tlu_globals import ShowClock
 from tlu_services import tlu_queue
@@ -23,9 +22,8 @@ from tlu_hardware.tlu_cursor import tlu_cursor
 from tlu_hardware.tlu_buttons import tlu_buttons
 import time
 
-logfile=settings.BASE_DIR+"/log/game.log"
+logger=logging.getLogger(__name__)
 
-logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
 class TestQueue(tlu_queue.tlu_queue):
     """
     Simple class to test the queue-functionality.

@@ -10,16 +10,14 @@ import logging
 from django.contrib.auth import get_user_model
 from tlu_joyit_game.models import Game, getGameState, setGameState, userOk, Level,\
     getCleanGameState
-from joy_it_game import settings
 import time
 from tlu_game.tlu_level00 import Level00
 from tlu_game import tlu_globals
 from tlu_hardware.tlu_checkhardware import emulatekey
 from tlu_hardware import tlu_hardware_global
 
-logfile=settings.BASE_DIR+"/log/game.log"
+logger=logging.getLogger(__name__)
 
-logging.basicConfig(filename=logfile, level=logging.DEBUG, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
 
 class TestGame(unittest.TestCase):
     """

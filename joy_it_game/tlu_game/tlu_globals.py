@@ -47,6 +47,8 @@ class ShowClock(Thread):
         logger.info('ShowClock termination requested: '+str(self))
 
 global_clock_thread=None
+global_lcd=None
+global_matrix=None
 
 class Global_vars():
     """ This class holds hardware-components to be used throughout the game
@@ -54,13 +56,16 @@ class Global_vars():
     Here you could also start the clock display
     
     """
-    global_lcd = None
-    global_matrix=None
     def __init__(self):
+        global global_lcd
+        global global_matrix
         logging.info("Global_vars: Init")
-        tlu_hardware_global.init()
-        self.global_lcd = tlu_lcd.lcd_panel()
-        self.global_matrix = tlu_matrix.tlu_matrix()
+        if (global_lcd==None) or (global_matrix == None):
+            tlu_hardware_global.init()
+        if global_lcd == None:
+            global_lcd = tlu_lcd.lcd_panel()
+        if global_matrix == None:
+            global_matrix = tlu_matrix.tlu_matrix()
     
     def lcdMessagebyline(self,line1,line2,line1Format='center',line2Format='center'):
         """
@@ -70,8 +75,9 @@ class Global_vars():
         :param line1Format: default is center
         :param line2Format: default is center
         """
-        self.global_lcd.backlight(True)
-        self.global_lcd.messagebyline(line1=line1,line2=line2,line1_format=line1Format,line2_format=line2Format)
+        global global_lcd
+        global_lcd.backlight(True)
+        global_lcd.messagebyline(line1=line1,line2=line2,line1_format=line1Format,line2_format=line2Format)
     
     def _singleTest(self,testvalue,msg):
         """
@@ -88,9 +94,12 @@ class Global_vars():
         """
         For tests only to make sure that the globals do work as expected
         """
-        if not self._singleTest(self.global_lcd, "There has to be an lcd"):
+        global global_lcd
+        global global_matrix
+
+        if not self._singleTest(global_lcd, "There has to be an lcd"):
             return False
-        if not self._singleTest(self.global_matrix, "There has to be an matrix"):
+        if not self._singleTest(global_matrix, "There has to be an matrix"):
             return False
         return True
  
@@ -100,8 +109,9 @@ class Global_vars():
         
         :param symbol: Name of symbol to display (see tlu_matrix for details)
         """
-        self.global_matrix.brightness(2)
-        self.global_matrix.show_symbol(symbol)
+        global global_matrix
+        global_matrix.brightness(2)
+        global_matrix.show_symbol(symbol)
     
     def startClock(self):
         """ 
@@ -129,9 +139,11 @@ class Global_vars():
         """
         stops all threads, turns hardware off        
         """
+        global global_lcd
+        global global_matrix
         logging.info("Global cleanup performed")
-        self.global_lcd.clear()
-        self.global_matrix.show_symbol('space')  #turning it off
+        global_lcd.clear()
+        global_matrix.show_symbol('space')  #turning it off
         self.stopClock()
 
         

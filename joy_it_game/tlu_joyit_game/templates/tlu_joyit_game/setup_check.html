@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>tlu_joyit_game</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon_16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon_32.png">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
     <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
@@ -36,7 +38,7 @@
 {% endif %}
 {{ form.as_p }}
 <button class="btn btn-primary" type="submit">{% trans "Perform the check or move ahead" %}</button></form>
-            <div class="btn-group" role="group"><a class="btn btn-primary" role="button" style="background-color: rgb(96,81,27);" href="{% url 'tlu_joyit_game:index'  %}">{% trans 'Home' %}</a><a class="btn btn-primary" role="button" style="background-color: rgb(5,225,14);" href="{% url 'tlu_joyit_game:emailsettings'  %}">{% trans 'Change settings' %}</a></div>
+            <div class="btn-group" role="group"><a class="btn btn-primary" role="button" style="background-color: #0000ff;" href="{% url 'tlu_joyit_game:index'  %}">{% trans 'Home' %}</a><a class="btn btn-primary" role="button" style="background-color: #cccccc;" href="{% url 'tlu_joyit_game:emailsettings'  %}">{% trans 'Change settings' %}</a></div>
         </div>
     </div><div>{% include "footer_inc.html" %}{% load i18n %}</div>
     <script src="/assets/js/jquery.min.js"></script>

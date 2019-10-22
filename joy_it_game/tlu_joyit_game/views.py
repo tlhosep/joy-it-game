@@ -431,6 +431,12 @@ def settings(request):
             settings.read()  # @UndefinedVariable
             settings.setValues(form_dict)  # @UndefinedVariable
             settings.save()  # @UndefinedVariable
+            #in case the logging-settings were changed, just reload them. logging is usually set in the models-module
+            try:
+                log_level=settings.LOG_LEVEL  # @UndefinedVariable
+            except:
+                log_level=logging.INFO
+            logging.basicConfig(filename=logfile, level=log_level, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
             return HttpResponseRedirect(reverse('tlu_joyit_game:emailsettingscheck'))
         else:
             return render_to_response('setup.html', {'form': form})

@@ -13,6 +13,7 @@ import logging
 import time
 import tlu_hardware.tlu_threadDecorator
 from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
+import inspect
 
 try:
     import Adafruit_CharLCD as LCD
@@ -27,17 +28,28 @@ except ImportError:
         cols=0
         lines=0
         class Adafruit_CharLCDBackpack():
+            def caller_name(self):
+                frame=inspect.currentframe()
+                frame=frame.f_back.f_back.f_back
+                code=frame.f_code
+                s=code.co_filename+" via "
+                frame=frame.f_back
+                code=frame.f_code
+                s +=  code.co_filename
+                return s
             def __init__(self, address=0x20, busnum=0, cols=16, lines=2):
                 self.address=address
                 self.busnum=busnum
                 self.cols=cols
                 self.lines=lines
+                print("LCD initialized: "+self.caller_name())
             def set_backlight(self, off):
                 self.backlight=off
             def message(self, msg):
                 self.msg=msg
                 print("Message for LCD while in dummy mode:\n"+msg)
             def clear(self):
+                print("Message for LCD cleared while in dummy mode")
                 self.msg=""   
             def blink(self,blink):
                 self.blink=blink
@@ -91,7 +103,7 @@ class lcd_panel(tlu_hardwarebase):
         if len(msg)<1:
             self.lcd.clear()
         else:
-            self.lcd.clear()
+#            self.lcd.clear()
             self.lcd.message(msg)
         logger.info("message set to: "+msg)
     

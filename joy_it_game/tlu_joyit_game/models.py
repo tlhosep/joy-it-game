@@ -29,7 +29,11 @@ from tlu_hardware import tlu_hardware_global
 from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 
 logfile=settings.BASE_DIR+"/log/game.log"
-logging.basicConfig(filename=logfile, level=logging.INFO, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
+try:
+    log_level=settings.LOG_LEVEL  # @UndefinedVariable
+except:
+    log_level=logging.INFO
+logging.basicConfig(filename=logfile, level=log_level, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
 
 manager = Manager()
 states = manager.dict()

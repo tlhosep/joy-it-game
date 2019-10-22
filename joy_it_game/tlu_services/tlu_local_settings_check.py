@@ -27,6 +27,7 @@ def checkMailOk(self, subject='Testmail', message='Testmessage', from_email='tes
         from_email,
         [to_mail],
         )
+    
     if email.send(fail_silently=True) > 0:
         return True
     return False

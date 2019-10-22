@@ -32,11 +32,11 @@ class tlu_Menu(Menu):
         else:
             n3 = NavigationNode(_("Settings"), "/", 3)
             
-        n4 = NavigationNode(_('email settings'), "/tlu_joyit_game/emailsettings", 4, 3)
-        n5 = NavigationNode(_('change password'), "/accounts/password_change/", 5, 3)
+        n4 = NavigationNode(_('Settings'), "/tlu_joyit_game/emailsettings", 4, 3)
+        n5 = NavigationNode(_('Change password'), "/accounts/password_change/", 5, 3)
         n6 = NavigationNode("#DIVIDER#","/",6, 3)
-        n6_1 = NavigationNode(_('login'), "/accounts/login/", 7, 3)
-        n6_2 = NavigationNode(_('logout'), "/accounts/logout/", 8, 3)
+        n6_1 = NavigationNode(_('Login'), "/accounts/login/", 7, 3)
+        n6_2 = NavigationNode(_('Logout'), "/accounts/logout/", 8, 3)
         nodes.append(n1)
         nodes.append(n2)
         nodes.append(n3)
