@@ -49,7 +49,7 @@ pi@raspberrykoffer:~ $ cd Desktop/
 pi@raspberrykoffer:~/Desktop $ mkdir GAME
 pi@raspberrykoffer:~/Desktop $ cd GAME/
 pi@raspberrykoffer:~/Desktop/GAME $ git clone https://github.com/tlhosep/joy-it-game
-pi@raspberrykoffer:~/Desktop/GAME $ cd joy-it-game/
+pi@raspberrykoffer:~/Desktop/GAME $ cd joy-it-game/joy_it_game
 pi@raspberrykoffer:~/Desktop/GAME/joy-it-game/joy_it_game $ ./deploy_game.sh 
 …
 deployment of game finished!
