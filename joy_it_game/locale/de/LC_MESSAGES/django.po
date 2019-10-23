@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-21 12:05+0200\n"
-"PO-Revision-Date: 2019-10-21 12:09+0200\n"
+"POT-Creation-Date: 2019-10-23 09:32+0200\n"
+"PO-Revision-Date: 2019-10-23 09:36+0200\n"
 "Last-Translator: Thomas Lüth <th.lueth@tlc-it-consulting.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -18,16 +18,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.4\n"
 
-#: joy_it_game/settings.py:129
+#: joy_it_game/settings.py:133
 msgid "German"
 msgstr "Deutsch"
 
-#: joy_it_game/settings.py:130
+#: joy_it_game/settings.py:134
 msgid "English"
 msgstr "Englisch"
 
 #: tlu_game/tlu_level00.py:64 tlu_game/tlu_level01.py:78
-#: tlu_game/tlu_levelbase.py:225
+#: tlu_game/tlu_levelbase.py:226
 msgid "Level00 starts.."
 msgstr "Level 2 startet..."
 
@@ -41,11 +41,12 @@ msgstr "Level 00: Fehler"
 
 #: tlu_game/tlu_level01.py:59 tlu_game/tlu_level01.py:82
 #: tlu_game/tlu_level02.py:62 tlu_game/tlu_level02.py:97
-#: tlu_game/tlu_level03.py:68 tlu_game/tlu_level03.py:110
+#: tlu_game/tlu_level03.py:68 tlu_game/tlu_level03.py:71
+#: tlu_game/tlu_level03.py:115
 msgid "Level: "
 msgstr "Level: "
 
-#: tlu_game/tlu_level01.py:59 tlu_game/tlu_level03.py:68
+#: tlu_game/tlu_level01.py:59
 msgid "Key = "
 msgstr "Taste = "
 
@@ -97,31 +98,39 @@ msgstr "Level 2 fehlerhaft"
 msgid "You have passed Level 2 :)"
 msgstr "Du hast Level 2 geschafft!"
 
-#: tlu_game/tlu_level03.py:54
+#: tlu_game/tlu_level03.py:56
 msgid "You have to press Key #"
 msgstr "Bitte drücke Taste #"
 
-#: tlu_game/tlu_level03.py:73
-msgid "That was the wrong key, level terminates!"
-msgstr "Das war die falsche Taste, das Level wird abgebrochen!"
+#: tlu_game/tlu_level03.py:68
+msgid "Timeout"
+msgstr "Zeitüberschreitung"
 
-#: tlu_game/tlu_level03.py:106
+#: tlu_game/tlu_level03.py:71
+msgid "Key="
+msgstr "Taste="
+
+#: tlu_game/tlu_level03.py:76
+msgid " was the wrong key, level terminates!"
+msgstr " war die falsche Taste, das Level wird abgebrochen!"
+
+#: tlu_game/tlu_level03.py:111
 msgid "Level03 starts.."
 msgstr "Level 3 startet..."
 
-#: tlu_game/tlu_level03.py:110
+#: tlu_game/tlu_level03.py:115
 msgid "Random Keys"
 msgstr "Zufallstasten"
 
-#: tlu_game/tlu_level03.py:111
+#: tlu_game/tlu_level03.py:116
 msgid "Level 3 running"
 msgstr "Level 3 läuft"
 
-#: tlu_game/tlu_level03.py:128
+#: tlu_game/tlu_level03.py:133
 msgid "Level 3 failed"
 msgstr "Level 3 fehlerhaft"
 
-#: tlu_game/tlu_level03.py:132
+#: tlu_game/tlu_level03.py:137
 msgid "You have passed Level 3 :)"
 msgstr "Du hast Level 3 geschafft!"
 
@@ -133,19 +142,19 @@ msgstr "Spiel abgebrochen :("
 msgid "Timeout reached :("
 msgstr "Zeitüberschreitung :("
 
-#: tlu_game/tlu_levelbase.py:242
+#: tlu_game/tlu_levelbase.py:243
 msgid "Level x failed"
 msgstr "Level x fehlerhaft"
 
-#: tlu_game/tlu_levelbase.py:245
+#: tlu_game/tlu_levelbase.py:246
 msgid "Level x passed"
 msgstr "Level x erfolgreich"
 
-#: tlu_game/tlu_levelbase.py:266
+#: tlu_game/tlu_levelbase.py:267
 msgid "Level is running"
 msgstr "Level läuft"
 
-#: tlu_game/tlu_levelbase.py:270
+#: tlu_game/tlu_levelbase.py:271
 msgid "You have to login in order to play this level..."
 msgstr "Du mussst Dich anmelden um dieses Level zu spielen..."
 
@@ -171,57 +180,58 @@ msgid "About me"
 msgstr "Über mich"
 
 #: tlu_joyit_game/cms_menus.py:29
-#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:39
+#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:41
 msgid "Home"
 msgstr "Start"
 
-#: tlu_joyit_game/cms_menus.py:33
+#: tlu_joyit_game/cms_menus.py:33 tlu_joyit_game/cms_menus.py:35
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: tlu_joyit_game/cms_menus.py:35
-msgid "email settings"
-msgstr "Email Einstellungen"
-
 #: tlu_joyit_game/cms_menus.py:36
-msgid "change password"
+msgid "Change password"
 msgstr "Password ändern"
 
 #: tlu_joyit_game/cms_menus.py:38
-msgid "login"
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:35
+msgid "Login"
 msgstr "Anmeldung"
 
 #: tlu_joyit_game/cms_menus.py:39
-msgid "logout"
+msgid "Logout"
 msgstr "Abmeldung"
 
-#: tlu_joyit_game/models.py:420
+#: tlu_joyit_game/models.py:425
 msgid "not started"
 msgstr "Nicht gestartet"
 
-#: tlu_joyit_game/models.py:420
+#: tlu_joyit_game/models.py:425
 msgid "passed"
 msgstr "Erfolg"
 
-#: tlu_joyit_game/models.py:420
+#: tlu_joyit_game/models.py:425
 msgid "retry"
 msgstr "Wiederholung"
 
-#: tlu_joyit_game/models.py:420
+#: tlu_joyit_game/models.py:425
 msgid "abort"
 msgstr "Abbruch"
 
-#: tlu_joyit_game/models.py:420
+#: tlu_joyit_game/models.py:425
 msgid "failed"
 msgstr "Fehler"
 
-#: tlu_joyit_game/models.py:420
+#: tlu_joyit_game/models.py:425
 msgid "started"
 msgstr "Gestartet"
 
-#: tlu_joyit_game/models.py:420
+#: tlu_joyit_game/models.py:425
 msgid "timeout"
 msgstr "Zeitüberschreitung"
+
+#: tlu_joyit_game/models.py:425
+msgid "not finished"
+msgstr "Nicht beendet"
 
 #: tlu_joyit_game/templates/tlu_joyit_game/footer_inc.html:7
 msgid "Services"
@@ -263,16 +273,16 @@ msgstr "Linked in Profil"
 msgid "Xing profile"
 msgstr "Xing Profil"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:24
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:26
 msgid "Welcome"
 msgstr "Willkommen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:27
 msgid "Hey"
 msgstr "Hallo"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:27
 msgid ""
 ", you are now able to start the little game or to continue from where you "
 "have left off. Please press the below button to get started :) "
@@ -280,38 +290,38 @@ msgstr ""
 ", Du kannst jetzt das Spiel neu starten oder fortsetzen. Bitte drücke den "
 "Knopf unten um anzufangen. "
 
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:28
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:30
 msgid "Get started"
 msgstr "Starte jetzt"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:28
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:30
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:58
+#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:88
+msgid "Run demo"
+msgstr "Zeige Demo"
+
 #: tlu_joyit_game/templates/tlu_joyit_game/index.html:34
 #: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:56
 #: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:34
 #: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:86
-msgid "Run demo"
-msgstr "Zeige Demo"
-
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:32
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:54
-#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:32
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:84
 msgid "You have to log in"
 msgstr "Du musst Dich leider anmelden"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:33
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:55
-#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:33
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:85
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:35
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:57
+#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:35
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:87
 msgid ""
 "We are sorry, but in order to move ahead you have to log in or register "
 "yourself"
 msgstr "Du musst Dich leider anmelden oder registrieren um fortzufahren"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/index.html:34
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:56
-#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:34
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:86
+#: tlu_joyit_game/templates/tlu_joyit_game/index.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:58
+#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:88
 msgid "Log &nbsp;in"
 msgstr "Anmeldung"
 
@@ -353,230 +363,226 @@ msgstr ""
 "Jede Taste muss innerhalb von 4, runter bis zu 2 Sekunden gedrückt werden."
 "<br>Zeitlimit: 4..2 Sekunden pro Taste"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:28
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:30
 msgid "This is your task to solve the puzzle:"
 msgstr "Dieses ist Deine Herausforderung:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:38
 msgid "dip settings"
 msgstr "DIP-Einstellungen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:37
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:39
 msgid ""
 "The two dip-switches have to be set as below in order to get this level done:"
 msgstr ""
 "Die beiden DIP-Schalter müssen wir folgt gesetzt sein, damit Du das Level "
 "schaffst:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:38
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:40
 msgid "Your progress"
 msgstr "Dein Fortschritt"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:45
+#: tlu_joyit_game/templates/tlu_joyit_game/level_base.html:47
 msgid "Some information"
 msgstr "Einige Informationen für Dich"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:26
 msgid "An error occured"
 msgstr "Es trat ein Fehler auf"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:27
 msgid "We are sorry, but the following error occured"
 msgstr "Tschuldigung, aber der folgende Fehler trat auf"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:29
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:49
+#: tlu_joyit_game/templates/tlu_joyit_game/level_error.html:31
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:51
 msgid "Restart the game"
 msgstr "Neustart"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:26
 msgid "Overview"
 msgstr "Überblick"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:27
 msgid "Please find some details below:"
 msgstr "Hier sind ein paar Details:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:30
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:32
 msgid "Item"
 msgstr "Eintrag"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:31
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:33
 msgid "Value"
 msgstr "Wert"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:38
 msgid "current level"
 msgstr "Level"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:40
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:42
 msgid "last played"
 msgstr "Zuletzt gespielt"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:44
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:46
 msgid "achieved points"
 msgstr "Punkte"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:50
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:52
 msgid "You have no levels passed to list"
 msgstr "Es gibt noch keine alten Levels von Dir"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:52
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:54
 msgid "Your levels played so far"
 msgstr "Deine bisherigen Levels"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:57
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:59
 msgid "Level"
 msgstr "Level"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:58
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:60
 msgid "Started"
 msgstr "Gestartet"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:59
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:61
 msgid "Ended"
 msgstr "Beendet"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:60
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:62
 msgid "Points"
 msgstr "Punkte"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:61
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:63
 msgid "Time"
 msgstr "Zeit"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:62
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:64
 msgid "Result"
 msgstr "Ergebnis"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:63
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:65
 msgid "Action"
 msgstr "Aktion"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:75
+#: tlu_joyit_game/templates/tlu_joyit_game/level_overview.html:77
 msgid "Delete"
 msgstr "Löschen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:27
 msgid "There is no need to login again, you may log out if you wish."
 msgstr ""
 "Es gibt keinen Grund sich erneut anzumelden, aber vielleicht willst Du dich "
 "abmelden..."
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:28
 msgid "Log out"
 msgstr "Abmeldung"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:29
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:31
 msgid "Please log in"
 msgstr "Bitte melde dich an"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:30
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:32
 msgid "Please enter some details below:"
 msgstr "Bitte gebe ein paar Details an:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:33
-msgid "Login"
-msgstr "Anmeldung"
-
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:35
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:37
 msgid "Not yet registered?"
 msgstr "Noch nicht registriert?"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:38
 msgid ""
 "Please fill in some login details to get started. Press the button below..."
 msgstr "Wir benötigen nur wenige Angaben. Bitte drücke den Knopf..."
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:36
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:38
 msgid "Register now!"
 msgstr "Melde dich jetzt an!"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:38
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:40
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:27
 msgid "Forgot your password?"
 msgstr "Passwort vergessen?"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:39
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:41
 msgid "In case you do not remember your password, please press button below:"
 msgstr "Falls Du dein Kennwort vergessen hast, drücke bitte den Knopf:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:39
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/login.html:41
 msgid "Reset Password"
 msgstr "Passwort zurücksetzen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change.html:26
 #: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_form.html:25
 msgid "Change your password"
 msgstr "Passwort ändern"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change.html:27
 #: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_form.html:26
 msgid "Please enter your old and new password below:"
 msgstr "Bitte gib dein altes und dein neues Passwort ein:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change.html:28
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change.html:30
 #: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_form.html:29
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:29
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:31
 msgid "Change my password"
 msgstr "Ändere mein Passwort"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_done.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_done.html:26
 msgid "Password change complete"
 msgstr "Passwortänderung abgeschlossen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_done.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_done.html:27
 msgid "Your password has been changed. You can log in now on the "
 msgstr "Dein Passwort wurde geändert, du kannst dich jetzt anmelden. "
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_done.html:25
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_change_done.html:27
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:28
 msgid "Login page"
 msgstr "Login"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:26
 msgid "Password reset complete"
 msgstr "Passwortänderung abgeschlossen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:27
 msgid "You are now ready to go ahead"
 msgstr "Du kannst jetzt fortfahren"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_complete.html:28
 msgid "Your new password has been set. You can log in now on the "
 msgstr "Dein Passwort wurde geändert, du kannst dich jetzt anmelden. "
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:26
 msgid "New password"
 msgstr "Neues Passwort"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:27
 msgid "Please enter your new password"
 msgstr "Bitte gebe Dein neues Passwort ein"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_confirm.html:28
 msgid "Please enter your new &nbsp;password twice:"
 msgstr "Bitte gebe Dein neues Passwort zweimal ein:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_done.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_done.html:26
 msgid "Password reset email sent"
 msgstr "Du hast eine Nachricht zum Passwortändern bekommen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_done.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_done.html:27
 msgid "Please now check your inbox"
 msgstr "Bitte schaue in Deinen Posteingang"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_done.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_done.html:28
 msgid ""
 "We've emailed you instructions for setting your password. You should receive "
 "this email shortly!"
 msgstr "Wir haben Dir eben eine Email zum Setzen des Kennwortes geschickt!"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:26
 msgid "Password reset"
 msgstr "Passwort zurücksetzen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:28
 msgid ""
 "Please enter your email below and we will send you some instructions for "
 "getting a new one:"
@@ -584,15 +590,15 @@ msgstr ""
 "Bitte gebe Deine email unten ein und wir schicken Dir Informationen zum "
 "neuen Anmelden zu:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:29
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/password_reset_form.html:31
 msgid "Send me instructions"
 msgstr "Bitte sende mir die Anweisung"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:26
 msgid "Registration"
 msgstr "Registrierung"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:27
 msgid ""
 "The sign-up is only needed to store your results and to give you a name. It "
 "won't be used anywere outside of this &nbsp;game, nor will it be used to get "
@@ -601,19 +607,19 @@ msgstr ""
 "Die Anmeldung wird ausschließlich intern verwendet damit wir Deine "
 "Ergebnisse verwalten können und damit du einen Namen hast."
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:28
 msgid "Please register yourself and enter some details below:"
 msgstr "Bitte registriere dich und gebe wenige Details ein:"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:29
+#: tlu_joyit_game/templates/tlu_joyit_game/registration/register.html:31
 msgid "Register"
 msgstr "Registrierung"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/setup.html:26
 msgid "Define inital settings"
 msgstr "Grundeinstellungen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/setup.html:27
 msgid ""
 "In order to start the application the below mentioned parameter have to be "
 "checked and adopted to fit your needs. Most of them are only needed to allow "
@@ -622,15 +628,15 @@ msgstr ""
 "Damit das Spiel funktioniert, gebe bitte ein paar Einstellungen ein. Die "
 "brauchen wir hauptsächlich damit der Passwortänderungsprozess funktioniert"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup.html:29
+#: tlu_joyit_game/templates/tlu_joyit_game/setup.html:31
 msgid "Set parameter"
 msgstr "Setze Parameter"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:24
+#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:26
 msgid "Test your email settings"
 msgstr "Teste deine Emaileinstellungen"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:25
+#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:27
 msgid ""
 "As you just have defined some basic email handling it would be great to "
 "check if the paramter given do work as expected. This could be checked on "
@@ -639,7 +645,7 @@ msgstr ""
 "Da du gerade einige Email-Einstellungen vorgenommen hast, macht es Sinn die "
 "jetzt zu prüfen. Das kann mit einem Druck auf den Knopf erledigt werden :)"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:26
+#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:28
 msgid ""
 "If you did receive the email by the method decided please confirm by "
 "checkmarking and we will let you go :)"
@@ -647,11 +653,11 @@ msgstr ""
 "Wenn Du jetzt eine Email bekommen hast, hake das Kästchen ab und wir lassen "
 "Dich gehen :)"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:38
+#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:40
 msgid "Perform the check or move ahead"
 msgstr "Bitte führe die Prüfung aus und fahre fort"
 
-#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:39
+#: tlu_joyit_game/templates/tlu_joyit_game/setup_check.html:41
 msgid "Change settings"
 msgstr "Ändere Einstellungen"
 
@@ -765,7 +771,7 @@ msgstr ""
 "Tschuldigung, aber das in der URL verstecke Level passt nicht zu deinem "
 "Spielstand. Schummeln ist nicht, also Neustart ;)"
 
-#: tlu_joyit_game/views.py:456
+#: tlu_joyit_game/views.py:462
 msgid ""
 "The Mail has been successfully transmitted! Please check your inbox or the "
 "choosen medium."
@@ -773,92 +779,122 @@ msgstr ""
 "Wir haben dir eben erfolgreich eine email geschickt. Bitte prüfe deinen "
 "Posteingang."
 
-#: tlu_joyit_game/views.py:459
+#: tlu_joyit_game/views.py:465
 msgid "The Mail could not be delivered!"
 msgstr "Die Test-email kam leider nicht an!"
 
-#: tlu_joyit_game/views.py:466
+#: tlu_joyit_game/views.py:472
 msgid ""
 "We have encountered an unknown error during trying to submit the test-"
 "message: "
 msgstr "Upps, da gab es tatsächlich einen unbekannten Fehler: "
 
-#: tlu_joyit_game/views.py:472
+#: tlu_joyit_game/views.py:478
 msgid "Some parameter are wrong, please correct and try again"
 msgstr "Da stimmt was nicht, bitte korrigiere das"
 
-#: tlu_services/tlu_local_settings.py:167
+#: tlu_services/tlu_local_settings.py:171
 msgid "Usual email"
 msgstr "Normale email"
 
-#: tlu_services/tlu_local_settings.py:168
+#: tlu_services/tlu_local_settings.py:172
 msgid "Email to console"
 msgstr "Email auf Konsole"
 
-#: tlu_services/tlu_local_settings.py:169
+#: tlu_services/tlu_local_settings.py:173
 msgid "Email to file"
 msgstr "Email in Datei"
 
-#: tlu_services/tlu_local_settings.py:172
+#: tlu_services/tlu_local_settings.py:176
+msgid "Debug infos"
+msgstr "Zusatzinformationen"
+
+#: tlu_services/tlu_local_settings.py:177
+msgid "Details"
+msgstr "Details"
+
+#: tlu_services/tlu_local_settings.py:178
+msgid "All errors"
+msgstr "Alle Fehler"
+
+#: tlu_services/tlu_local_settings.py:179
+msgid "Critical errors only"
+msgstr "Nur kritische Fehler"
+
+#: tlu_services/tlu_local_settings.py:180
+msgid "Fatal errors only"
+msgstr "Nur fatale Fehler"
+
+#: tlu_services/tlu_local_settings.py:183
 msgid "Backend"
 msgstr "Backend"
 
-#: tlu_services/tlu_local_settings.py:173
+#: tlu_services/tlu_local_settings.py:184
 msgid "Host"
 msgstr "Host"
 
-#: tlu_services/tlu_local_settings.py:174
+#: tlu_services/tlu_local_settings.py:185
 msgid "Login User"
 msgstr "Anmeldebenutzer"
 
-#: tlu_services/tlu_local_settings.py:175
+#: tlu_services/tlu_local_settings.py:186
 msgid "Login user password"
 msgstr "Anmeldename und Kennwort"
 
-#: tlu_services/tlu_local_settings.py:176
+#: tlu_services/tlu_local_settings.py:187
 msgid "Port"
 msgstr "Port"
 
-#: tlu_services/tlu_local_settings.py:177
+#: tlu_services/tlu_local_settings.py:188
 msgid "Using TLS?"
 msgstr "TLS?"
 
-#: tlu_services/tlu_local_settings.py:178
+#: tlu_services/tlu_local_settings.py:189
 msgid "Path for email-file to be written"
 msgstr "Pfad für eine lokale Emaildatei"
 
-#: tlu_services/tlu_local_settings_check.py:35
+#: tlu_services/tlu_local_settings.py:191
+msgid "Logging level"
+msgstr "Log-Level"
+
+#: tlu_services/tlu_local_settings_check.py:36
 msgid "Subject"
 msgstr "Überschrift"
 
-#: tlu_services/tlu_local_settings_check.py:35
+#: tlu_services/tlu_local_settings_check.py:36
 msgid "Testmail"
 msgstr "Testpost"
 
-#: tlu_services/tlu_local_settings_check.py:36
+#: tlu_services/tlu_local_settings_check.py:37
 msgid "Some Text"
 msgstr "Irgendwas"
 
-#: tlu_services/tlu_local_settings_check.py:36
+#: tlu_services/tlu_local_settings_check.py:37
 msgid "This is a simple testmail."
 msgstr "Dieses ist eine Test-email."
 
-#: tlu_services/tlu_local_settings_check.py:37
+#: tlu_services/tlu_local_settings_check.py:38
 msgid "From(email)"
 msgstr "Absender-email"
 
-#: tlu_services/tlu_local_settings_check.py:37
 #: tlu_services/tlu_local_settings_check.py:38
+#: tlu_services/tlu_local_settings_check.py:39
 msgid "me@test.com"
 msgstr "ich@test.de"
 
-#: tlu_services/tlu_local_settings_check.py:38
+#: tlu_services/tlu_local_settings_check.py:39
 msgid "To(email)"
 msgstr "Empfangs-email"
 
-#: tlu_services/tlu_local_settings_check.py:39
+#: tlu_services/tlu_local_settings_check.py:40
 msgid "Email check passed without issues?"
 msgstr "War der Email-Check erfolgreich?"
+
+#~ msgid "email settings"
+#~ msgstr "Email Einstellungen"
+
+#~ msgid "login"
+#~ msgstr "Anmeldung"
 
 #~ msgid "Heading text"
 #~ msgstr "Überschrift"

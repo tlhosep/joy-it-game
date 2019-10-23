@@ -46,7 +46,7 @@ class local_settings():
             'EMAIL_PORT' : 1025,
             'EMAIL_USE_TLS' : False,
             'EMAIL_FILE_PATH' : os.path.dirname(os.path.realpath(self.MYBASE_DIR)),
-            'DEBUG' : False,
+#            'DEBUG' : False,
             'LOG_LEVEL' : logging.ERROR 
             }
      
@@ -67,7 +67,7 @@ class local_settings():
             self.SETTINGS['EMAIL_USE_TLS']=bool(parmdict.get('emailUseTLS'))
         if backend == 'django.core.mail.backends.filebased.EmailBackend':
             self.SETTINGS['EMAIL_FILE_PATH']=parmdict.get('emailFilePath')
-        self.SETTINGS['DEBUG']=bool(parmdict.get('debug'))
+#        self.SETTINGS['DEBUG']=bool(parmdict.get('debug'))
         self.SETTINGS['LOG_LEVEL']=int(parmdict.get('log_level'))
       
     def presence(self) -> bool:
@@ -187,6 +187,6 @@ class settingsForm(forms.Form):
     emailHostPort = forms.IntegerField(label=_("Port"), initial=settingsObject.SETTINGS["EMAIL_PORT"], required=False)
     emailUseTLS = forms.BooleanField(label=_("Using TLS?"), initial=settingsObject.SETTINGS["EMAIL_HOST"], required=False)
     emailFilePath = forms.FilePathField(label=_("Path for email-file to be written"), path = settingsObject.SITE_ROOT ,initial=settingsObject.SETTINGS["EMAIL_FILE_PATH"], recursive=True, allow_folders=True, allow_files=False, required=False)
-    debug = forms.BooleanField(label=_("Turn on debug/not for production!"),initial=settingsObject.SETTINGS["DEBUG"], required=False)
+#    debug = forms.BooleanField(label=_("Turn on debug/not for production!"),initial=settingsObject.SETTINGS["DEBUG"], required=False)
     log_level = forms.ChoiceField(label=_("Logging level"), choices=loglevellist, initial=settingsObject.SETTINGS["LOG_LEVEL"], required=True)
     

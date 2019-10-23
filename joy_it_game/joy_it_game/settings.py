@@ -30,7 +30,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'crefico+i1+0fvn!imf641_y4r==_r4#oxkh&1b7leheoeo2t*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Hint: Has to be True for the game as otherwise some web-assets would not be delivered by the test-web-server... 
 DEBUG = True
+
+# Logging-level (overwritten by setting in local_settings.py):
+LOG_LEVEL = 50  # @UnusedVariable
 
 ALLOWED_HOSTS = ['*']
 
