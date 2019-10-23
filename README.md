@@ -15,11 +15,12 @@ is no warranty that you will succeed.
 4. mkdir game or equivalent
 5. cd game
 6. download the code from github: git clone https://github.com/tlhosep/joy-it-game
-7. Once completed cd to joy-it-game
-8. run ./deploy_game.sh
+7. Once completed cd to joy-it-game/joy_it_game
+8. run ./deploy_game.sh (may take a while)
 9. Note down the chosen admin-account and its password in case you may later on need 
-   it.
-9. That's all
+   it. (The user 'admin' with Password xxx has now been created and could be used to administer the system. Please note this down.)
+10. You should see now "deployment of game finished!"
+11. That's all
 
 ## Start
 Click on the Desktop-Icon to start the little game. The browser will start and will 
