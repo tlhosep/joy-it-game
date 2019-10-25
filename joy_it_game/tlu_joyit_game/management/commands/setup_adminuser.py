@@ -11,6 +11,7 @@ See https://stackoverflow.com/questions/39744593/how-to-create-a-django-superuse
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 
 
 class Command(BaseCommand):
