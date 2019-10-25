@@ -20,9 +20,10 @@ class Command(BaseCommand):
     help = "Creates an admin user non-interactively if it doesn't exist"
 
     def add_arguments(self, parser):
-        parser.add_argument('--username', help="Admin's username", required=True)
-        parser.add_argument('--email', help="Admin's email", required=True)
-        parser.add_argument('--password', help="Admin's password", required=True)
+        parser.add_argument('--username', help=_("Admin's username"), required=True)
+        parser.add_argument('--email', help=_("Admin's email"), required=True)
+        parser.add_argument('--password', help=_("Admin's password"), required=True)
+        parser.add_argument('--language', help=_("The to be used language"), required=False)
 
     def handle(self, *args, **options):
         """

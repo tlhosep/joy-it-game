@@ -137,7 +137,7 @@ checkModule "peewee"
 checkModule "Django"
 checkModule "django-cms"
 checkModule "django-bootstrap"
-#checkModule "pynput"
+checkModule "PyInquirer"
 if [ "$NONRASPI" == "" ]; then
 	checkModule "RPi.GPIO" "opt"
 	#checkModule "django-extensions" #potentially needed for the reset_db command which we for now do not use
@@ -148,7 +148,6 @@ if [ "$NONRASPI" == "" ]; then
 	checkPackage "libpng-dev"
 	checkPackage "libfreetype6-dev"
 	checkModule "luma.led-matrix"
-#	checkPackage "rabbitmq-server"
 else
 	checkModule "fake-rpi" "mandatory" "git+https://github.com/sn4k3/FakeRPi" "sudo"
 fi

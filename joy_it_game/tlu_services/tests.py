@@ -27,10 +27,18 @@ class Test(unittest.TestCase):
             localsettings=copy.deepcopy(ls.SETTINGS)
             ls.remove()
         ls.read()
-        self.assertTrue(ls.SETTINGS['EMAIL_PORT'] == 1025, "Default port does not match")
-        self.assertTrue(ls.SETTINGS['EMAIL_HOST'] == "127.0.0.1", "Default host does not match")
-        self.assertFalse(ls.SETTINGS['EMAIL_USE_TLS'] , "Default bool TLS does not match")
-        self.assertFalse(ls.presence())  
+        try:
+            self.assertTrue(ls.SETTINGS['EMAIL_PORT'] == 587, "Default port does not match")
+            self.assertTrue(ls.SETTINGS['EMAIL_HOST'] == "127.0.0.1", "Default host does not match")
+            self.assertTrue(ls.SETTINGS['EMAIL_USE_TLS'] , "Default bool TLS does not match")
+            self.assertFalse(ls.presence())  
+        except AssertionError:
+            if localsettings is not None:
+                ls.SETTINGS=copy.deepcopy(localsettings)
+                ls.save()
+                localsettings=None
+            raise
+           
         if localsettings is not None:
             ls.SETTINGS=copy.deepcopy(localsettings)
             ls.save()
@@ -52,11 +60,27 @@ class Test(unittest.TestCase):
         ls.SETTINGS['EMAIL_USE_TLS'] = True
         ls.save()
         ls.read() 
-        self.assertTrue(ls.SETTINGS['EMAIL_PORT'] == 1111, "Default port does not match")
-        self.assertTrue(ls.SETTINGS['EMAIL_HOST'] == "127.0.0.1", "Default host does not match")
-        self.assertTrue(ls.SETTINGS['EMAIL_USE_TLS'] , "Default bool TLS does not match")
-        ls.remove()
-        self.assertFalse(ls.presence())  
+        try:
+            self.assertTrue(ls.SETTINGS['EMAIL_PORT'] == 1111, "Default port does not match")
+            self.assertTrue(ls.SETTINGS['EMAIL_HOST'] == "127.0.0.1", "Default host does not match")
+            self.assertTrue(ls.SETTINGS['EMAIL_USE_TLS'] , "Default bool TLS does not match")
+        except AssertionError:
+            if localsettings is not None:
+                ls.SETTINGS=copy.deepcopy(localsettings)
+                ls.save()
+                localsettings=None
+            raise
+        
+        try:
+            ls.remove()
+            self.assertFalse(ls.presence())  
+        except AssertionError:
+            if localsettings is not None:
+                ls.SETTINGS=copy.deepcopy(localsettings)
+                ls.save()
+                localsettings=None
+            raise
+
         if localsettings is not None:
             ls.SETTINGS=copy.deepcopy(localsettings)
             ls.save()
@@ -70,8 +94,15 @@ class Test(unittest.TestCase):
         ls.read()
         localsettings=copy.deepcopy(ls.SETTINGS)
         ls.save()
-        ls.remove()
-        self.assertFalse(ls.presence())  
+        try:
+            ls.remove()
+            self.assertFalse(ls.presence())  
+        except AssertionError:
+            if localsettings is not None:
+                ls.SETTINGS=copy.deepcopy(localsettings)
+                ls.save()
+                localsettings=None
+            raise
         if localsettings is not None:
             ls.SETTINGS=copy.deepcopy(localsettings)
             ls.save()

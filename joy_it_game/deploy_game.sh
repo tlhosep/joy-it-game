@@ -6,6 +6,20 @@ ENVNAME="pythongame"
 PWD=`pwd`
 ADAFRUIT_PATH="adafruit"
 NONRASPI=$1
+res_file="./tlu_res"
+
+get_res() {
+    if [ -f "$1" ]; then
+    	cat "$1"
+    else
+    	echo "1"
+    fi
+}
+
+lang=$(locale | grep LANG | cut -d= -f2 | cut -d_ -f1 )
+if [ ${#lang} > 2 ]; then
+	lang=$(echo $lang | cut -c 2-3 )
+fi
 
 "$PIP" -V &> /dev/null 
 if [ $? != 0 ]; then
@@ -168,7 +182,7 @@ checkModule "peewee"
 checkModule "Django"
 checkModule "django-cms"
 checkModule "django-bootstrap"
-#checkModule "pynput"
+checkModule "PyInquirer"
 if [ "$NONRASPI" == "" ]; then
 	checkModule "RPi.GPIO" "opt"
 	#checkModule "django-extensions" #potentially needed for the reset_db command which we for now do not use
@@ -179,7 +193,6 @@ if [ "$NONRASPI" == "" ]; then
 	checkPackage "libpng-dev"
 	checkPackage "libfreetype6-dev"
 	checkModule "luma.led-matrix"
-#	checkPackage "rabbitmq-server"
 else
 	checkModule "fake-rpi" "mandatory" "git+https://github.com/sn4k3/FakeRPi" "sudo"
 fi
@@ -191,7 +204,7 @@ if [ $? != 0 ]; then
 	exit 1
 fi
 echo "Checking or setting the superuser..."
-"$PYTHON" manage.py setup_adminuser --username=admin --email=fake@fake.com --password=test1234
+"$PYTHON" manage.py setup_adminuser --username=admin --email=fake@fake.com --password=test1234 --language=$lang
 if [ $? != 0 ]; then
 	echo "Something went wrong with the deployment, please try again..."
 	exit 1
@@ -199,6 +212,37 @@ fi
 echo ""
 echo "IMPORTANT:"
 echo "The user 'admin' with Password "test1234" has now been created and could be used to administer the system. Please note this down."
+echo ""
+
+echo "Define and test the settings..."
+"$PYTHON" manage.py setup_settings --editsettings=True --language=$lang 2> $res_file
+if [ $? != 0 ]; then
+	cat "$res_file"
+	echo "Something went wrong with the setup, please try again..."
+	exit 1
+fi
+retvalue=`get_res "$res_file"`
+while [ $retvalue == "1" ]; do
+	"$PYTHON" manage.py setup_settings --language=$lang 2> $res_file
+	if [ $? != 0 ]; then
+		cat "$res_file"
+		echo "Something went wrong with the setup, please try again..."
+		exit 1
+	fi
+	retvalue=`get_res "$res_file"`
+	if [ $retvalue == "1" ]; then
+		"$PYTHON" manage.py setup_settings --editsettings=True --language=$lang 2> $res_file
+		if [ $? != 0 ]; then
+			cat "$res_file"
+			echo "Something went wrong with the setup, please try again..."
+			exit 1
+		fi
+		retvalue=`get_res "$res_file"`
+	fi
+done
+
+rm "$res_file"
+
 
 if [ "$NONRASPI" == "" ]; then
 	echo "Preparing Desktop..."

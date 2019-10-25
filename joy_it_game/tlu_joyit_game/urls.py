@@ -18,11 +18,6 @@ app_name = 'tlu_joyit_game'
 urlpatterns = [
     # index is the same as the default view (blank)
     path('index', views.IndexView.as_view(), name='index'),
-    #following is the setting and checksettings section (forms)
-    path('settings', views.settings, name='settings'),
-    path('settingscheck', views.settings_check, name='settingscheck'),
-    path('emailsettings', views.SettingsView.as_view(), name='emailsettings'),
-    path('emailsettingscheck', views.SettingsCheckView.as_view(), name='emailsettingscheck'),
     # demo-page (static, no login needed)
     path('demo', views.DemoView.as_view(), name='demo'),
     # some levels / the game
@@ -38,10 +33,6 @@ urlpatterns = [
 
 # below logic is needed to show up a config page at first startup to set some mail-settings for the user-handling
 settings=tlu_local_settings.local_settings()
-if tlu_local_settings.local_settings.presence(settings):
-    startuppath=path('', views.IndexView.as_view(), name='index_main')
-else:    
-    startuppath=path('', views.SettingsView.as_view(), name='setup')
-    
-# add the respective correct path to the list of urls  
+startuppath=path('', views.IndexView.as_view(), name='index_main')   
+# add the startpath to the list of urls  
 urlpatterns.insert(0, startuppath)

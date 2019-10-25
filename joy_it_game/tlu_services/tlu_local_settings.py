@@ -39,14 +39,13 @@ class local_settings():
 
     def setDefaults(self):
         self.SETTINGS = {
-            'EMAIL_BACKEND' : 'django.core.mail.backends.smtp.EmailBackend',
+            'EMAIL_BACKEND' : 'django.core.mail.backends.console.EmailBackend',
             'EMAIL_HOST' : '127.0.0.1',
             'EMAIL_HOST_USER' : '',
             'EMAIL_HOST_PASSWORD' : '',
-            'EMAIL_PORT' : 1025,
-            'EMAIL_USE_TLS' : False,
+            'EMAIL_PORT' : 587,
+            'EMAIL_USE_TLS' : True,
             'EMAIL_FILE_PATH' : os.path.dirname(os.path.realpath(self.MYBASE_DIR)),
-#            'DEBUG' : False,
             'LOG_LEVEL' : logging.ERROR 
             }
      
@@ -70,6 +69,33 @@ class local_settings():
 #        self.SETTINGS['DEBUG']=bool(parmdict.get('debug'))
         self.SETTINGS['LOG_LEVEL']=int(parmdict.get('log_level'))
       
+    def setParm(self, settings_name, options_name, options_type, **options):
+        parm=options[options_name]
+        if None == parm:
+            return
+        if options_type == 'int':
+            parm=int(parm)
+        elif options_type == 'bool':
+            parm=bool(parm=='True')
+        self.SETTINGS[settings_name]=parm
+        
+    def setValuesFromOptions(self, **options):
+        """
+        setup the SETTINGS dictionary from the values given by the commandline-options
+        :param parmdict: settings returned from form
+        """
+        self.setParm('EMAIL_BACKEND','email_backend','str',**options)
+        backend=self.SETTINGS['EMAIL_BACKEND']
+        if backend == 'django.core.mail.backends.smtp.EmailBackend':
+            self.setParm('EMAIL_HOST', 'email_host', 'str',**options)
+            self.setParm('EMAIL_HOST_USER', 'email_host_user', 'str',**options)
+            self.setParm('EMAIL_HOST_PASSWORD', 'email_host_password', 'str',**options)
+            self.setParm('EMAIL_PORT', 'email_host_port', 'int',**options)
+            self.setParm('EMAIL_USE_TLS', 'email_use_tls', 'bool',**options)
+        if backend == 'django.core.mail.backends.filebased.EmailBackend':
+            self.setParm('EMAIL_FILE_PATH','email_file_path','str',**options)
+        self.setParm('LOG_LEVEL','log_level','bool',**options)
+
     def presence(self) -> bool:
         """
         Check if the local settings file already exists
@@ -169,7 +195,7 @@ class settingsForm(forms.Form):
     settingsObject.read()
     backendlist = (
         ('django.core.mail.backends.smtp.EmailBackend',_('Usual email')),
-        ( 'django.core.mail.backends.console.EmailBackend',_('Email to console')),
+        ('django.core.mail.backends.console.EmailBackend',_('Email to console')),
         ('django.core.mail.backends.filebased.EmailBackend',_('Email to file')),
     )
     loglevellist = (

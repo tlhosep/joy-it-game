@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>tlu_joyit_game</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon_16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon_32.png">
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
+    <link rel="stylesheet" href="/assets/fonts/ionicons.min.css">
+    <link rel="stylesheet" href="/assets/css/Article-List.css">
+    <link rel="stylesheet" href="/assets/css/Brands.css">
+    <link rel="stylesheet" href="/assets/css/Footer-Clean.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css">
+    <link rel="stylesheet" href="/assets/css/Login-Form-Dark.css">
+    <link rel="stylesheet" href="/assets/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="/assets/css/Registration-Form-with-Photo.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/Social-Icons.css">
+</head>
+
+<body>{% load i18n %}{% load menu_tags %}
+    <div id="Head" style="width: 1200px;">
+        <nav class="navbar navbar-light navbar-expand-md fixed-top navigation-clean" style="background-color: rgb(37,96,160);">
+            <div class="container"><img src="/assets/img/tlu/BW3307_24_2015_55x55_v1.png"><a class="navbar-brand" id="compname" href="https://tlc-it-consulting.com" target="_blank" style="font-size: 20px;color: rgb(254,254,254);filter: saturate(101%);">TLC IT-Consulting</a><button data-toggle="collapse"
+                    class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon" style="color: rgb(237,244,244);background-color: rgba(255,255,255,0.48);"></span></button>
+                <div class="collapse navbar-collapse"
+                    id="navcol-1">
+                    <ul class="nav navbar-nav ml-auto justify-content-end justify-content-md-center justify-content-lg-end" >
+                        <li class="nav-item" role="presentation"><div class="vertical-center lightblue rounded" style="display: inline">
+{% spaceless %}
+{% get_available_languages as LANGUAGES %}
+{% if LANGUAGES|length > 1 %}
+    {% get_current_language as cur_lang %}
+<form action="{% url 'set_language' %}" method="post" style="display: inline;">{% csrf_token %}
+    <input name="next" type="hidden" value="{{ redirect_to }}">
+    <select name="language" onchange="javascript:form.submit()">
+    {% get_language_info_list for LANGUAGES as languages %}
+    {% for language in languages %}
+        <option value="{{ language.code }}"{% if language.code == cur_lang %} selected{% endif %}>
+        {{ language.name_local }} ({{ language.code }})
+        </option>
+    {% endfor %}
+    </select>
+</form>
+{% endif %}
+{% endspaceless %}
+</div></li>
+						{% show_menu 0 100 100 100 "tlu_joyit_game/menu.html" %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div id="content" style="margin-bottom: 0px;padding-bottom: 5px;background-image: url(&quot;/assets/img/nature/image4.jpg&quot;);">{% load i18n %}{% if user.is_authenticated %} 
+        <div class="jumbotron" id="Loggedin">
+            <h1>{% trans "Welcome" %} {{ user.username }}!</h1>
+            <p>{% trans 'Hey' %} {{ user.username }}{% trans ", you are now able to start the little game or to continue from where you have left off. Please press the below button to get started :) " %}<br></p>
+            <div style="height: 140px;"><img src="/assets/img/tlu/RB-JoyPi-2g.png" style="height: 120px;"></div>
+            <p>
+                <div class="btn-group border rounded-circle shadow-sm" role="group"><a class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:levelOverview' %}" style="background-color: rgb(137,143,65);padding-bottom: 6px;">{% trans "Get started" %}</a><a class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:demo'%}">{% trans "Get impressions" %}</a></div>
+            </p>
+        </div>{% else %}
+        <div class="jumbotron text-center" id="Loggedout" style="margin-bottom: 10px;padding: 10px;">
+            <h1>{% trans "You have to log in" %}</h1>
+            <p>{% trans "We are sorry, but in order to move ahead you have to log in or register yourself" %}</p>
+            <div class="btn-group" role="group"><a class="btn btn-primary" role="button" href="{% url 'login' %}" style="background-color: rgb(19,255,14);">{% trans "Log &nbsp;in" %}</a><a class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:demo'%}">{% trans "Get impressions" %}</a></div>
+        </div><div>{% endif %}</div></div><div>    <div id="footer" class="footer-clean">
+        <footer>
+            <div class="container">
+                <div class="row justify-content-center align-items-start">
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>{% trans "Services" %}</h3>
+                        <ul>
+                            <li><a href="https://tlc-it-consulting.com/index.php/de/ueber-mich" target="_blank">{% trans "Web design" %}</a></li>
+                            <li><a href="https://tlc-it-consulting.com/index.php/de/ueber-mich" target="_blank">{% trans "Development" %}</a></li>
+                            <li><a href="https://tlc-it-consulting.com/index.php/de/ueber-mich" target="_blank">{% trans "Project Management" %}</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 col-md-3 item">
+                        <h3>{% trans "About me" %}</h3>
+                        <ul>
+                            <li><a href="https://tlc-it-consulting.com/index.php/de/ueber-mich">{% trans "Company" %}</a></li>
+                            <li><a href="https://tlc-it-consulting.com/index.php/de/projekte">{% trans "Projects" %}</a></li>
+                            <li><a href="https://tlc-it-consulting.com/index.php/de/datenschutzerklaerung">{% trans "Legal" %}</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 item social" id="social"><a class="tlu_tooltip" href="https://www.linkedin.com/in/thomaslueth/" data-toggle="tooltip" title="{% trans 'Twitter Channel' %}"><i class="icon ion-social-twitter"></i></a><a class="tlu_tooltip" href="https://www.xing.com/profile/Thomas_Lueth"
+                            data-toggle="tooltip" title="{% trans 'Linked in profile' %}"><i class="icon ion-social-linkedin"></i><div></div></a><a class="tlu_tooltip" href="https://www.xing.com/profile/Thomas_Lueth" data-toggle="tooltip" title="{% trans 'Xing profile' %}"><i class="icon ion-man"></i></a>
+                        <p
+                            class="copyright">TLC IT-Consulting © 2019</p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/tlu_helper.js"></script>
+    <script src="/assets/js/tlu_settingshelper.js"></script>
+    <script src="/assets/js/tlu_levelsupport.js"></script>
+</body>
+
+</html>

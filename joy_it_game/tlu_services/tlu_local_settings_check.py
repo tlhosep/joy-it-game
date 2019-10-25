@@ -13,7 +13,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.core.mail.message import EmailMessage
     
-def checkMailOk(self, subject='Testmail', message='Testmessage', from_email='test@test.de', to_mail='to@test.de') -> bool:
+def checkMailOk(subject='Testmail', message='Testmessage', from_email='test@test.de', to_mail='to@test.de') -> bool:
     """
     Check if the configured mail functionality works as desired
     :param subject: subject of test-email
@@ -28,7 +28,7 @@ def checkMailOk(self, subject='Testmail', message='Testmessage', from_email='tes
         [to_mail],
         )
     
-    if email.send(fail_silently=True) > 0:
+    if email.send(fail_silently=False) > 0:
         return True
     return False
     

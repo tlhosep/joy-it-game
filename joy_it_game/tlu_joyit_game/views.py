@@ -9,16 +9,13 @@ content for specific pages.
 @author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
 @created: 2019-10-01 
 """ 
-from django.shortcuts import render, get_object_or_404, render_to_response
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-from django.views.generic.edit import FormView
-from tlu_services import tlu_local_settings, tlu_local_settings_check
 from django.utils.translation import gettext as _
 from django.http.response import HttpResponseNotAllowed, JsonResponse
 import logging
-import smtplib
 from tlu_joyit_game.models import Level, getGameState, setGameState
 from django.template.defaulttags import register
 from django.contrib.auth.models import User
@@ -418,81 +415,4 @@ def deletelevel(request, level_id):
     return LevelOverview(request) #redisplay the content without the level
     
 
-def settings(request):
-    """
-    Settings-screen to setup the email basics
-    :param request: HTTP-request
-    """
-    if request.method=='POST':
-        form = tlu_local_settings.settingsForm(request.POST)
-        if form.is_valid():
-            form_dict=form.cleaned_data
-            settings=tlu_local_settings.local_settings()
-            settings.read()  # @UndefinedVariable
-            settings.setValues(form_dict)  # @UndefinedVariable
-            settings.save()  # @UndefinedVariable
-            #in case the logging-settings were changed, just reload them. logging is usually set in the models-module
-            try:
-                log_level=settings.LOG_LEVEL  # @UndefinedVariable
-            except:
-                log_level=logging.INFO
-            logging.basicConfig(filename=logfile, level=log_level, format='%(asctime)s;%(filename)-16.16s;%(lineno)04d;%(levelname)-8s;%(message)s')
-            return HttpResponseRedirect(reverse('tlu_joyit_game:emailsettingscheck'))
-        else:
-            return render_to_response('setup.html', {'form': form})
-#            return render(request, 'setup.html', {
-#               'error_message': _("Some parameter are wrong, please correct and try again")
-#                })
-    return HttpResponseNotAllowed(['GET'])
-       
-def settings_check(request):
-    """
-    Perform a quick email-check to see if the parameter provided do fit
-    :param request: HTTP-request
-    """
-    if request.method=='POST':
-        form = tlu_local_settings_check.settingsCheckForm(request.POST)
-        if form.is_valid():
-            form_dict=form.cleaned_data
-            if bool(form_dict.get('emailSuccess')):
-                return HttpResponseRedirect(reverse('tlu_joyit_game:index'))
-            try:
-                if tlu_local_settings_check.checkMailOk(form_dict.get('emailSubject'), form_dict.get('emailMessage'), form_dict.get('emailFrom'), form_dict.get('emailTo')):
-                    email_error=False
-                    email_message = _("The Mail has been successfully transmitted! Please check your inbox or the choosen medium.")
-                else:
-                    email_error=True
-                    email_message = _("The Mail could not be delivered!")
-                   
-            except smtplib.SMTPException as e:
-                email_error=True
-                email_message = e
-            except BaseException as e:
-                email_error=True
-                email_message = _("We have encountered an unknown error during trying to submit the test-message: "+ str(e))
-                
-            return render(request,'setup_check.html', {'email_error':email_error, 'email_message':email_message, 'form':form})
-                
-        else:
-            return render(request, 'setup_check.html', {
-                'error_message': _("Some parameter are wrong, please correct and try again")
-                })
-    return HttpResponseNotAllowed(['GET'])
-
-
-class SettingsView(FormView):
-    """
-    Form to get the settings
-    """
-    template_name="setup.html"
-    form_class=tlu_local_settings.settingsForm
-    success_url = 'settings'
-
-class SettingsCheckView(FormView):
-    """
-    Screen to perform the email-check and to show teh result
-    """
-    template_name="setup_check.html"
-    form_class=tlu_local_settings_check.settingsCheckForm
-    success_url = 'settingscheck'
 

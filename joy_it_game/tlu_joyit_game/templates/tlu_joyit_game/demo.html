@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon_32.png">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
-    <link rel="stylesheet" href="/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/fonts/ionicons.min.css">
     <link rel="stylesheet" href="/assets/css/Article-List.css">
     <link rel="stylesheet" href="/assets/css/Brands.css">
     <link rel="stylesheet" href="/assets/css/Footer-Clean.css">
@@ -18,40 +18,26 @@
     <link rel="stylesheet" href="/assets/css/Navigation-Clean.css">
     <link rel="stylesheet" href="/assets/css/Registration-Form-with-Photo.css">
     <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/Social-Icons.css">
 </head>
 
-<body class="d-xl-flex order-2 mb-auto justify-content-xl-center">
-    <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient" style="height: 190px;">
-        <div class="container"><img src="/assets/img/tlu/BW3307_24_2015_55x55_v1.png" style="width: 143px;"><a class="navbar-brand logo" href="https://tlc-it-consulting.com" style="padding: 25px;">TLC IT-Consulting</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navbarNav"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-            <div
-                class="collapse navbar-collapse" id="navbarNav">
-                <ul class="nav navbar-nav ml-auto">
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="{% url 'tlu_joyit_game:index' %}">Home</a></li>
-                </ul>
-        </div>
-        </div>
-    </nav>
-    <div class="article-list">
-        <div class="container-fluid text-truncate text-break">
-            <div class="intro">
-                <h2 class="text-center">Latest Articles</h2>
-                <p class="text-center" style="padding-top: 101px;">Nunc luctus in metus eget fringilla. Aliquam sed justo ligula. Vestibulum nibh erat, pellentesque ut laoreet vitae. </p>
+<body>{% include "header_inc.html" %}{% load i18n %}
+    <div id="content">
+        <h1 class="text-center">{% trans "Some impressions" %}&nbsp;</h1>
+        <p class="text-center">{% trans "Please find below some impressions of the game. It is for sure worth to give it a try. Registration is no pain and will only be used pure locally on this device." %}</p>
+    </div>
+    <div>
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-md-12"><img class="img-thumbnail img-fluid bg-white border rounded-0 border-white" src="/assets/img/tlu/level_03.png"></div>
             </div>
-            <div class="row articles">
-                <div class="col-sm-6 col-md-4 item"><a href="#"><img class="img-fluid" src="/assets/img/desk.jpg"></a>
-                    <h3 class="name">Article Title</h3>
-                    <p class="description">Aenean tortor est, vulputate quis leo in, vehicula rhoncus lacus. Praesent aliquam in tellus eu gravida. Aliquam varius finibus est, interdum justo suscipit id.</p><a class="action" href="#"><i class="fa fa-arrow-circle-right"></i></a></div>
-                <div
-                    class="col-sm-6 col-md-4 item" style="margin: 0px;padding-top: 50px;"><a href="#"><img class="img-fluid" src="/assets/img/building.jpg"></a>
-                    <h3 class="name">Article Title</h3>
-                    <p class="description">Aenean tortor est, vulputate quis leo in, vehicula rhoncus lacus. Praesent aliquam in tellus eu gravida. Aliquam varius finibus est, interdum justo suscipit id.</p><a class="action" href="#"><i class="fa fa-arrow-circle-right"></i></a></div>
-            <div
-                class="col-sm-6 col-md-4 item"><a href="#"><img class="img-fluid" src="/assets/img/loft.jpg"></a>
-                <h3 class="name">Article Title</h3>
-                <p class="description">Aenean tortor est, vulputate quis leo in, vehicula rhoncus lacus. Praesent aliquam in tellus eu gravida. Aliquam varius finibus est, interdum justo suscipit id.</p><a class="action" href="#"><i class="fa fa-arrow-circle-right"></i></a></div>
-    </div>
-    </div>
-    </div>
+            <div class="row">
+                <div class="col-md-4"><img class="img-thumbnail img-fluid" src="/assets/img/tlu/level_overview.png"></div>
+                <div class="col-md-4"><img class="img-thumbnail img-fluid" src="/assets/img/tlu/level01.png"></div>
+                <div class="col-md-4"><img class="img-thumbnail img-fluid" src="/assets/img/tlu/level_01_end.png"></div>
+            </div>
+        </div>
+    </div><div>{% include "footer_inc.html" %}{% load i18n %}</div>
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>

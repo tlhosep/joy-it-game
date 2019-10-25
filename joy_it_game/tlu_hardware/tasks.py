@@ -42,7 +42,7 @@ class Countdown(Thread):
             seconds = 99
         if seconds <= 0:
             seconds = 0.01
-        self.hundreds=seconds*100
+        self.hundreds=int(seconds*100)
         self.queue=queue
         self.sevenseg=tlu_led.seven_segment()
         tlu_globals.init()
@@ -61,7 +61,7 @@ class Countdown(Thread):
                 logger.info('Countdown restarted')
                 diff=0
                 self.has_to_restart=False
-            self.sevenseg.set4digits(self.hundreds-diff, 0)
+            self.sevenseg.set4digits(int(self.hundreds-diff), 0)
             time.sleep(0.01)
             t1=datetime.now()
             diff = int((t1-t0).total_seconds() * 100)
@@ -83,7 +83,7 @@ class Countdown(Thread):
             seconds = 99
         if seconds <= 0:
             seconds = 0.01
-        self.hundreds=seconds*100
+        self.hundreds=int(seconds*100)
         self.has_to_restart=True
  
 class CheckKey(Thread):

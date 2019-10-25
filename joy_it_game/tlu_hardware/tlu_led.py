@@ -70,7 +70,7 @@ class seven_segment(tlu_hardwarebase):
         self.segment.set_digit(1, int(int(number/100) % 10))      # Hundreds
         # Set right 2 digits
         self.segment.set_digit(2, int((number%100) / 10)) # Tens
-        self.segment.set_digit(3, number % 10)            # Ones
+        self.segment.set_digit(3, int(number % 10))            # Ones
         self.segment.set_colon(colon)
         # Write the display buffer to the hardware.  This must be called to
         # update the actual display LEDs.
