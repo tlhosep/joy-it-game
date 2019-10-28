@@ -14,7 +14,7 @@ get_res() {
     fi
 }
 
-lang=$(locale | grep LANG | cut -d= -f2 | cut -d_ -f1 )
+lang=$(locale | grep -w LANG | cut -d= -f2 | cut -d_ -f1 )
 if [ ${#lang} > 2 ]; then
 	lang=$(echo $lang | cut -c 2-3 )
 fi
