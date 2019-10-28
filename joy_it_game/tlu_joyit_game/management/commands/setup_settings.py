@@ -209,6 +209,7 @@ class Command(BaseCommand):
         The shell calls this commandline as often as needed until it returns with "0"
         """
         language=options["language"]
+        logging.debug("Language="+str(language))
         if (language != None) and (len(language)>1):
             translation.activate(language)
         settings = local_settings()
