@@ -21,6 +21,7 @@ from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 from tlu_hardware.tlu_cursor import tlu_cursor
 from tlu_hardware.tlu_buttons import tlu_buttons
 import time
+from tlu_hardware.tlu_vibration import tlu_vibrate
 
 logger=logging.getLogger(__name__)
 
@@ -82,6 +83,25 @@ class TestIO(unittest.TestCase):
         self.assertTrue(buz.noise, "Buzzer should sound now")
         buz.sound(False)
         self.assertFalse(buz.noise, "The ending status has to be false")
+        logging.debug('Test may have passed')
+
+    def test_vibration(self):
+        """
+        Test some basic vibration settings
+        """
+        logging.debug('Test started')
+        if not emulatekey:
+            diphex=tlu_hardwarebase.getDipHex(tlu_vibrate)
+            print('\ncheck the dip-settings to be like this:')
+            print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
+            time.sleep(5)
+        vib=tlu_vibrate()
+        self.assertFalse(vib.vibration, "The startup status has to be false")
+        vib.vibrate(True)
+        self.assertTrue(vib.vibration, "Board should vibrate now")
+        time.sleep(0.1)
+        vib.vibrate(False)
+        self.assertFalse(vib.vibration, "The ending status has to be false")
         logging.debug('Test may have passed')
     
     def stop(self,process,msg=''):

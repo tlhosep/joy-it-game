@@ -38,6 +38,9 @@ class tlu_hardwarebase(object):
 
     #buzzer
     buzzer_bcm = 18
+    
+    #vibration
+    vibration_bcm = 27
 
     #lcd panel
     lcd_address = 0x21

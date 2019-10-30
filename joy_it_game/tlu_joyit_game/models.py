@@ -25,8 +25,9 @@ import time
 from multiprocessing import Manager
 from tlu_services.tlu_processes import abortProcess, startProcess
 import multiprocessing
-from tlu_hardware import tlu_hardware_global
+from tlu_hardware import tlu_hardware_global, tlu_vibration
 from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
+from tlu_hardware.tlu_vibration import tlu_vibrate
 
 logfile=settings.BASE_DIR+"/log/game.log"
 try:
@@ -177,7 +178,7 @@ class Game(models.Model):
         self.dipswitch_settings=(tlu_hardwarebase.getDipHex(tlu_buttons),
                                  tlu_hardwarebase.getDipHex(tlu_buttons),
                                  tlu_hardwarebase.getDipHex(tlu_cursor),
-                                 tlu_hardwarebase.getDipHex(tlu_buttons))
+                                 tlu_hardwarebase.getDipHex(tlu_buttons)|tlu_hardwarebase.getDipHex(tlu_vibrate))
         models.Model.__init__(self, *args, **kwargs)
                     
     def __str__(self):

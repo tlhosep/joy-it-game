@@ -19,6 +19,7 @@ from tlu_services.tlu_queue import tlu_queueobject, tlu_queue
 from threading import Thread
 from tlu_game import tlu_globals
 from datetime import datetime
+from tlu_hardware.tlu_vibration import tlu_vibrate
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +173,7 @@ class Buzzer(Thread):
     def terminate(self, *args, **kwargs):
         self.is_aborted=True
         self.buz.sound(False)
-        logger.info('animated buzzer termination requested')
+        logger.info('Buzzer termination requested')
 
 class AnimatedBuzzer(Thread):
     """
@@ -270,3 +271,30 @@ class CheckCursor(Thread):
     def terminate(self, *args, **kwargs):
         self.is_aborted=True
         logger.info('CheckCursor termination requested')
+        
+class Vibrate(Thread):
+    """
+    Make tvibration
+    """
+    def __init__(self,duration_seconds): 
+        """
+        Initialization
+        :param duration_seconds: Duration of sound in seconds
+        """
+        Thread.__init__(self)
+        self.is_aborted=False
+        self.tenth=10*duration_seconds
+        self.vib=tlu_vibrate()
+        
+    def run(self, *args, **kwargs):
+        logger.info('Vibration started with duration='+str(self.tenth))
+        self.vib.vibrate(True)
+        while (self.tenth > 0) and (not getattr(self, "is_aborted", False)):
+            time.sleep(0.1)
+            self.tenth -= 1
+        self.vib.vibrate(False)
+        return Thread.run(self, *args, **kwargs)    
+    def terminate(self, *args, **kwargs):
+        self.is_aborted=True
+        self.vib.vibrate(False)
+        logger.info('vibration termination requested')
