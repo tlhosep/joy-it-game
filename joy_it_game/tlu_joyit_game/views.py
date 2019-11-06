@@ -87,6 +87,7 @@ def get_resultname(key) -> str:
         return ""
     return Level.resultdict[key]
 
+'''
 @register.filter(name='totalTime')
 def get_totaltime(level) -> str:
     """
@@ -96,7 +97,7 @@ def get_totaltime(level) -> str:
     if (level == None) or (level.level_start == None) or (level.level_ended == None):
         return "0"
     return str((level.level_ended-level.level_start).total_seconds())
-    
+'''    
     
 def LevelOverview(request):
     """
@@ -143,12 +144,17 @@ def LevelOverview(request):
             path='/tlu_joyit_game/restart'
         if (level_set == None) or (len(level_set)<1):
             button_text=_("Start now")
-        achieved_points=request.user.game.getAchievedPoints()
-        return render(request, template_name, {'levellist':level_set, 
-                                               'current_level': str(current_level_num), 
+        game=request.user.game
+        achieved_points=game.getAchievedPoints()
+        minutes_active_game=game.getMinutesPlayedCurrentGame()
+        minutes_played=game.getMinutesPlayedOverall()
+        num_starts=game.getNumStarts()
+        return render(request, template_name, {'current_level': str(current_level_num), 
                                                'last_played': last_played,
                                                'achieved_points':achieved_points,
-                                               'no_levels':(level_set==None) or (len(level_set)<1),
+                                               'minutes_active_game':str(minutes_active_game),
+                                               'minutes_played':str(minutes_played),
+                                               'num_starts':str(num_starts),
                                                'button_text':button_text,
                                                'next_level_url' : path})
     return HttpResponseNotAllowed(['POST'])

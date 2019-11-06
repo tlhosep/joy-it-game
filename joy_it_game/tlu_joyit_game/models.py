@@ -25,7 +25,7 @@ import time
 from multiprocessing import Manager
 from tlu_services.tlu_processes import abortProcess, startProcess
 import multiprocessing
-from tlu_hardware import tlu_hardware_global, tlu_vibration
+from tlu_hardware import tlu_hardware_global
 from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 from tlu_hardware.tlu_vibration import tlu_vibrate
 
@@ -241,6 +241,73 @@ class Game(models.Model):
                 achievedPoints+=level.points
             level = level.prevLevel
         return achievedPoints
+ 
+    def _seconds(self,level):
+        """
+        Internal: Calculate the number of seconds played for the specified level
+        :param level: The level in scope
+        :type level: Level object
+        """
+        if (level.level_start != None) and (level.level_ended != None):
+            return int((level.level_ended-level.level_start).total_seconds())
+        return 0
+    
+    def getSecondsPlayedPerGame(self,level):
+        """
+        Calculate the number of seconds played for a specified game
+        :param level: The final level for the game in scope
+        :type level: Level object
+        """
+        seconds=0
+        while level != None:
+            seconds+=self._seconds(level)
+            level = level.prevLevel
+        return int(seconds)
+    
+    def getMinutesPlayedCurrentGame(self):
+        """
+        Calculate the number of minutes played on the current game
+        """
+        return int(self.getSecondsPlayedPerGame(self.current_level)/60) 
+    
+    def getMinutesPlayedOverall(self):
+        """
+        Calculate the number of minutes played in total for the user
+        """
+        seconds=0
+        startcounting=True
+        try:
+            level_set=self.level_set.all().order_by('-id')
+        except (KeyError, Level.DoesNotExist):
+            level_set=None
+            return 0
+        for level in level_set:
+            if level==None:
+                continue
+            if startcounting:
+                seconds+=self.getSecondsPlayedPerGame(level)
+            if level.prevLevel==None:
+                startcounting=True
+            else:
+                startcounting=False
+        return int(seconds/60)    
+        
+    def getNumStarts(self):
+        """
+        Calculate the number of games started by this user
+        """
+        numstarts=0
+        try:
+            level_set=self.level_set.all().order_by('-id')
+        except (KeyError, Level.DoesNotExist):
+            return 0
+        for level in level_set:
+            if level==None:
+                continue
+            elif level.prevLevel==None:
+                numstarts+=1
+        return numstarts
+        
     def getState(self):
         """
         Service wrapper to return the game-state

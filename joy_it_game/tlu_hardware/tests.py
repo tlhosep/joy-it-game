@@ -46,7 +46,7 @@ class TestQueue(tlu_queue.tlu_queue):
                 logging.debug("KEYPRESSED message received with number "+str(queueobject.msg_info))
                 key_num=queueobject.msg_info
                 ok=key_num in [1,100,200,300,400]
-                testio.assertTrue(ok,"Key has to be 1 or any cursor")
+                testio.assertTrue(ok,"Key has to be 1 or any cursor, key received="+str(key_num))
                 return
             elif queueobject.msg_num == self.MSG_TIMEOUT:
                 # Timeout will be raised in test test_countdown_timeout
@@ -163,7 +163,7 @@ class TestIO(unittest.TestCase):
             print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
             time.sleep(5)
             print('Press the upper left key of the 16key-field')
-        ck=CheckKey(queue, 10.0)
+        ck=CheckKey(queue, 15.0)
         startThreadClass(ck)
         self.assertNotEqual(ck, None, "Process could not be established")
         queue.myrun(self) #breaks/terminates once timeout reached or key pressed ;)

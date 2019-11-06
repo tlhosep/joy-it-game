@@ -36,52 +36,32 @@
         </thead>
         <tbody>
             <tr>
-                <td>{% trans "current level" %}</td>
+                <td>{% trans "Current level" %}</td>
                 <td>{{ current_level }}</td>
             </tr>
             <tr>
-                <td>{% trans "last played" %}</td>
+                <td>{% trans "Last played" %}</td>
                 <td>{{ last_played }}</td>
             </tr>
             <tr>
-                <td>{% trans "achieved points" %}</td>
+                <td>{% trans "Achieved points" %}</td>
                 <td>{{ achieved_points }}</td>
             </tr>
+            <tr>
+                <td>{% trans "Minutes played this game" %}</td>
+                <td>{{ minutes_active_game }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Minutes played overall" %}</td>
+                <td>{{ minutes_played }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Number of games played" %}</td>
+                <td>{{ num_starts }}</td>
+            </tr>
         </tbody>
     </table>
-</div><a class="btn btn-primary" role="button" id="startbutton" href="{{ next_level_url }}">{{ button_text }}</a><a class="btn btn-primary" role="button" id="startbutton" href="{% url 'tlu_joyit_game:restart'  %}">{% trans 'Restart the game' %}</a>{% if no_levels %}
-<h3>{% trans "You have no levels passed to list" %}</h3>
-{% else %}
-<h3>{% trans "Your levels played so far" %}</h3>
-<div class="table-responsive" style="height: 200px">
-    <table class="table" id="listtable">
-        <thead>
-            <tr>
-                <th>{% trans "Level" %}</th>
-                <th>{% trans "Started" %}</th>
-                <th>{% trans "Ended" %}</th>
-                <th>{% trans "Points" %}</th>
-                <th>{% trans "Time" %}</th>
-                <th>{% trans "Result" %}</th>
-                <th>{% trans "Action" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for level in levellist %}
-            <tr>
-                <td>{{ level.levelnum }}</td>
-                <td>{{ level.level_start }}</td>
-                <td>{{ level.level_ended }}</td>
-                <td>{{ level.points }}</td>
-                <td>{{ level|totalTime}}</td>
-                <td>{{ level.result|levelConvert }}</td>
-                <td><a id="delbutton" class="btn btn-primary" role="button" href="{% url 'tlu_joyit_game:deletelevel' level_id=level.id %}">{% trans 'Delete' %}</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endif %}</div>
+</div><a class="btn btn-primary" role="button" id="startbutton" href="{{ next_level_url }}">{{ button_text }}</a><a class="btn btn-primary" role="button" id="startbutton" href="{% url 'tlu_joyit_game:restart'  %}">{% trans 'Restart the game' %}</a></div>
         </div>{% else %}
         <div class="jumbotron text-center" id="Loggedout" style="margin-bottom: 10px;padding: 10px;">
             <h1>{% trans "You have to log in" %}</h1>

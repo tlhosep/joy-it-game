@@ -43,8 +43,17 @@ def init():
     Initialization of the globally used manager.
     """
     global globHardwareMgr
-    if globHardwareMgr == None:
-        GlobHardwareManager.register('tlu_hardware_glob',Global_hardware_vars)
-        globHardwareMgr=GlobHardwareManager()
-        globHardwareMgr.start()
-        logging.debug("GlobHardwareMgr started")
+    while True:
+        if globHardwareMgr == None:
+            GlobHardwareManager.register('tlu_hardware_glob',Global_hardware_vars)
+            globHardwareMgr=GlobHardwareManager()
+            globHardwareMgr.start()
+            logging.debug("GlobHardwareMgr started")
+            return
+        else:
+            try:
+                globHardwareMgr.connect()
+                return
+            except:
+                globHardwareMgr=None
+                
