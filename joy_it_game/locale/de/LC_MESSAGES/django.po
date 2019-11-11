@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-11 12:07+0100\n"
-"PO-Revision-Date: 2019-11-11 11:52+0100\n"
+"POT-Creation-Date: 2019-11-11 12:51+0100\n"
+"PO-Revision-Date: 2019-11-11 12:52+0100\n"
 "Last-Translator: Thomas Lüth <th.lueth@tlc-it-consulting.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -40,8 +40,8 @@ msgstr "Level 0: Fehler"
 
 #: tlu_game/tlu_level01.py:59 tlu_game/tlu_level01.py:82
 #: tlu_game/tlu_level02.py:62 tlu_game/tlu_level02.py:97
-#: tlu_game/tlu_level03.py:74 tlu_game/tlu_level03.py:77
-#: tlu_game/tlu_level03.py:121 tlu_game/tlu_level04.py:106
+#: tlu_game/tlu_level03.py:76 tlu_game/tlu_level03.py:79
+#: tlu_game/tlu_level03.py:123 tlu_game/tlu_level04.py:106
 #: tlu_game/tlu_level04.py:200
 msgid "Level: "
 msgstr "Level: "
@@ -102,41 +102,39 @@ msgstr "Level 2 fehlerhaft"
 msgid "You have passed Level 2 :)"
 msgstr "Du hast Level 2 geschafft!"
 
-#: tlu_game/tlu_level03.py:61
+#: tlu_game/tlu_level03.py:62
 msgid "You have to press Key #"
 msgstr "Bitte drücke Taste #"
 
-#: tlu_game/tlu_level03.py:74 tlu_game/tlu_level04.py:106
+#: tlu_game/tlu_level03.py:76 tlu_game/tlu_level04.py:106
 msgid "Timeout"
 msgstr "Zeitüberschreitung"
 
-#: tlu_game/tlu_level03.py:77
-#, fuzzy
-#| msgid "Key="
+#: tlu_game/tlu_level03.py:79
 msgid "Key= "
-msgstr "Taste="
+msgstr "Taste= "
 
-#: tlu_game/tlu_level03.py:82
+#: tlu_game/tlu_level03.py:84
 msgid " was the wrong key, level terminates!"
 msgstr " war die falsche Taste, das Level wird abgebrochen!"
 
-#: tlu_game/tlu_level03.py:117
+#: tlu_game/tlu_level03.py:119
 msgid "Level03 starts.."
 msgstr "Level 3 startet..."
 
-#: tlu_game/tlu_level03.py:121
+#: tlu_game/tlu_level03.py:123
 msgid "Random Keys"
 msgstr "Zufallstasten"
 
-#: tlu_game/tlu_level03.py:122
+#: tlu_game/tlu_level03.py:124
 msgid "Level 3 running"
 msgstr "Level 3 läuft"
 
-#: tlu_game/tlu_level03.py:139
+#: tlu_game/tlu_level03.py:141
 msgid "Level 3 failed"
 msgstr "Level 3 fehlerhaft"
 
-#: tlu_game/tlu_level03.py:144
+#: tlu_game/tlu_level03.py:146
 msgid "You have passed Level 3 :)"
 msgstr "Du hast Level 3 geschafft!"
 
