@@ -14,7 +14,7 @@ The first level introduces simply the 16 keys
 
 import logging
 from django.utils.translation import gettext as _
-from django.utils import timezone
+from django.utils import timezone, translation
 from tlu_joyit_game.models import Level
 
 from tlu_joyit_game import models
@@ -33,13 +33,14 @@ class Level01(LevelBase):
     You have to press each button once
     """
     class GameQueue(LevelBase.GameQueue):
-        def run(self, stop_event, gameProcess, hardware):  # @UnusedVariable
+        def run(self, stop_event, gameProcess, hardware, language):  # @UnusedVariable
             """ Queue loop for level 1
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
             """
+            translation.activate(language)
             keymatrix={}
             thread=threading.currentThread()
             glob=tlu_globals.globMgr.tlu_glob()

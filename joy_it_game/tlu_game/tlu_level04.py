@@ -34,7 +34,7 @@ In this level the player has to touch the touchpad and is receiving these instru
 
 import logging
 from django.utils.translation import gettext as _
-from django.utils import timezone
+from django.utils import timezone, translation
 from tlu_joyit_game.models import Level
 
 from tlu_joyit_game import models
@@ -74,13 +74,14 @@ class Level04(LevelBase):
                 return -1
 
             
-        def run(self, stop_event, gameProcess, hardware):
+        def run(self, stop_event, gameProcess, hardware, language):
             """ Queue loop for level 4
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
             """
+            translation.activate(language)
             key=-1
             state=1
             thread=threading.currentThread()

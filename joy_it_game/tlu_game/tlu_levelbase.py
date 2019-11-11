@@ -19,7 +19,7 @@ from tlu_services.tlu_threads import abortThread, startThread
 from tlu_hardware.tasks import Countdown
 from tlu_joyit_game import models
 from tlu_joyit_game.models import Level, userOk, getGameState
-from django.utils import timezone
+from django.utils import timezone, translation
 import logging
 from tlu_services import tlu_queue
 import time
@@ -142,7 +142,7 @@ class LevelBase(Process):
                 return True
             return False
             
-        def run(self,stop_event, gameProcess, hardware):
+        def run(self,stop_event, gameProcess, hardware, language):
             """
             Main game-loop
             Use this code as a *template* for your implementation only
@@ -150,7 +150,7 @@ class LevelBase(Process):
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
             """
-
+            translation.activate(language)
             thread=threading.currentThread()
             while True:
                 (queueobject,breakIndicator)=self.getQueueObject(stop_event, gameProcess, thread)
@@ -274,7 +274,9 @@ class LevelBase(Process):
         queue=self.GameQueue()
         stop_event=Event()
         hardware=self.prepareGame(status, queue)
-        qThread=startThread(queue.run, args=(stop_event,self,hardware,), name="queue_for_level") #needed to loop through the messages
+        language=translation.get_language()
+        #print(str(language))
+        qThread=startThread(queue.run, args=(stop_event,self,hardware,language,), name="queue_for_level") #needed to loop through the messages
         
         stop_event.wait() #wait until queues stops processing or level gets terminated
         stop_event.clear()

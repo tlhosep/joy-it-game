@@ -13,7 +13,7 @@ If one key was wrong, the  whole level fails
 
 import logging
 from django.utils.translation import gettext as _
-from django.utils import timezone
+from django.utils import timezone, translation
 from tlu_joyit_game.models import Level
 
 from tlu_joyit_game import models
@@ -36,13 +36,14 @@ class Level03(LevelBase):
     You have to press each named button once, within decreasing timelimits
     """
     class GameQueue(LevelBase.GameQueue):
-        def run(self, stop_event, gameProcess, hardware):
+        def run(self, stop_event, gameProcess, hardware, language):
             """ Queue loop for level 3
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
             """
+            translation.activate(language)
             key=-1
             numkeys=0
             secondstiltimeout=4

@@ -14,7 +14,7 @@ The game consists of some actions to be performed on the joy-it toolset in order
 
 import logging
 from django.utils.translation import gettext as _
-from django.utils import timezone
+from django.utils import timezone, translation
 from tlu_joyit_game.models import Level
 from tlu_joyit_game import models
 from tlu_hardware.tasks import Countdown
@@ -32,14 +32,14 @@ class Level00(LevelBase):
     end-user interaction
     """
     class GameQueue(LevelBase.GameQueue):
-        def run(self, stop_event, gameProcess, hardware):
+        def run(self, stop_event, gameProcess, hardware, language):
             """ Main loop for Testing the game
             Main
             :param stop_event: event coming from main-loop, once set, level will terminate
             :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
             :param hardware: list of started threads
             """
-
+            translation.activate(language)
             thread=threading.currentThread()
             (timer,)=hardware  # @UnusedVariable
             while True:
