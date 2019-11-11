@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-11 15:47+0100\n"
-"PO-Revision-Date: 2019-11-11 15:56+0100\n"
+"PO-Revision-Date: 2019-11-11 16:12+0100\n"
 "Last-Translator: Thomas Lüth <th.lueth@tlc-it-consulting.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -108,7 +108,7 @@ msgstr "Bitte drücke Taste #"
 
 #: tlu_game/tlu_level03.py:77 tlu_game/tlu_level04.py:107
 msgid "Timeout"
-msgstr "Zeitüberschreitung"
+msgstr "Zeit abgelaufen"
 
 #: tlu_game/tlu_level03.py:80
 msgid "Key="
@@ -478,7 +478,7 @@ msgstr "Gestartet"
 
 #: tlu_joyit_game/models.py:495
 msgid "timeout"
-msgstr "Zeitüberschreitung"
+msgstr "Zeit abgelaufen"
 
 #: tlu_joyit_game/models.py:495
 msgid "not finished"

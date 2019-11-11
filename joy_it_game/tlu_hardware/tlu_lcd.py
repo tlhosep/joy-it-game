@@ -136,7 +136,7 @@ class lcd_panel(tlu_hardwarebase):
             fc='{:^'+str(lx)+'}'
             fr='{:>'+str(lx)+'}'
             if l>lx:
-                return msg[0:lx-1]
+                return msg[:lx] #return only 16chars 
             elif form=='left':
                 return fl.format(msg)
             elif form=='center':
