@@ -5,6 +5,7 @@ PYTHON="python3"
 ENVNAME="pythongame"
 PWD=`pwd`
 res_file="./tlu_res"
+language=$1
 
 get_res() {
     if [ -f "$1" ]; then
@@ -17,6 +18,10 @@ get_res() {
 lang=$(locale | grep -w LANG | cut -d= -f2 | cut -d_ -f1 )
 if [ ${#lang} == 3 ]; then
 	lang=$(echo $lang | cut -c 2-3 )
+fi
+
+if [ ${#language} == 2 ]; then
+	lang=$language
 fi
 
 "$PIP" -V &> /dev/null 
