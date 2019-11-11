@@ -56,10 +56,10 @@ class Level01(LevelBase):
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
                     break
                 elif queueobject.msg_num == self.MSG_KEYPRESSED:
-                    glob.lcdMessagebyline(_("Level: ")+"01", _("Key = ")+str(queueobject.msg_info))
+                    glob.lcdMessagebyline(_("Level: ")+"01", str(_("Key = "))+str(queueobject.msg_info))
                     keymatrix[queueobject.msg_info]=1
                     status=models.getGameState(gameProcess.user_id)
-                    status.msg=_("You have just pressed Key #")+str(queueobject.msg_info)
+                    status.msg=str(_("You have just pressed Key #"))+str(queueobject.msg_info)
                     status.level_progress=int(len(keymatrix)/16*100)
                     models.setGameState(gameProcess.user_id, status)
                 elif queueobject.msg_num == self.MSG_KEYRELEASED:
@@ -75,12 +75,12 @@ class Level01(LevelBase):
         kbd=CheckKey(queue)
         startThreadClass(kbd)
         timer=Countdown(queue,16)
-        status.msg=_("Level01 starts..")
+        status.msg=str(_("Level01 starts.."))
         models.setGameState(self.user_id, status)
         startThreadClass(timer)
         glob=tlu_globals.globMgr.tlu_glob()
-        glob.lcdMessagebyline(_("Level: ")+"01", _("Easy start ")+":)")
-        status.msg=(_("Level 1 running"))
+        glob.lcdMessagebyline(_("Level: ")+"01", str(_("Easy start "))+":)")
+        status.msg=str(_("Level 1 running"))
         status.level_start=timezone.now()
         status.level_progress=0
         models.setGameState(self.user_id, status)

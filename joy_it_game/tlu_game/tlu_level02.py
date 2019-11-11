@@ -59,7 +59,7 @@ class Level02(LevelBase):
                     break
                 elif queueobject.msg_num == self.MSG_KEYPRESSED:
                     glob=tlu_globals.globMgr.tlu_glob()
-                    glob.lcdMessagebyline(_("Level: ")+"02", _("Cursor = ")+tlu_cursor.cursorname(None, queueobject.msg_info))
+                    glob.lcdMessagebyline(_("Level: ")+"02", str(_("Cursor = "))+tlu_cursor.cursorname(None, queueobject.msg_info))
                     keymatrix[queueobject.msg_info]=1
                     symbolname='space'
                     if queueobject.msg_info==100:
@@ -73,7 +73,7 @@ class Level02(LevelBase):
                     
                     glob.matrixShow_symbol(symbolname)
                     status=models.getGameState(gameProcess.user_id)
-                    status.msg=_("You have just pressed cursor - ")+tlu_cursor.cursorname(None, queueobject.msg_info)
+                    status.msg=str(_("You have just pressed cursor - "))+tlu_cursor.cursorname(None, queueobject.msg_info)
                     status.level_progress=int(len(keymatrix)/4*100)
                     models.setGameState(gameProcess.user_id, status)
                     time.sleep(0.5) #wait for messages to settle
@@ -90,12 +90,12 @@ class Level02(LevelBase):
         cc=CheckCursor(queue)
         startThreadClass(cc)
         timer=Countdown(queue,4)
-        status.msg=_("Level 2 starts..")
+        status.msg=str(_("Level 2 starts.."))
         models.setGameState(self.user_id, status)
         startThreadClass(timer)
         glob=tlu_globals.globMgr.tlu_glob()
-        glob.lcdMessagebyline(_("Level: ")+"02", _("Cursorkeys"))
-        status.msg=(_("Level 2 running"))
+        glob.lcdMessagebyline(_("Level: ")+"02", str(_("Cursorkeys")))
+        status.msg=str(_("Level 2 running"))
         status.level_progress=0
         status.level_start=timezone.now()
         models.setGameState(self.user_id, status)

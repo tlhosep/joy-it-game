@@ -18,7 +18,7 @@ from tlu_joyit_game.models import Level
 
 from tlu_joyit_game import models
 
-from tlu_hardware.tasks import Countdown, CheckKey, Buzzer, Vibrate
+from tlu_hardware.tasks import Countdown, CheckKey, Buzzer
 from tlu_game.tlu_levelbase import LevelBase
 import threading
 from tlu_services.tlu_threads import abortThread, startThreadClass
@@ -59,7 +59,7 @@ class Level03(LevelBase):
                 if key == -1:
                     key=randint(1,16)
                     status=models.getGameState(gameProcess.user_id)
-                    m=_("You have to press Key #")
+                    m=str(_("You have to press Key #"))
                     status.msg=str(numkeys)+": "+m+str(key)
                     status.level_progress=int(numkeys/20*100)
                     models.setGameState(gameProcess.user_id, status)
@@ -73,15 +73,15 @@ class Level03(LevelBase):
                 self.queue.task_done() #release object from queue
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
                     if queueobject.msg_num==tlu_queue.MSG_TIMEOUT:
-                        glob.lcdMessagebyline(_("Level: ")+"03", _("Timeout")+" :(")
+                        glob.lcdMessagebyline(_("Level: ")+"03", str(_("Timeout"))+" :(")
                     break
                 if queueobject.msg_num == self.MSG_KEYPRESSED:
-                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key= ")+str(queueobject.msg_info)+"/"+str(key))
+                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+str(_("Key= "))+str(queueobject.msg_info)+"/"+str(key))
                     if key != queueobject.msg_info:
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=0
                         status.result=Level.DIDNOTFINISH
-                        status.msg="#"+str(queueobject.msg_info)+_(" was the wrong key, level terminates!")
+                        status.msg="#"+str(queueobject.msg_info)+str(_(" was the wrong key, level terminates!"))
                         models.setGameState(gameProcess.user_id, status)
                         logging.info("Wrong Key:"+str(key)+" instead of:"+str(queueobject.msg_info))
                         stop_event.set()
@@ -116,12 +116,12 @@ class Level03(LevelBase):
         kbd=CheckKey(queue)
         startThreadClass(kbd)
         timer=Countdown(queue,4)
-        status.msg=_("Level03 starts..")
+        status.msg=str(_("Level03 starts.."))
         models.setGameState(self.user_id, status)
         startThreadClass(timer)
         glob=tlu_globals.globMgr.tlu_glob()
-        glob.lcdMessagebyline(_("Level: ")+"03", _("Random Keys"))
-        status.msg=(_("Level 3 running"))
+        glob.lcdMessagebyline(_("Level: ")+"03", str(_("Random Keys")))
+        status.msg=str(_("Level 3 running"))
         status.level_start=timezone.now()
         status.level_progress=0
         models.setGameState(self.user_id, status)

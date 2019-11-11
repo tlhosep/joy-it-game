@@ -39,7 +39,7 @@ from tlu_joyit_game.models import Level
 
 from tlu_joyit_game import models
 
-from tlu_hardware.tasks import Countdown, CheckKey, Buzzer, Vibrate, CheckTouch
+from tlu_hardware.tasks import Countdown, CheckKey, Buzzer, CheckTouch
 from tlu_game.tlu_levelbase import LevelBase
 import threading
 from tlu_services.tlu_threads import abortThread, startThreadClass
@@ -69,7 +69,7 @@ class Level04(LevelBase):
             if queueobject.msg_num == self.MSG_TOUCH_PRESSED:
                 return state + 1
             else:
-                self.msg(gameProcess,_("Sorry, wrong key!"),int(state/12),-1,True)
+                self.msg(gameProcess,str(_("Sorry, wrong key!")),int(state/12),-1,True)
                 stop_event.set()
                 return -1
 
@@ -103,7 +103,7 @@ class Level04(LevelBase):
                 self.queue.task_done() #release object from queue
                 if self.checkAbort(stop_event,gameProcess,thread,queueobject):
                     if queueobject.msg_num==tlu_queue.MSG_TIMEOUT:
-                        glob.lcdMessagebyline(_("Level: ")+"04", _("Timeout")+" :(")
+                        glob.lcdMessagebyline(str(_("Level: "))+"04", str(_("Timeout"))+" :(")
                     break
                 print("State="+str(state)+" "+str(queueobject))
                 if queueobject.msg_num==tlu_queue.MSG_KEYRELEASED:
@@ -114,18 +114,18 @@ class Level04(LevelBase):
                     state = self.checktouch(queueobject,state,gameProcess,stop_event)
                     if -1 == state:
                         break
-                    self.msg(gameProcess,_("Please press key #"),int(state/8),key)
+                    self.msg(gameProcess,str(_("Please press key #")),int(state/8),key)
                     timer.changeSecondsAndRestart(3)
                 elif state == 2:
                     #state 3: wait for key
                     if (queueobject.msg_num == self.MSG_KEYPRESSED) and (key == queueobject.msg_info):
                         timer.pause()
                         key = -1
-                        self.msg(gameProcess,_("Please touch to continue"),int(state/8))
+                        self.msg(gameProcess,str(_("Please touch to continue")),int(state/8))
                         state += 1
                     else:
                         timer.pause()
-                        self.msg(gameProcess,_("Sorry, wrong key!"),int(state/8),-1,True)
+                        self.msg(gameProcess,str(_("Sorry, wrong key!")),int(state/8),-1,True)
                         stop_event.set()
                         break
                 elif state == 3:
@@ -133,7 +133,7 @@ class Level04(LevelBase):
                     state = self.checktouch(queueobject,state,gameProcess,stop_event)
                     if -1 == state:
                         break
-                    self.msg(gameProcess,_("Please press touch two times within 4 seconds"),int(state/8))
+                    self.msg(gameProcess,str(_("Please press touch two times within 4 seconds")),int(state/8))
                     timer.changeSecondsAndRestart(4)
                 elif state == 4:
                     #state 4 wait for touch
@@ -146,18 +146,18 @@ class Level04(LevelBase):
                     state = self.checktouch(queueobject,state,gameProcess,stop_event)
                     if -1 == state:
                         break
-                    self.msg(gameProcess,_("Please press key #"),int(state/8),key)
+                    self.msg(gameProcess,str(_("Please press key #")),int(state/8),key)
                     timer.changeSecondsAndRestart(2.5)
                 elif state == 6:
                     #state 6: wait for key
                     if (queueobject.msg_num == self.MSG_KEYPRESSED) and (key == queueobject.msg_info):
                         timer.pause()
                         key = -1
-                        self.msg(gameProcess,_("Please touch to continue"),int(state/8))
+                        self.msg(gameProcess,str(_("Please touch to continue")),int(state/8))
                         state += 1
                     else:
                         timer.pause()
-                        self.msg(gameProcess,_("Sorry, wrong key!"),int(state/8),-1,True)
+                        self.msg(gameProcess,str(_("Sorry, wrong key!")),int(state/8),-1,True)
                         stop_event.set()
                         break
                 elif state == 7:
@@ -172,11 +172,11 @@ class Level04(LevelBase):
                     if (queueobject.msg_num == self.MSG_KEYPRESSED) and (key == queueobject.msg_info):
                         timer.pause()
                         key = -1
-                        self.msg(gameProcess,_("You have passed! :)"),int(state/8))
+                        self.msg(gameProcess,str(_("You have passed! :)")),int(state/8))
                         state += 1
                     else:
                         timer.pause()
-                        self.msg(gameProcess,_("Sorry, wrong key!"),int(state/8),-1,True)
+                        self.msg(gameProcess,str(_("Sorry, wrong key!")),int(state/8),-1,True)
                         stop_event.set()
                         break
 
@@ -194,11 +194,11 @@ class Level04(LevelBase):
         startThreadClass(timer)
         touch=CheckTouch(queue)
         startThreadClass(touch)
-        status.msg=_("Level04 starts..")
+        status.msg=str(_("Level04 starts.."))
         models.setGameState(self.user_id, status)
         glob=tlu_globals.globMgr.tlu_glob()
         glob.lcdMessagebyline(_("Level: ")+"04", _("Touchpad"))
-        status.msg=(_("Level 4 running"))
+        status.msg=str(_("Level 4 running"))
         status.level_start=timezone.now()
         status.level_progress=0
         models.setGameState(self.user_id, status)
