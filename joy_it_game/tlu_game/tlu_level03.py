@@ -132,12 +132,9 @@ class Level03(LevelBase):
         (timer,kbd,)=hardware
         glob=tlu_globals.globMgr.tlu_glob()
         buz=None
-        vib=None
         if status.result != None and status.result!=Level.PASSED:
             buz=Buzzer(0.1)
-            vib=Vibrate(0.1)
             startThreadClass(buz)
-            startThreadClass(vib)
             status.msg=str(_("Level 3 failed"))
             status.level_progress=0
             glob.matrixShow_symbol('triangle_down')
@@ -153,6 +150,5 @@ class Level03(LevelBase):
         abortThread(kbd, 1, "aborting Keyboard")
         abortThread(timer, 1, "aborting countdown")
         abortThread(buz, 0.5, "aborting Buzzer")
-        abortThread(vib, 0.5, "aborting Vibration")
     
     

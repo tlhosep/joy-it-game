@@ -113,7 +113,7 @@ class TestIO(unittest.TestCase):
         logging.debug('Test started')
         if not emulatekey:
             diphex=tlu_hardwarebase.getDipHex(tlu_vibrate)
-            print('\ncheck the dip-settings to be like this:')
+            print('\nFor vibration check the dip-settings to be like this:')
             print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
             time.sleep(5)
         vib=tlu_vibrate()
@@ -193,7 +193,7 @@ class TestIO(unittest.TestCase):
         queue=TestQueue()
         if not emulatekey:
             diphex=tlu_hardwarebase.getDipHex(tlu_buttons)
-            print('\ncheck the dip-settings to be like this:')
+            print('\nFor Keys check the dip-settings to be like this:')
             print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
             time.sleep(5)
             print('Press the upper left key of the 16key-field')
@@ -237,7 +237,7 @@ class TestIO(unittest.TestCase):
         queue=TestQueue()
         if not emulatekey:
             diphex=tlu_hardwarebase.getDipHex(tlu_cursor)
-            print('\ncheck the dip-settings to be like this:')
+            print('\nFor cursor check the dip-settings to be like this:')
             print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
             time.sleep(5)
             print('Please press any of the four cursor-keys to continue')
@@ -253,10 +253,7 @@ class TestIO(unittest.TestCase):
         """
         queue=TestQueue()
         if not emulatekey:
-            diphex=tlu_hardwarebase.getDipHex(tlu_touch)
-            print('\ncheck the dip-settings to be like this:')
-            print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
-            time.sleep(5)
+            time.sleep(1)
             print('Please touch the touchpad to continue')
         ct=CheckTouch(queue, 5.0)
         startThreadClass(ct)

@@ -179,8 +179,8 @@ class Game(models.Model):
         self.dipswitch_settings=(tlu_hardwarebase.getDipHex(tlu_buttons),
                                  tlu_hardwarebase.getDipHex(tlu_buttons),
                                  tlu_hardwarebase.getDipHex(tlu_cursor),
-                                 tlu_hardwarebase.getDipHex(tlu_buttons)|tlu_hardwarebase.getDipHex(tlu_vibrate),
-                                 tlu_hardwarebase.getDipHex(tlu_buttons)|tlu_hardwarebase.getDipHex(tlu_vibrate)|tlu_hardwarebase.getDipHex(tlu_touch))
+                                 tlu_hardwarebase.getDipHex(tlu_buttons),
+                                 tlu_hardwarebase.getDipHex(tlu_buttons)|tlu_hardwarebase.getDipHex(tlu_touch))
         models.Model.__init__(self, *args, **kwargs)
                     
     def __str__(self):
