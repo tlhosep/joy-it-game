@@ -77,7 +77,7 @@ class Level03(LevelBase):
                         glob.lcdMessagebyline(_("Level: ")+"03", str(_("Timeout"))+" :(")
                     break
                 if queueobject.msg_num == self.MSG_KEYPRESSED:
-                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+str(_("Key= "))+str(queueobject.msg_info)+"/"+str(key))
+                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+str(_("Key="))+str(queueobject.msg_info)+"/"+str(key))
                     if key != queueobject.msg_info:
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=0

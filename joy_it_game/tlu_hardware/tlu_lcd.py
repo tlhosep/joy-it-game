@@ -131,12 +131,12 @@ class lcd_panel(tlu_hardwarebase):
                 return 'left'
         def justify(msg,form):
             l = len(msg)
-            lx=self.lcd_columns-1
+            lx=self.lcd_columns
             fl='{:<'+str(lx)+'}'
             fc='{:^'+str(lx)+'}'
             fr='{:>'+str(lx)+'}'
             if l>lx:
-                return msg[0:lx]
+                return msg[0:lx-1]
             elif form=='left':
                 return fl.format(msg)
             elif form=='center':

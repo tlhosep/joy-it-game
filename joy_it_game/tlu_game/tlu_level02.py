@@ -60,7 +60,7 @@ class Level02(LevelBase):
                     break
                 elif queueobject.msg_num == self.MSG_KEYPRESSED:
                     glob=tlu_globals.globMgr.tlu_glob()
-                    glob.lcdMessagebyline(_("Level: ")+"02", str(_("Cursor = "))+tlu_cursor.cursorname(None, queueobject.msg_info))
+                    glob.lcdMessagebyline(_("Level: ")+"02", str(_("Cursor="))+tlu_cursor.cursorname(None, queueobject.msg_info))
                     keymatrix[queueobject.msg_info]=1
                     symbolname='space'
                     if queueobject.msg_info==100:
