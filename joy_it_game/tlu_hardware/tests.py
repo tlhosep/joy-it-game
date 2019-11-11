@@ -254,7 +254,7 @@ class TestIO(unittest.TestCase):
         queue=TestQueue()
         if not emulatekey:
             time.sleep(1)
-            print('Please touch the touchpad to continue')
+            print('\nPlease touch the touchpad to continue...')
         ct=CheckTouch(queue, 5.0)
         startThreadClass(ct)
         self.assertNotEqual(ct, None, "Process could not be established")

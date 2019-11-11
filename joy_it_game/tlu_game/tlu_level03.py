@@ -45,6 +45,7 @@ class Level03(LevelBase):
             """
             key=-1
             numkeys=0
+            secondstiltimeout=4
             thread=threading.currentThread()
             (timer, kbd,) = hardware  # @UnusedVariable
             glob=tlu_globals.globMgr.tlu_glob()
@@ -58,9 +59,11 @@ class Level03(LevelBase):
                 if key == -1:
                     key=randint(1,16)
                     status=models.getGameState(gameProcess.user_id)
-                    status.msg=str(numkeys)+": "+_("You have to press Key #")+str(key)
+                    m=_("You have to press Key #")
+                    status.msg=str(numkeys)+": "+m+str(key)
                     status.level_progress=int(numkeys/20*100)
                     models.setGameState(gameProcess.user_id, status)
+                    timer.changeSecondsAndRestart(secondstiltimeout)
                 
                 (queueobject,breakIndicator)=self.getQueueObject(stop_event, gameProcess, thread)
                 if breakIndicator:
@@ -73,7 +76,7 @@ class Level03(LevelBase):
                         glob.lcdMessagebyline(_("Level: ")+"03", _("Timeout")+" :(")
                     break
                 if queueobject.msg_num == self.MSG_KEYPRESSED:
-                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key=")+str(queueobject.msg_info)+"/"+str(key))
+                    glob.lcdMessagebyline(_("Level: ")+"03", "#"+str(numkeys+1)+": "+_("Key= ")+str(queueobject.msg_info)+"/"+str(key))
                     if key != queueobject.msg_info:
                         status=models.getGameState(gameProcess.user_id)
                         status.level_progress=0
@@ -84,6 +87,7 @@ class Level03(LevelBase):
                         stop_event.set()
                         break
                     else:
+                        timer.pause()
                         numkeys += 1
                         glob.matrixShow_symbol('root')
                         key=-1 #generate next key
@@ -91,14 +95,13 @@ class Level03(LevelBase):
                         status.level_progress=int(numkeys/20*100)
                         models.setGameState(gameProcess.user_id, status)
                         logging.info("Correct key pressed :)")
-                        newseconds=4
+                        secondstiltimeout=4
                         if numkeys > 5:
-                            newseconds = 3
+                            secondstiltimeout = 3
                         if numkeys > 10:
-                            newseconds = 2.5
+                            secondstiltimeout = 2.5
                         if numkeys > 15:
-                            newseconds = 2
-                        timer.changeSecondsAndRestart(newseconds)
+                            secondstiltimeout = 2
                 elif queueobject.msg_num == self.MSG_KEYRELEASED:
                     glob.matrixShow_symbol('space')
 

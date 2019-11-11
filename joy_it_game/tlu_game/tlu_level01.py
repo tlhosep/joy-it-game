@@ -75,7 +75,7 @@ class Level01(LevelBase):
         kbd=CheckKey(queue)
         startThreadClass(kbd)
         timer=Countdown(queue,16)
-        status.msg=_("Level00 starts..")
+        status.msg=_("Level01 starts..")
         models.setGameState(self.user_id, status)
         startThreadClass(timer)
         glob=tlu_globals.globMgr.tlu_glob()

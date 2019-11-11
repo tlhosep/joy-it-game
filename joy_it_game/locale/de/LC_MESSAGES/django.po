@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-11 11:09+0100\n"
-"PO-Revision-Date: 2019-11-11 11:10+0100\n"
+"POT-Creation-Date: 2019-11-11 12:07+0100\n"
+"PO-Revision-Date: 2019-11-11 11:52+0100\n"
 "Last-Translator: Thomas Lüth <th.lueth@tlc-it-consulting.com>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -26,23 +26,22 @@ msgstr "Deutsch"
 msgid "English"
 msgstr "Englisch"
 
-#: tlu_game/tlu_level00.py:64 tlu_game/tlu_level01.py:78
-#: tlu_game/tlu_levelbase.py:226
+#: tlu_game/tlu_level00.py:64 tlu_game/tlu_levelbase.py:226
 msgid "Level00 starts.."
-msgstr "Level 2 startet..."
+msgstr "Testlevel startet..."
 
 #: tlu_game/tlu_level00.py:78 tlu_game/tlu_level00.py:86
 msgid "Level00 passed"
-msgstr "Level0 erfolgreich"
+msgstr "Level 0 erfolgreich"
 
 #: tlu_game/tlu_level00.py:83
 msgid "Level00 failed"
-msgstr "Level 00: Fehler"
+msgstr "Level 0: Fehler"
 
 #: tlu_game/tlu_level01.py:59 tlu_game/tlu_level01.py:82
 #: tlu_game/tlu_level02.py:62 tlu_game/tlu_level02.py:97
-#: tlu_game/tlu_level03.py:73 tlu_game/tlu_level03.py:76
-#: tlu_game/tlu_level03.py:120 tlu_game/tlu_level04.py:106
+#: tlu_game/tlu_level03.py:74 tlu_game/tlu_level03.py:77
+#: tlu_game/tlu_level03.py:121 tlu_game/tlu_level04.py:106
 #: tlu_game/tlu_level04.py:200
 msgid "Level: "
 msgstr "Level: "
@@ -54,6 +53,10 @@ msgstr "Taste = "
 #: tlu_game/tlu_level01.py:62
 msgid "You have just pressed Key #"
 msgstr "Du hast die Taste gedrückt: #"
+
+#: tlu_game/tlu_level01.py:78
+msgid "Level01 starts.."
+msgstr "Level 1 startet..."
 
 #: tlu_game/tlu_level01.py:82
 msgid "Easy start "
@@ -84,8 +87,8 @@ msgid "Level 2 starts.."
 msgstr "Level 2 gestartet..."
 
 #: tlu_game/tlu_level02.py:97
-msgid "Cursorkeys... "
-msgstr "Pfeiltasten… "
+msgid "Cursorkeys"
+msgstr "Pfeiltasten"
 
 #: tlu_game/tlu_level02.py:98
 msgid "Level 2 running"
@@ -103,35 +106,37 @@ msgstr "Du hast Level 2 geschafft!"
 msgid "You have to press Key #"
 msgstr "Bitte drücke Taste #"
 
-#: tlu_game/tlu_level03.py:73 tlu_game/tlu_level04.py:106
+#: tlu_game/tlu_level03.py:74 tlu_game/tlu_level04.py:106
 msgid "Timeout"
 msgstr "Zeitüberschreitung"
 
-#: tlu_game/tlu_level03.py:76
-msgid "Key="
+#: tlu_game/tlu_level03.py:77
+#, fuzzy
+#| msgid "Key="
+msgid "Key= "
 msgstr "Taste="
 
-#: tlu_game/tlu_level03.py:81
+#: tlu_game/tlu_level03.py:82
 msgid " was the wrong key, level terminates!"
 msgstr " war die falsche Taste, das Level wird abgebrochen!"
 
-#: tlu_game/tlu_level03.py:116
+#: tlu_game/tlu_level03.py:117
 msgid "Level03 starts.."
 msgstr "Level 3 startet..."
 
-#: tlu_game/tlu_level03.py:120
+#: tlu_game/tlu_level03.py:121
 msgid "Random Keys"
 msgstr "Zufallstasten"
 
-#: tlu_game/tlu_level03.py:121
+#: tlu_game/tlu_level03.py:122
 msgid "Level 3 running"
 msgstr "Level 3 läuft"
 
-#: tlu_game/tlu_level03.py:141
+#: tlu_game/tlu_level03.py:139
 msgid "Level 3 failed"
 msgstr "Level 3 fehlerhaft"
 
-#: tlu_game/tlu_level03.py:146
+#: tlu_game/tlu_level03.py:144
 msgid "You have passed Level 3 :)"
 msgstr "Du hast Level 3 geschafft!"
 
@@ -173,11 +178,11 @@ msgstr "Touchpad"
 msgid "Level 4 running"
 msgstr "Level 4 läuft"
 
-#: tlu_game/tlu_level04.py:221
+#: tlu_game/tlu_level04.py:218
 msgid "Level 4 failed"
 msgstr "Level 4 ist fehlerhaft"
 
-#: tlu_game/tlu_level04.py:226
+#: tlu_game/tlu_level04.py:223
 msgid "You have passed Level 4 :)"
 msgstr "Du hast Level 4 geschafft!"
 

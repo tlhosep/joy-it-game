@@ -42,6 +42,10 @@ class tlu_cursor(tlu_hardwarebase):
         GPIO.setup(self.button_right, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         logging.info("Cursor now initialized")
         
+    @staticmethod
+    def lefthand_dip_setting():
+        #the 4 rightmost dip-switches are used for cursor and key-matrix in parallel!
+        return 0x0F
     
     def cursorname(self,cursornum) -> str:
         """

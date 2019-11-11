@@ -172,7 +172,7 @@ class Game(models.Model):
     to lookup the correct task and to forward the frequency for the updates on the web (in ms)
     """
     dipswitch_settings=None
-    frequent_updates=(2000,1000,500,500,250)
+    frequent_updates=(2000,1000,500,250,250)
     
     def __init__(self, *args, **kwargs):
         tlu_hardware_global.init()
