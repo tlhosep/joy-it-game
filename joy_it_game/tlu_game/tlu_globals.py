@@ -152,10 +152,18 @@ class GlobManager(BaseManager):
     pass
 class KbQueueManager(BaseManager):
     pass
+class CursorQueueManager(BaseManager):
+    pass
+class TouchQueueManager(BaseManager):
+    pass
 
 kbQueue=None
+cqueue=None
+tqueue=None
 globMgr=None
 kbmgr=None
+cmgr=None
+tmgr=None
 
 def init():
     """
@@ -166,8 +174,12 @@ def init():
     (see sendKeys-commandline interface)
     """
     global kbQueue
+    global cqueue
+    global tqueue
     global globMgr
     global kbmgr
+    global cmgr
+    global tmgr
     if globMgr == None:
         GlobManager.register('tlu_glob',Global_vars)
         globMgr=GlobManager()
@@ -179,3 +191,15 @@ def init():
         kbmgr = KbQueueManager(address=('', 50200),authkey=b'tlu_abracadabra')
         kbmgr.start()
         logging.debug("KeyboardQueueMgr started")
+    if emulatekey and cqueue == None:
+        cqueue = JoinableQueue()
+        CursorQueueManager.register('get_cursorQueue', callable=lambda:cqueue)
+        cmgr = CursorQueueManager(address=('', 50201),authkey=b'tlu_cursormiracle')
+        cmgr.start()
+        logging.debug("CursorQueueMgr started")
+    if emulatekey and tqueue == None:
+        tqueue = JoinableQueue()
+        TouchQueueManager.register('get_touchQueue', callable=lambda:tqueue)
+        tmgr = TouchQueueManager(address=('', 50202),authkey=b'tlu_touchme')
+        tmgr.start()
+        logging.debug("TouchQueueMgr started")

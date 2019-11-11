@@ -28,6 +28,7 @@ import multiprocessing
 from tlu_hardware import tlu_hardware_global
 from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 from tlu_hardware.tlu_vibration import tlu_vibrate
+from tlu_hardware.tlu_touch import tlu_touch
 
 logfile=settings.BASE_DIR+"/log/game.log"
 try:
@@ -171,14 +172,15 @@ class Game(models.Model):
     to lookup the correct task and to forward the frequency for the updates on the web (in ms)
     """
     dipswitch_settings=None
-    frequent_updates=(2000,1000,500,500)
+    frequent_updates=(2000,1000,500,500,250)
     
     def __init__(self, *args, **kwargs):
         tlu_hardware_global.init()
         self.dipswitch_settings=(tlu_hardwarebase.getDipHex(tlu_buttons),
                                  tlu_hardwarebase.getDipHex(tlu_buttons),
                                  tlu_hardwarebase.getDipHex(tlu_cursor),
-                                 tlu_hardwarebase.getDipHex(tlu_buttons)|tlu_hardwarebase.getDipHex(tlu_vibrate))
+                                 tlu_hardwarebase.getDipHex(tlu_buttons)|tlu_hardwarebase.getDipHex(tlu_vibrate),
+                                 tlu_hardwarebase.getDipHex(tlu_buttons)|tlu_hardwarebase.getDipHex(tlu_vibrate)|tlu_hardwarebase.getDipHex(tlu_touch))
         models.Model.__init__(self, *args, **kwargs)
                     
     def __str__(self):

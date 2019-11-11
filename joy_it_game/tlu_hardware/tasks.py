@@ -12,7 +12,7 @@ We have a Countdown, Buzzer, Key, Cursor aso Object here...
 from __future__ import absolute_import
 
 from tlu_hardware import tlu_led,tlu_buttons,tlu_buzzer,tlu_matrix, tlu_cursor,\
-    tlu_hardware_global
+    tlu_hardware_global, tlu_touch
 import time
 import logging
 from tlu_services.tlu_queue import tlu_queueobject, tlu_queue
@@ -20,6 +20,9 @@ from threading import Thread
 from tlu_game import tlu_globals
 from datetime import datetime
 from tlu_hardware.tlu_vibration import tlu_vibrate
+from tlu_hardware.tlu_checkhardware import emulatekey
+from queue import Empty
+from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +42,7 @@ class Countdown(Thread):
         Thread.__init__(self)
         self.is_aborted=False
         self.has_to_restart=False
+        self.paused = seconds<0
         if seconds > 99:
             seconds = 99
         if seconds <= 0:
@@ -53,7 +57,7 @@ class Countdown(Thread):
     
 
     def run(self, *args, **kwargs):
-        logger.info("Countdown started with hundreds="+str(self.hundreds))
+        logger.info("Countdown started with hundreds="+str(self.hundreds)+" paused="+str(getattr(self, "paused", False)))
         t0=datetime.now()
         diff=0
         while diff < self.hundreds:
@@ -62,6 +66,13 @@ class Countdown(Thread):
                 logger.info('Countdown restarted')
                 diff=0
                 self.has_to_restart=False
+                self.paused=False
+            if getattr(self, "paused", False):
+                t0=datetime.now()
+                diff=0
+                self.sevenseg.clear()
+                time.sleep(0.5)
+                continue
             self.sevenseg.set4digits(int(self.hundreds-diff), 0)
             time.sleep(0.01)
             t1=datetime.now()
@@ -77,6 +88,9 @@ class Countdown(Thread):
     def terminate(self, *args, **kwargs):
         self.is_aborted=True
         logger.info('Countdown termination requested')
+    def pause(self):
+        self.paused=True
+        logger.info("Countdown paused")
     def restart(self):
         self.has_to_restart=True
     def changeSecondsAndRestart(self, seconds):
@@ -136,13 +150,13 @@ class CheckKey(Thread):
                     self.currentKey=button
                     queueobject=tlu_queueobject(tlu_queue.MSG_KEYPRESSED,button)
                     self.queue.send(queueobject)
-                    logger.debug("Key pressed: "+str(button))
+                    logger.info("Key pressed: "+str(button))
                 elif (self.currentKey > 0) and (button == 0):
                     #released
-                    self.currentKey=button #indicate release
                     queueobject=tlu_queueobject(tlu_queue.MSG_KEYRELEASED,self.currentKey)
                     self.queue.send(queueobject)
-                    logger.debug("Key released: "+str(self.currentKey))
+                    logger.info("Key released: "+str(self.currentKey))
+                    self.currentKey=button #indicate release
         return Thread.run(self, *args, **kwargs)    
     def terminate(self, *args, **kwargs):
         self.is_aborted=True
@@ -298,3 +312,72 @@ class Vibrate(Thread):
         self.is_aborted=True
         self.vib.vibrate(False)
         logger.info('vibration termination requested')
+
+touch_queue=None
+def do_touch_check(channel):
+    global touch_queue
+    queueobject=tlu_queueobject(tlu_queue.MSG_TOUCH_PRESSED)
+    touch_queue.send(queueobject)
+    logging.info("Touchpad pressed ")
+    
+class CheckTouch(Thread):
+    """
+    Checks for cursor-key input
+    """
+    def __init__(self, queue, limit=None):
+        """
+        Initializes the Thread.
+        :param queue: Queue to receive the touchpad-messages or a tiemout , if set
+        :param limit: Default none, else seconds to wait for a touchpad-event before a timeout is sent to the queue
+        """
+        global touch_queue
+        Thread.__init__(self)
+        self.is_aborted=False
+        self.touch=tlu_touch.tlu_touch()
+        if limit != None:
+            self.count=int(limit*10)
+        else:
+            self.count=None
+        self.queue=queue
+        touch_queue=queue
+    def run(self, *args, **kwargs):
+        logger.info("Checking for Touchpad touched in background")
+        self.touch.start(do_touch_check)
+        while True:
+            if (self.count != None):
+                self.count -= 1
+                if self.count < 1:
+                    self.touch.stop()
+                    logger.info("exiting touch-check due to retry-limit reached")
+                    queueobject=tlu_queueobject(tlu_queue.MSG_TIMEOUT)
+                    self.queue.send(queueobject)
+                    return
+            time.sleep(0.1)
+            if getattr(self, "is_aborted", False):
+                self.touch.stop()
+                logger.info("Touchpad no longer checked")
+                queueobject=tlu_queueobject(tlu_queue.MSG_STOP)
+                self.queue.send(queueobject)
+                return
+            if self.count != None:
+                logger.debug("requesting touchpad pressed with count "+str(self.count))
+            if emulatekey:
+                q=tlu_globals.tqueue
+                try:
+                    queueobject = q.get(block=False,timeout=1)
+                except Empty:
+                    logger.debug('touch-q is empty :(')
+                    continue
+                except Exception as e:
+                    logger.warn('Exception while reading from key-q: '+str(e))
+                    queueobject=tlu_queueobject(tlu_queue.MSG_STOP)
+                    self.queue.send(queueobject)
+                    return
+                if queueobject.msg_num == tlu_queue.MSG_TOUCH_PRESSED:
+                    do_touch_check(tlu_hardwarebase.touch_bcm)
+                q.task_done() #release object from queue
+        return Thread.run(self, *args, **kwargs)
+    def terminate(self, *args, **kwargs):
+        self.touch.stop()
+        self.is_aborted=True
+        logger.info('CheckCursor termination requested')

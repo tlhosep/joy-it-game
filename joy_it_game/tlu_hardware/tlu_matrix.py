@@ -27,7 +27,6 @@ except ImportError:
     FakeIO=True
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
 class tlu_matrix(tlu_hardwarebase):

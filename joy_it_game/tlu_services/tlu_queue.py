@@ -50,7 +50,8 @@ class tlu_queue(object):
     MSG_KEYRELEASED=3
     MSG_TIMEOUT=4
     MSG_TEST=5
-    msgTranslate={0:'NONE',1:'STOP',2:'KEYPRESSED',3:'KEYRELEASED',4:'TIMEOUT',5:'TEST'}
+    MSG_TOUCH_PRESSED=6
+    msgTranslate={0:'NONE',1:'STOP',2:'KEYPRESSED',3:'KEYRELEASED',4:'TIMEOUT',5:'TEST',6:'TOUCH'}
     
     def __init__(self):
         """

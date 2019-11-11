@@ -68,14 +68,14 @@ class tlu_cursor(tlu_hardwarebase):
         In case no hardware is found, we will use the keyboard emulation here via remote queue
         """
         if emulatekey:
-            q=tlu_globals.kbQueue
+            q=tlu_globals.cqueue
             try:
                 queueobject = q.get(block=False,timeout=1)
             except Empty:
-                logger.debug('key-q is empty :(')
+                logger.debug('cursor-q is empty :(')
                 return 0
             except Exception as e:
-                logger.debug('Exception while reading from key-q: '+str(e))
+                logger.debug('Exception while reading from cursor-q: '+str(e))
                 return 0
             q.task_done() #release object from queue
             if queueobject.msg_num == tlu_queue.tlu_queue.MSG_KEYPRESSED:

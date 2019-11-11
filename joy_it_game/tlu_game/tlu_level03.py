@@ -26,6 +26,7 @@ from tlu_game import tlu_globals
 from random import randint
 from tlu_services.tlu_queue import tlu_queue
 import time
+from tlu_hardware.tlu_checkhardware import emulatekey
 
 logger=logging.getLogger(__name__)
 
@@ -48,7 +49,10 @@ class Level03(LevelBase):
             (timer, kbd,) = hardware  # @UnusedVariable
             glob=tlu_globals.globMgr.tlu_glob()
             while True:
-                if numkeys>19:
+                if emulatekey and (numkeys>8):
+                    stop_event.set()
+                    break
+                elif numkeys >= 20:
                     stop_event.set()
                     break
                 if key == -1:

@@ -14,11 +14,17 @@ import sys
 from tlu_services.tlu_queue import tlu_queueobject
 from tlu_services import tlu_queue
 import time
+from queue import Empty
 
-def emulateKey(kbQueue):
+def emulateKey(kbQueue,cqueue,tqueue):
     """
     Main loop to check for keyboard inputs
-    :param kbQueue: Queue where the messages shall be placed
+    :param kbQueue: Queue where the keypad related messages shall be placed
+    :type kbQueue:Queue
+    :param cqueue: Cursor-Key related queue
+    :type cqueue: Queue
+    :param tqueue: Tochpad-touches related queue
+    :type tqueue: Queue
     """
     def print_help():
         """
@@ -30,49 +36,87 @@ def emulateKey(kbQueue):
         print('k=cursor right')
         print('m=cursor down')
         print('j=cursor left')
+        print('#=Touchpad')
+        print("r=release queues")
+        print('t=terminate emulation')
+        print('h=This help')
+    
+    def printQueue(q,name):
+        while True:
+            try:
+                queueobject = q.get(block=False,timeout=1)
+                q.task_done()
+            except Empty:
+                print(name+' is now empty')
+                return
+            except Exception as e:
+                print('Exception while reading from key-q '+name+':'+str(e))
+                return
+            print(str(queueobject))
         
-    keymap={'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'a':10,'b':11,'c':12,'d':13,'e':14,'f':15,'g':16,'i':100,'k':200,'m':300,'j':400}
-    lastkey=0
+    keymap={'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'a':10,'b':11,'c':12,'d':13,'e':14,'f':15,'g':16}
+    cursormap={'i':100,'k':200,'m':300,'j':400}
     printMsg=True
-    queue=kbQueue
     print('Keyboard-simulation for hardware-keys:')
     print_help()
     while True:
         if printMsg:
-            print("Please press a key (1..9, a..g, i,j,k,m); t=terminate, h=help:")
+            queuempty=kbQueue.empty()&cqueue.empty()&tqueue.empty()
+            print("Please press a key (1..9, a..g, i,j,k,m); #=touch, t=terminate, h=help (queues empty:"+str(queuempty)+"):")
+            """
+            print("Kb="+str(kbQueue.empty()))
+            print("curs="+str(cqueue.empty()))
+            print("touch="+str(tqueue.empty()))
+            """
         try:
             key = sys.stdin.read(1) #input()
             if key != None and key=='t':
                 return
             elif key != None and key=='h':
                 print_help()
+            elif key != None and key=='r':
+                printQueue(kbQueue,"Keyboard")
+                printQueue(cqueue, "Cursor")
+                printQueue(tqueue, "Touch")
+            elif key != None and key=='#':
+                obj=tlu_queueobject(tlu_queue.tlu_queue.MSG_TOUCH_PRESSED)
+                try:
+                    tqueue.put(obj)
+                except Exception as e:
+                    print('Touch-event could not be passed to game, reason was: '+str(e))
+                printMsg=True
             elif key:
                 if key in keymap:
-                    lastkey=keymap[key]
-                    obj=tlu_queueobject(tlu_queue.tlu_queue.MSG_KEYPRESSED,keymap[key])
+                    obj1=tlu_queueobject(tlu_queue.tlu_queue.MSG_KEYPRESSED,keymap[key])
+                    obj2=tlu_queueobject(tlu_queue.tlu_queue.MSG_KEYRELEASED,keymap[key])
                     try:
-                        queue.put(obj)
+                        kbQueue.put(obj1)
+                        kbQueue.put(obj2)
+                    except Exception as e:
+                        print('Key could not be passed to game, reason was: '+str(e))
+                    printMsg=True
+                elif key in cursormap:
+                    obj1=tlu_queueobject(tlu_queue.tlu_queue.MSG_KEYPRESSED,cursormap[key])
+                    obj2=tlu_queueobject(tlu_queue.tlu_queue.MSG_KEYRELEASED,cursormap[key])
+                    try:
+                        cqueue.put(obj1)
+                        cqueue.put(obj2)
                     except Exception as e:
                         print('Key could not be passed to game, reason was: '+str(e))
                     printMsg=True
                 else:
-                    obj=tlu_queueobject(tlu_queue.tlu_queue.MSG_KEYRELEASED,lastkey)
-                    try:
-                        queue.put(obj)
-                    except Exception as e:
-                        print('Key could not be passed to game, reason was: '+str(e))
                     printMsg=False
             else:
                 printMsg=False
             time.sleep(0.2) #wait for next check
         except KeyboardInterrupt:
             obj=tlu_queueobject(tlu_queue.tlu_queue.MSG_STOP)
-            queue.put(obj)
+            kbQueue.put(obj)
             print('\nNo more keys awaited due to interrupt')
             return
         except Exception as e:
             obj=tlu_queueobject(tlu_queue.tlu_queue.MSG_STOP)
-            queue.put(obj)
+            kbQueue.put(obj)
             print('\nNo more keys awaited due to exception / '+str(e))
             return
 
@@ -87,7 +131,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--port', help="Portnumber of the queue", required=False)
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options):  # @UnusedVariable
         """
         Main loop to process the commandline request
         """
@@ -96,14 +140,28 @@ class Command(BaseCommand):
             port=int(options['port'])
         class KbQueueManager(BaseManager):
             pass
+        class CursorQueueManager(BaseManager):
+            pass
+        class TouchQueueManager(BaseManager):
+            pass
         KbQueueManager.register('get_kbQueue')
-        m = KbQueueManager(address=('localhost', port),authkey=b'tlu_abracadabra')
-        print('...trying to connect to remote Queue on port '+str(port))
-        queue=None
+        CursorQueueManager.register('get_cursorQueue')
+        TouchQueueManager.register('get_touchQueue')
+        k = KbQueueManager(address=('localhost', port),authkey=b'tlu_abracadabra')
+        c = CursorQueueManager(address=('localhost',port+1),authkey=b'tlu_cursormiracle')
+        t = TouchQueueManager(address=('localhost',port+2),authkey=b'tlu_touchme')
+        print('...trying to connect to remote Queue on ports '+str(port)+" .. "+str(port+2))
+        kqueue=None
+        cqueue=None
+        tqueue=None
         try:
-            m.connect()
-            queue = m.get_kbQueue()
+            k.connect()
+            kqueue = k.get_kbQueue()
+            c.connect()
+            cqueue = c.get_cursorQueue()
+            t.connect()
+            tqueue = t.get_touchQueue()
         except Exception as e:
             print('That did not work, please retry and check that the game is running! Reason was:\n'+str(e))
             return
-        emulateKey(queue)
+        emulateKey(kqueue,cqueue,tqueue)

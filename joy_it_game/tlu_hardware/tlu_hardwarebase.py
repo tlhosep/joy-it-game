@@ -41,6 +41,9 @@ class tlu_hardwarebase(object):
     
     #vibration
     vibration_bcm = 27
+    
+    #touch
+    touch_bcm = 17
 
     #lcd panel
     lcd_address = 0x21

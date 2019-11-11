@@ -9,7 +9,8 @@ import unittest
 import tlu_hardware.tlu_buzzer as tlu_buzzer
 
 import logging
-from tlu_hardware.tasks import Countdown, CheckKey, CheckCursor, AnimatedBuzzer, Buzzer
+from tlu_hardware.tasks import Countdown, CheckKey, CheckCursor, AnimatedBuzzer, Buzzer,\
+    CheckTouch
 from tlu_services.tlu_queue import tlu_queueobject
 from tlu_game.tlu_globals import ShowClock
 from tlu_services import tlu_queue
@@ -22,6 +23,7 @@ from tlu_hardware.tlu_cursor import tlu_cursor
 from tlu_hardware.tlu_buttons import tlu_buttons
 import time
 from tlu_hardware.tlu_vibration import tlu_vibrate
+from tlu_hardware.tlu_touch import tlu_touch
 
 logger=logging.getLogger(__name__)
 
@@ -47,15 +49,30 @@ class TestQueue(tlu_queue.tlu_queue):
                 key_num=queueobject.msg_info
                 ok=key_num in [1,100,200,300,400]
                 testio.assertTrue(ok,"Key has to be 1 or any cursor, key received="+str(key_num))
+                logging.info("Key pressed processed")
+                return
+            elif queueobject.msg_num == self.MSG_TOUCH_PRESSED:
+                logging.debug("TOUCH_PRESSED message received")
+                logging.info("touch pressed processed")
                 return
             elif queueobject.msg_num == self.MSG_TIMEOUT:
                 # Timeout will be raised in test test_countdown_timeout
                 logging.debug("TIMEOUT message received")
                 return
             elif queueobject.msg_num == self.MSG_TEST:
-                if countdown != None:
-                    countdown.restart()
-                    logging.debug("Timer had been reset now")
+                if queueobject.msg_info == 1:
+                    if countdown != None:
+                        countdown.restart()
+                        logging.debug("Timer had been reset now")
+                elif queueobject.msg_info == 2:
+                    if countdown != None:
+                        countdown.pause()
+                        logging.debug("Timer paused")
+                elif queueobject.msg_info == 3:
+                    if countdown != None:
+                        countdown.changeSecondsAndRestart(0.1)
+                        logging.debug("Timer restarted")
+                        
                 
 
 class TestIO(unittest.TestCase):
@@ -70,7 +87,11 @@ class TestIO(unittest.TestCase):
             tlu_globals.kbQueue.put(obj)
         elif emulatekey and self._testMethodName=="test_checkcursor":
             obj=tlu_queueobject(tlu_queue.tlu_queue.MSG_KEYPRESSED,100)
-            tlu_globals.kbQueue.put(obj)
+            tlu_globals.cqueue.put(obj)
+        elif emulatekey and self._testMethodName=="test_checktouch":
+            obj=tlu_queueobject(tlu_queue.tlu_queue.MSG_TOUCH_PRESSED)
+            tlu_globals.tqueue.put(obj)
+        
      
     def test_buzzer(self):
         """
@@ -150,7 +171,20 @@ class TestIO(unittest.TestCase):
         queue.send(queueobject) #forces timer reset
         queue.myrun(self,cd) #breaks/terminates once timeout reached
         self.stop(cd, "test_countdown_reset")
-       
+    def test_countdown_pause(self):
+        """
+        Test countdown with pause and restart-event
+        """
+        queue=TestQueue()
+        cd=Countdown(queue, 0.1)
+        startThreadClass(cd)
+        self.assertNotEqual(cd, None, "Process could not be established")
+        queueobject=tlu_queueobject(tlu_queue.tlu_queue.MSG_TEST,2)
+        queue.send(queueobject) #forces timer oause
+        queueobject=tlu_queueobject(tlu_queue.tlu_queue.MSG_TEST,3)
+        queue.send(queueobject) #forces timer restart
+        queue.myrun(self,cd) #breaks/terminates once timeout reached
+        self.stop(cd, "test_countdown_pause")
     def test_checkkey(self):
         """
         Test to press the upper left key or by keyboard using the '1'
@@ -213,6 +247,23 @@ class TestIO(unittest.TestCase):
         queue.myrun(self) #breaks/terminates once timeout reached or key pressed ;)
         logging.debug('test_checkkey had cursor')
         self.stop(cc, "test_checkcursor")
+    def test_checktouch(self):
+        """
+        Wait for touchpad being touched
+        """
+        queue=TestQueue()
+        if not emulatekey:
+            diphex=tlu_hardwarebase.getDipHex(tlu_touch)
+            print('\ncheck the dip-settings to be like this:')
+            print('Left: '+tlu_hardwarebase.showleft_dip(diphex)+' Right: '+tlu_hardwarebase.showright_dip(diphex))
+            time.sleep(5)
+            print('Please touch the touchpad to continue')
+        ct=CheckTouch(queue, 5.0)
+        startThreadClass(ct)
+        self.assertNotEqual(ct, None, "Process could not be established")
+        queue.myrun(self) #breaks/terminates once timeout reached or key pressed ;)
+        logging.debug('test_chektouch had touch')
+        self.stop(ct, "test_checktouch")
 
 if __name__ == '__main__':
     unittest.main()

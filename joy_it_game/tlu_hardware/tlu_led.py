@@ -31,14 +31,14 @@ except ImportError:
         def begin(self):
             logger.info("7 segments now initialized")
         def clear(self):
-            logger.info("Clear called")
+            logger.debug("Clear called")
         def set_digit(self,digit, value):
             pass
 #            logger.info("digit #"+str(digit)+" set to:"+str(value))
         def set_colon(self,on):
-            logger.info("Colon set to:"+str(on))
+            logger.debug("Colon set to:"+str(on))
         def write_display(self):
-            logger.info("Show display")
+            logger.debug("Show display")
             
 class seven_segment(tlu_hardwarebase):
     """

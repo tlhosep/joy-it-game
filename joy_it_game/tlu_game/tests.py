@@ -172,6 +172,9 @@ class TestGame(unittest.TestCase):
         self.assertTrue(glob.test(), "The test has to pass...")
         if emulatekey:
             self.assertNotEqual(tlu_globals.kbQueue, None, "Keyboardqueue should not be null on mac")
+            self.assertNotEqual(tlu_globals.cqueue, None, "Cursorqueue should not be null on mac")
+            self.assertNotEqual(tlu_globals.tqueue, None, "Touchqueue should not be null on mac")
+            
         
 if __name__ == '__main__':
     unittest.main()

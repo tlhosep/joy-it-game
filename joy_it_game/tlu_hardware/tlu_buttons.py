@@ -62,24 +62,31 @@ class tlu_buttons(tlu_hardwarebase):
         """
         return 0xFF
        
+    def getMessage(self,q):
+        try:
+            queueobject = q.get(block=False,timeout=1)
+        except Empty:
+            logger.debug('key-q is empty :(')
+            return None
+        except Exception as e:
+            logger.warn('Exception while reading from key-q: '+str(e))
+            return None
+        return queueobject
     def button_pressed(self) -> int:
         """
         Checks for a button pressed (1..16), if none, returns 0
         """
         if emulatekey:
             q=tlu_globals.kbQueue
-            try:
-                queueobject = q.get(block=False,timeout=1)
-            except Empty:
-                logger.debug('key-q is empty :(')
+            queueobject = self.getMessage(q)
+            if (queueobject==None):
                 return 0
-            except Exception as e:
-                logger.debug('Exception while reading from key-q: '+str(e))
-                return 0
-            q.task_done() #release object from queue
+            q.task_done()
             if queueobject.msg_num == tlu_queue.tlu_queue.MSG_KEYPRESSED:
-                logger.debug('Button-pressed='+str(queueobject.msg_info))
+                logger.info('Button-pressed='+str(queueobject.msg_info))
                 return queueobject.msg_info
+            elif queueobject.msg_num == tlu_queue.tlu_queue.MSG_KEYRELEASED:
+                return 0
             return 0
         for j in range(len(self.columnPins)):
             # setting each output pin to 0
