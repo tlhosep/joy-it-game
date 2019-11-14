@@ -23,7 +23,6 @@ from tlu_hardware.tlu_cursor import tlu_cursor
 from tlu_hardware.tlu_buttons import tlu_buttons
 import time
 from tlu_hardware.tlu_vibration import tlu_vibrate
-from tlu_hardware.tlu_touch import tlu_touch
 
 logger=logging.getLogger(__name__)
 

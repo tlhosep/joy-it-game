@@ -27,7 +27,6 @@ from tlu_services.tlu_processes import abortProcess, startProcess
 import multiprocessing
 from tlu_hardware import tlu_hardware_global
 from tlu_hardware.tlu_hardwarebase import tlu_hardwarebase
-from tlu_hardware.tlu_vibration import tlu_vibrate
 from tlu_hardware.tlu_touch import tlu_touch
 
 logfile=settings.BASE_DIR+"/log/game.log"
