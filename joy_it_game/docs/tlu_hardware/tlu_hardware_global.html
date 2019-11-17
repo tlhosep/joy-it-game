@@ -125,11 +125,19 @@ This module shall hold some global variables to be used within the hardware sect
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">global</span> <span class="n">globHardwareMgr</span>
-    <span class="k">if</span> <span class="n">globHardwareMgr</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">GlobHardwareManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;tlu_hardware_glob&#39;</span><span class="p">,</span><span class="n">Global_hardware_vars</span><span class="p">)</span>
-        <span class="n">globHardwareMgr</span><span class="o">=</span><span class="n">GlobHardwareManager</span><span class="p">()</span>
-        <span class="n">globHardwareMgr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;GlobHardwareMgr started&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">globHardwareMgr</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">GlobHardwareManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;tlu_hardware_glob&#39;</span><span class="p">,</span><span class="n">Global_hardware_vars</span><span class="p">)</span>
+            <span class="n">globHardwareMgr</span><span class="o">=</span><span class="n">GlobHardwareManager</span><span class="p">()</span>
+            <span class="n">globHardwareMgr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;GlobHardwareMgr started&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">globHardwareMgr</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">globHardwareMgr</span><span class="o">=</span><span class="bp">None</span>
 
 </pre></div>
     </div>

@@ -77,14 +77,11 @@ See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-4'>#</a>
       </div>
-      <p>SECURITY WARNING: don&rsquo;t run with debug turned on in production!</p>
+      <p>SECURITY WARNING: don&rsquo;t run with debug turned on in production!
+Hint: Has to be True for the game as otherwise some web-assets would not be delivered by the test-web-server&hellip; </p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="n">DEBUG</span> <span class="o">=</span> <span class="bp">True</span>
-
-<span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">]</span>
-
-<span class="n">SITE_ID</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#needed for contrib.sites...</span></pre></div>
+      <div class="highlight"><pre><span class="n">DEBUG</span> <span class="o">=</span> <span class="bp">True</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -92,6 +89,22 @@ See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Logging-level (overwritten by setting in local_settings.py):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">LOG_LEVEL</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># @UnusedVariable</span>
+
+<span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">]</span>
+
+<span class="n">SITE_ID</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#needed for contrib.sites...</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
       </div>
       <p>Application definition</p>
     </div>
@@ -145,10 +158,10 @@ See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-6'>
+  <div class='section' id='section-7'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
+        <a class='octothorpe' href='#section-7'>#</a>
       </div>
       <p>Database
 https://docs.djangoproject.com/en/2.1/ref/settings/#databases</p>
@@ -163,10 +176,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/#databases</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-7'>
+  <div class='section' id='section-8'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-7'>#</a>
+        <a class='octothorpe' href='#section-8'>#</a>
       </div>
       <p>Password validation
 https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators</p>
@@ -189,10 +202,10 @@ https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-8'>
+  <div class='section' id='section-9'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-8'>#</a>
+        <a class='octothorpe' href='#section-9'>#</a>
       </div>
       <p>Internationalization
 https://docs.djangoproject.com/en/2.1/topics/i18n/</p>
@@ -203,10 +216,10 @@ https://docs.djangoproject.com/en/2.1/topics/i18n/</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-9'>
+  <div class='section' id='section-10'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
+        <a class='octothorpe' href='#section-10'>#</a>
       </div>
       <p>supported languages</p>
     </div>
@@ -228,10 +241,10 @@ https://docs.djangoproject.com/en/2.1/topics/i18n/</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-10'>
+  <div class='section' id='section-11'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
       <p>Static files (CSS, JavaScript, Images)
 https://docs.djangoproject.com/en/2.1/howto/static-files/</p>
@@ -248,10 +261,10 @@ https://docs.djangoproject.com/en/2.1/howto/static-files/</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       <p>local settings carry email settings, set by the user</p>
     </div>

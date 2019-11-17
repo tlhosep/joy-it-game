@@ -28,7 +28,7 @@ The game consists of some actions to be performed on the joy-it toolset in order
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
-<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">translation</span>
 <span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Level</span>
 <span class="kn">from</span> <span class="nn">tlu_joyit_game</span> <span class="kn">import</span> <span class="n">models</span>
 <span class="kn">from</span> <span class="nn">tlu_hardware.tasks</span> <span class="kn">import</span> <span class="n">Countdown</span>
@@ -75,7 +75,7 @@ end-user interaction
       <p>Main loop for Testing the game</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">hardware</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">hardware</span><span class="p">,</span> <span class="n">language</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -91,7 +91,8 @@ end-user interaction
 </code></pre>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>            <span class="n">thread</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span>
+      <div class="highlight"><pre>            <span class="n">translation</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+            <span class="n">thread</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span>
             <span class="p">(</span><span class="n">timer</span><span class="p">,)</span><span class="o">=</span><span class="n">hardware</span>  <span class="c1"># @UnusedVariable</span>
             <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
                 <span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">breakIndicator</span><span class="p">)</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getQueueObject</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>

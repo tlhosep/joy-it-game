@@ -100,7 +100,7 @@ Module to support the 7-segment LED display</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Clear called&quot;</span><span class="p">)</span></pre></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Clear called&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -127,7 +127,7 @@ Module to support the 7-segment LED display</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">set_colon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">on</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Colon set to:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">on</span><span class="p">))</span></pre></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Colon set to:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">on</span><span class="p">))</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -140,7 +140,7 @@ Module to support the 7-segment LED display</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">write_display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Show display&quot;</span><span class="p">)</span></pre></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Show display&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -248,7 +248,7 @@ Module to support the 7-segment LED display</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">((</span><span class="n">number</span><span class="o">%</span><span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="p">))</span> <span class="c1"># Tens</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">number</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span>            <span class="c1"># Ones</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">number</span> <span class="o">%</span> <span class="mi">10</span><span class="p">))</span>            <span class="c1"># Ones</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_colon</span><span class="p">(</span><span class="n">colon</span><span class="p">)</span></pre></div>
     </div>
   </div>
@@ -263,7 +263,7 @@ update the actual display LEDs.</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">write_display</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;4 digits set for &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></pre></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;4 digits set for &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -319,7 +319,7 @@ update the actual display LEDs.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_digit</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">right</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span>         <span class="c1"># Ones</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">set_colon</span><span class="p">(</span><span class="n">colon</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">write_display</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;2 numbers set. #1:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; #2:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">right</span><span class="p">))</span></pre></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;2 numbers set. #1:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">left</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; #2:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">right</span><span class="p">))</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>

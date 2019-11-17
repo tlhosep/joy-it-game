@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>tlu_level04.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>tlu_level04.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>module: tlu_level04
+<strong> Content </strong>
+Class to form the fourth level of the game</p>
+<p><strong> Details </strong>
+In this level the player has to touch the touchpad and is receiving these instructions
+1) Press random Key within 3 seconds
+2) Touch again within 1 second
+3) Press random Key within 2.5 seconds
+4) Press random Key within 1.5 seconds</p>
+<ul>
+<li>state 0: Baseinstructions</li>
+<li>state 1: wait for touch</li>
+<li>=&gt; touchevent</li>
+<li>state 2: wait for key</li>
+<li>=&gt; keyevent</li>
+<li>state 3: wait for touch</li>
+<li>=&gt; touchevent</li>
+<li>state 4 wait for touch</li>
+<li>=&gt; touchevent</li>
+<li>state 5: wait for touch</li>
+<li>=&gt; touchevent</li>
+<li>state 6: wait for key</li>
+<li>=&gt; keyevent</li>
+<li>state 7: wait for touch</li>
+<li>touchevent</li>
+<li>state 8: wait for key</li>
+<li>keyevent</li>
+<li>state 9: done</li>
+</ul>
+<p>@author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
+@created: 2019-11-08 </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">translation</span>
+<span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Level</span>
+
+<span class="kn">from</span> <span class="nn">tlu_joyit_game</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="kn">from</span> <span class="nn">tlu_hardware.tasks</span> <span class="kn">import</span> <span class="n">Countdown</span><span class="p">,</span> <span class="n">CheckKey</span><span class="p">,</span> <span class="n">Buzzer</span><span class="p">,</span> <span class="n">CheckTouch</span>
+<span class="kn">from</span> <span class="nn">tlu_game.tlu_levelbase</span> <span class="kn">import</span> <span class="n">LevelBase</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_threads</span> <span class="kn">import</span> <span class="n">abortThread</span><span class="p">,</span> <span class="n">startThreadClass</span>
+<span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_queue</span> <span class="kn">import</span> <span class="n">tlu_queue</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">logger</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Fourth Level of the game</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Level04</span><span class="p">(</span><span class="n">LevelBase</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>Touch and follow the instructions
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">class</span> <span class="nc">GameQueue</span><span class="p">(</span><span class="n">LevelBase</span><span class="o">.</span><span class="n">GameQueue</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">msg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">msg</span><span class="p">,</span><span class="n">progress</span><span class="p">,</span><span class="n">key</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">error</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">msg</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">msg</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
+                <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">DIDNOTFINISH</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="n">progress</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">checktouch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">queueobject</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">stop_event</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_TOUCH_PRESSED</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Sorry, wrong key!&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">12</span><span class="p">),</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Queue loop for level 4</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">hardware</span><span class="p">,</span> <span class="n">language</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <pre><code>        Main
+        :param stop_event: event coming from main-loop, once set, level will terminate
+        :param gameProcess: the main process running the level. Needed to check for termination requests and the user_id
+        :param hardware: list of started threads
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">translation</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+            <span class="n">key</span><span class="o">=-</span><span class="mi">1</span>
+            <span class="n">state</span><span class="o">=</span><span class="mi">1</span>
+            <span class="n">thread</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span>
+            <span class="p">(</span><span class="n">timer</span><span class="p">,</span> <span class="n">kbd</span><span class="p">,</span> <span class="n">touch</span><span class="p">,)</span> <span class="o">=</span> <span class="n">hardware</span>  <span class="c1"># @UnusedVariable</span>
+            <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>state 0: Baseinstructions</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please touch the touchpad to start&quot;</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">12</span><span class="p">))</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">state</span><span class="o">&gt;</span><span class="mi">8</span><span class="p">:</span>
+                    <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">key</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span>
+                
+                <span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">breakIndicator</span><span class="p">)</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getQueueObject</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">breakIndicator</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">queueobject</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span> <span class="c1">#release object from queue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAbort</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">thread</span><span class="p">,</span><span class="n">queueobject</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span><span class="o">==</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_TIMEOUT</span><span class="p">:</span>
+                        <span class="n">glob</span><span class="o">.</span><span class="n">lcdMessagebyline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level: &quot;</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;04&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Timeout&quot;</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot; :(&quot;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;State=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">queueobject</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span><span class="o">==</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYRELEASED</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>skip this event</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>state 1: wait for touch</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checktouch</span><span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">stop_event</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">state</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please press key #&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="n">key</span><span class="p">)</span>
+                    <span class="n">timer</span><span class="o">.</span><span class="n">changeSecondsAndRestart</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>state 3: wait for key</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">if</span> <span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">):</span>
+                        <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please touch to continue&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
+                        <span class="n">state</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Sorry, wrong key!&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                        <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                        <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>state 3: wait for touch</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checktouch</span><span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">stop_event</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">state</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please press touch two times within 4 seconds&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
+                    <span class="n">timer</span><span class="o">.</span><span class="n">changeSecondsAndRestart</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>state 4 wait for touch</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checktouch</span><span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">stop_event</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">state</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>state 5 wait for touch</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checktouch</span><span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">stop_event</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">state</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please press key #&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="n">key</span><span class="p">)</span>
+                    <span class="n">timer</span><span class="o">.</span><span class="n">changeSecondsAndRestart</span><span class="p">(</span><span class="mf">2.5</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>state 6: wait for key</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">if</span> <span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">):</span>
+                        <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please touch to continue&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
+                        <span class="n">state</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Sorry, wrong key!&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                        <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                        <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>state 7: wait for touch</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checktouch</span><span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">stop_event</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="o">==</span> <span class="n">state</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please press key #&quot;</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="n">key</span><span class="p">)</span>
+                    <span class="n">timer</span><span class="o">.</span><span class="n">changeSecondsAndRestart</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>state 8: wait for key</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">if</span> <span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">):</span>
+                        <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You have passed! :)&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">))</span>
+                        <span class="n">state</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="n">gameProcess</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Sorry, wrong key!&quot;</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="o">/</span><span class="mi">8</span><span class="p">),</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                        <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                        <span class="k">break</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Prepare Level</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">prepareGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Do hardware-preparations
+:param status: current state of the game, used for web-frontend
+:param queue: Message-Q for hardware.messages to be launched
+return list of hardware-processes started here</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">kbd</span><span class="o">=</span><span class="n">CheckKey</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">kbd</span><span class="p">)</span>
+        <span class="n">timer</span><span class="o">=</span><span class="n">Countdown</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
+        <span class="n">touch</span><span class="o">=</span><span class="n">CheckTouch</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+        <span class="n">startThreadClass</span><span class="p">(</span><span class="n">touch</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level04 starts..&quot;</span><span class="p">))</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
+        <span class="n">glob</span><span class="o">.</span><span class="n">lcdMessagebyline</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level: &quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;04&quot;</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Touchpad&quot;</span><span class="p">))</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level 4 running&quot;</span><span class="p">))</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_start</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">timer</span><span class="p">,</span><span class="n">kbd</span><span class="p">,</span><span class="n">touch</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>End game-level</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">finishGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">hardware</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Close down hardware-activities started
+:param status: current state of the game, used for web-frontend
+:param hardware: List of hardware-processes that should be terminated here</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="p">(</span><span class="n">timer</span><span class="p">,</span><span class="n">kbd</span><span class="p">,</span><span class="n">touch</span><span class="p">,)</span><span class="o">=</span><span class="n">hardware</span>
+        <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
+        <span class="n">buz</span><span class="o">=</span><span class="bp">None</span>
+        <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span> <span class="o">!=</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">!=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span><span class="p">:</span>
+            <span class="n">buz</span><span class="o">=</span><span class="n">Buzzer</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">startThreadClass</span><span class="p">(</span><span class="n">buz</span><span class="p">)</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level 4 failed&quot;</span><span class="p">))</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">glob</span><span class="o">.</span><span class="n">matrixShow_symbol</span><span class="p">(</span><span class="s1">&#39;triangle_down&#39;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span> <span class="c1">#wait a bit</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You have passed Level 4 :)&quot;</span><span class="p">))</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">points</span><span class="o">=</span><span class="mi">20</span>
+            <span class="n">glob</span><span class="o">.</span><span class="n">matrixShow_symbol</span><span class="p">(</span><span class="s1">&#39;smiley&#39;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">level_ended</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+        <span class="n">abortThread</span><span class="p">(</span><span class="n">touch</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;aborting Touch&quot;</span><span class="p">)</span>
+        <span class="n">abortThread</span><span class="p">(</span><span class="n">kbd</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;aborting Keyboard&quot;</span><span class="p">)</span>
+        <span class="n">abortThread</span><span class="p">(</span><span class="n">timer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;aborting countdown&quot;</span><span class="p">)</span>
+        <span class="n">abortThread</span><span class="p">(</span><span class="n">buz</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;aborting Buzzer&quot;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

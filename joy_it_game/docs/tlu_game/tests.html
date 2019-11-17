@@ -27,16 +27,13 @@
 <span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">get_user_model</span>
 <span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Game</span><span class="p">,</span> <span class="n">getGameState</span><span class="p">,</span> <span class="n">setGameState</span><span class="p">,</span> <span class="n">userOk</span><span class="p">,</span> <span class="n">Level</span><span class="p">,</span>\
     <span class="n">getCleanGameState</span>
-<span class="kn">from</span> <span class="nn">joy_it_game</span> <span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">tlu_game.tlu_level00</span> <span class="kn">import</span> <span class="n">Level00</span>
 <span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
 <span class="kn">from</span> <span class="nn">tlu_hardware.tlu_checkhardware</span> <span class="kn">import</span> <span class="n">emulatekey</span>
 <span class="kn">from</span> <span class="nn">tlu_hardware</span> <span class="kn">import</span> <span class="n">tlu_hardware_global</span>
 
-<span class="n">logfile</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BASE_DIR</span><span class="o">+</span><span class="s2">&quot;/log/game.log&quot;</span>
-
-<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1">;</span><span class="si">%(filename)-16.16s</span><span class="s1">;</span><span class="si">%(lineno)04d</span><span class="s1">;</span><span class="si">%(levelname)-8s</span><span class="s1">;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span></pre></div>
+<span class="n">logger</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -341,6 +338,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">test</span><span class="p">(),</span> <span class="s2">&quot;The test has to pass...&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">emulatekey</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">kbQueue</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Keyboardqueue should not be null on mac&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">cqueue</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Cursorqueue should not be null on mac&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">tqueue</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Touchqueue should not be null on mac&quot;</span><span class="p">)</span>
+            
         
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>

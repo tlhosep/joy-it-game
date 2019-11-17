@@ -27,16 +27,13 @@ content for specific pages.</p>
 @created: 2019-10-01 </p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">render_to_response</span>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">get_object_or_404</span>
 <span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
 <span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">reverse</span>
 <span class="kn">from</span> <span class="nn">django.views</span> <span class="kn">import</span> <span class="n">generic</span>
-<span class="kn">from</span> <span class="nn">django.views.generic.edit</span> <span class="kn">import</span> <span class="n">FormView</span>
-<span class="kn">from</span> <span class="nn">tlu_services</span> <span class="kn">import</span> <span class="n">tlu_local_settings</span><span class="p">,</span> <span class="n">tlu_local_settings_check</span>
 <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
 <span class="kn">from</span> <span class="nn">django.http.response</span> <span class="kn">import</span> <span class="n">HttpResponseNotAllowed</span><span class="p">,</span> <span class="n">JsonResponse</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">smtplib</span>
 <span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Level</span><span class="p">,</span> <span class="n">getGameState</span><span class="p">,</span> <span class="n">setGameState</span>
 <span class="kn">from</span> <span class="nn">django.template.defaulttags</span> <span class="kn">import</span> <span class="n">register</span>
 <span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
@@ -47,9 +44,10 @@ content for specific pages.</p>
 <span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
 <span class="kn">from</span> <span class="nn">tlu_game.tlu_level03</span> <span class="kn">import</span> <span class="n">Level03</span>
 <span class="kn">from</span> <span class="nn">tlu_hardware</span> <span class="kn">import</span> <span class="n">tlu_hardware_global</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_hardwarebase</span> <span class="kn">import</span> <span class="n">tlu_hardwarebase</span>
+<span class="kn">from</span> <span class="nn">tlu_game.tlu_level04</span> <span class="kn">import</span> <span class="n">Level04</span>
 
 <span class="n">logfile</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BASE_DIR</span><span class="o">+</span><span class="s2">&quot;/log/game.log&quot;</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1">;</span><span class="si">%(filename)-16.16s</span><span class="s1">;</span><span class="si">%(lineno)04d</span><span class="s1">;</span><span class="si">%(levelname)-8s</span><span class="s1">;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
     </div>
   </div>
@@ -63,7 +61,7 @@ content for specific pages.</p>
 Please make sure to update &ldquo;models.py&rdquo; as well for the level</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="n">levels</span><span class="o">=</span><span class="p">(</span><span class="n">Level00</span><span class="p">,</span><span class="n">Level01</span><span class="p">,</span><span class="n">Level02</span><span class="p">,</span><span class="n">Level03</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre><span class="n">levels</span><span class="o">=</span><span class="p">(</span><span class="n">Level00</span><span class="p">,</span><span class="n">Level01</span><span class="p">,</span><span class="n">Level02</span><span class="p">,</span><span class="n">Level03</span><span class="p">,</span><span class="n">Level04</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -205,7 +203,17 @@ Kills as well all possible running processes
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="o">==</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Level</span><span class="o">.</span><span class="n">resultdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></pre></div>
+    <span class="k">return</span> <span class="n">Level</span><span class="o">.</span><span class="n">resultdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">#DIVIDER</span>
+<span class="sd">@register.filter(name=&#39;totalTime&#39;)</span>
+<span class="sd">def get_totaltime(level) -&gt; str:</span>
+<span class="sd">#DIVIDER</span>
+<span class="sd">    if (level == None) or (level.level_start == None) or (level.level_ended == None):</span>
+<span class="sd">        return &quot;0&quot;</span>
+<span class="sd">    return str((level.level_ended-level.level_start).total_seconds())</span>
+<span class="sd">&#39;&#39;&#39;</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -218,8 +226,7 @@ Kills as well all possible running processes
 :param level:</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="nd">@register.filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;totalTime&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_totaltime</span><span class="p">(</span><span class="n">level</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">LevelOverview</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -227,34 +234,6 @@ Kills as well all possible running processes
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-13'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="n">level</span> <span class="o">==</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">level_start</span> <span class="o">==</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">level_ended</span> <span class="o">==</span> <span class="bp">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;0&quot;</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">((</span><span class="n">level</span><span class="o">.</span><span class="n">level_ended</span><span class="o">-</span><span class="n">level</span><span class="o">.</span><span class="n">level_start</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-14'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
-      </div>
-      <p>Render the Level-overwiew which contains a table for the current state and 
-as well another one for the levels played so far.</p>
-<p>:param request: HTTP-request</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">LevelOverview</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-15'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       
     </div>
@@ -297,35 +276,41 @@ as well another one for the levels played so far.</p>
             <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/tlu_joyit_game/restart&#39;</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">level_set</span> <span class="o">==</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">level_set</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">button_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Start now&quot;</span><span class="p">)</span>
-        <span class="n">achieved_points</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">getAchievedPoints</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;levellist&#39;</span><span class="p">:</span><span class="n">level_set</span><span class="p">,</span> 
-                                               <span class="s1">&#39;current_level&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_level_num</span><span class="p">),</span> 
+        <span class="n">game</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">game</span>
+        <span class="n">achieved_points</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">getAchievedPoints</span><span class="p">()</span>
+        <span class="n">minutes_active_game</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">getMinutesPlayedCurrentGame</span><span class="p">()</span>
+        <span class="n">minutes_played</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">getMinutesPlayedOverall</span><span class="p">()</span>
+        <span class="n">num_starts</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">getNumStarts</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;current_level&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_level_num</span><span class="p">),</span> 
                                                <span class="s1">&#39;last_played&#39;</span><span class="p">:</span> <span class="n">last_played</span><span class="p">,</span>
                                                <span class="s1">&#39;achieved_points&#39;</span><span class="p">:</span><span class="n">achieved_points</span><span class="p">,</span>
-                                               <span class="s1">&#39;no_levels&#39;</span><span class="p">:(</span><span class="n">level_set</span><span class="o">==</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">level_set</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">),</span>
+                                               <span class="s1">&#39;minutes_active_game&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">minutes_active_game</span><span class="p">),</span>
+                                               <span class="s1">&#39;minutes_played&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">minutes_played</span><span class="p">),</span>
+                                               <span class="s1">&#39;num_starts&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">num_starts</span><span class="p">),</span>
                                                <span class="s1">&#39;button_text&#39;</span><span class="p">:</span><span class="n">button_text</span><span class="p">,</span>
                                                <span class="s1">&#39;next_level_url&#39;</span> <span class="p">:</span> <span class="n">path</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">HttpResponseNotAllowed</span><span class="p">([</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-14'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-14'>#</a>
       </div>
-      <p>Process the restart request from the user
-:param request: HTTP-request</p>
+      <p>Render the Level-overwiew which contains a table for the current state and 
+as well another one for the levels played so far.</p>
+<p>:param request: HTTP-request</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-15'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       
     </div>
@@ -338,6 +323,31 @@ as well another one for the levels played so far.</p>
     </div>
   </div>
   <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Process the restart request from the user
+:param request: HTTP-request</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">OutOfRangeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">pass</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
   <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
@@ -346,7 +356,7 @@ as well another one for the levels played so far.</p>
       <p>Class to specify that the level is not within the allowed range</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">OutOfRangeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">checkLevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -358,7 +368,7 @@ as well another one for the levels played so far.</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">pass</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">level_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -371,30 +381,6 @@ as well another one for the levels played so far.</p>
 If not raises an OutOfRangeError
 :param request: HTTP-request
 :param level_id: level-number (picked from url)</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">checkLevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-21'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">level_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-22'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
-      </div>
-      <p>startup level is ever ok</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>        <span class="k">return</span>
@@ -421,26 +407,24 @@ If not raises an OutOfRangeError
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
       </div>
-      <p>Show the Level-page where we can start the individual level
-:param request: HTTP-request
-:param level_id: level-number to start</p>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">renderLevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-22'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
-      
+      <p>startup level is ever ok</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">template_name</span> <span class="o">=</span> <span class="s2">&quot;level_&quot;</span><span class="o">+</span><span class="s2">&quot;{:02d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level_id</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.html&quot;</span>
@@ -455,8 +439,8 @@ If not raises an OutOfRangeError
         <span class="n">error</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;We are sorry, but the provided level-id does not fit your overall progress, you have to restart.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">}</span> <span class="p">)</span>
     <span class="n">dips</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">getDipSwitch</span><span class="p">(</span><span class="n">level_id</span><span class="p">)</span>
-    <span class="n">leftDip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;left:&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">dips</span><span class="o">.</span><span class="n">showleft_dip</span><span class="p">()</span>
-    <span class="n">rightDip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;right:&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">dips</span><span class="o">.</span><span class="n">showright_dip</span><span class="p">()</span>
+    <span class="n">leftDip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;left:&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">showleft_dip</span><span class="p">(</span><span class="n">dips</span><span class="p">)</span>
+    <span class="n">rightDip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;right:&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">showright_dip</span><span class="p">(</span><span class="n">dips</span><span class="p">)</span>
     <span class="n">overall_progress</span><span class="o">=</span><span class="n">game</span><span class="o">.</span><span class="n">getOverallProgress</span><span class="p">()</span>
     <span class="n">info</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Please press start and check the DIP-settings...&quot;</span><span class="p">)</span>
     <span class="n">button_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Start Level&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">level_id</span><span class="p">)</span>
@@ -470,24 +454,24 @@ If not raises an OutOfRangeError
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
-      <p>Starts the game as per request given and returns the Level via renderLevel
+      <p>Show the Level-page where we can start the individual level
 :param request: HTTP-request
-:param level_id: level-number</p>
+:param level_id: level-number to start</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">startlevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       
     </div>
@@ -511,24 +495,24 @@ If not raises an OutOfRangeError
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-27'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
-      <p>Process the abort request
+      <p>Starts the game as per request given and returns the Level via renderLevel
 :param request: HTTP-request
-:param level_id: level-id that shall be aborted</p>
+:param level_id: level-number</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">abortlevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-28'>
+  <div class='section' id='section-26'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-28'>#</a>
+        <a class='octothorpe' href='#section-26'>#</a>
       </div>
       
     </div>
@@ -555,24 +539,24 @@ If not raises an OutOfRangeError
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-29'>
+  <div class='section' id='section-27'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-29'>#</a>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
-      <p>Process the retry-request, shows renderLevel in the end
+      <p>Process the abort request
 :param request: HTTP-request
-:param level_id: </p>
+:param level_id: level-id that shall be aborted</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">retrylevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-30'>
+  <div class='section' id='section-28'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-30'>#</a>
+        <a class='octothorpe' href='#section-28'>#</a>
       </div>
       
     </div>
@@ -598,24 +582,24 @@ If not raises an OutOfRangeError
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-31'>
+  <div class='section' id='section-29'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-31'>#</a>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
-      <p>Shows renderLevel for the given level-id
+      <p>Process the retry-request, shows renderLevel in the end
 :param request: HTTP-request
-:param level_id: level-id</p>
+:param level_id: </p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">LevelView</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-32'>
+  <div class='section' id='section-30'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-32'>#</a>
+        <a class='octothorpe' href='#section-30'>#</a>
       </div>
       
     </div>
@@ -636,24 +620,24 @@ If not raises an OutOfRangeError
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-33'>
+  <div class='section' id='section-31'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-33'>#</a>
+        <a class='octothorpe' href='#section-31'>#</a>
       </div>
-      <p>Ajax call (via js-component) to retrieve the current status of the level in order to update the frontend
-returns json formatted data
-:param request: HTTP-request</p>
+      <p>Shows renderLevel for the given level-id
+:param request: HTTP-request
+:param level_id: level-id</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">level_update</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-34'>
+  <div class='section' id='section-32'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-34'>#</a>
+        <a class='octothorpe' href='#section-32'>#</a>
       </div>
       
     </div>
@@ -699,12 +683,14 @@ returns json formatted data
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-35'>
+  <div class='section' id='section-33'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-35'>#</a>
+        <a class='octothorpe' href='#section-33'>#</a>
       </div>
-      <p>finished with success</p>
+      <p>Ajax call (via js-component) to retrieve the current status of the level in order to update the frontend
+returns json formatted data
+:param request: HTTP-request</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>                <span class="n">button_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Next Level&quot;</span><span class="p">)</span>
@@ -712,30 +698,30 @@ returns json formatted data
                 <span class="k">if</span> <span class="n">game</span><span class="o">.</span><span class="n">endReached</span><span class="p">():</span>
                     <span class="n">button_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Restart?&quot;</span><span class="p">)</span>
                     <span class="n">button_url</span><span class="o">=</span><span class="s1">&#39;/tlu_joyit_game/restart&#39;</span>
-            <span class="k">elif</span> <span class="n">res</span><span class="o">==</span><span class="n">Level</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">:</span></pre></div>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="n">Level</span><span class="o">.</span><span class="n">TIMEOUT</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">res</span><span class="o">==</span><span class="n">Level</span><span class="o">.</span><span class="n">DIDNOTFINISH</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-36'>
+  <div class='section' id='section-34'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-36'>#</a>
+        <a class='octothorpe' href='#section-34'>#</a>
       </div>
-      <p>timeout reached</p>
+      
     </div>
     <div class='code'>
       <div class="highlight"><pre>                <span class="n">button_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Retry&quot;</span><span class="p">)</span>
-                <span class="n">button_url</span><span class="o">=</span><span class="s1">&#39;/tlu_joyit_game/retry/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">current_level_num</span><span class="p">)</span>               
+                <span class="n">button_url</span><span class="o">=</span><span class="s1">&#39;/tlu_joyit_game/retry/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">current_level_num</span><span class="p">)</span>    
             <span class="k">else</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-37'>
+  <div class='section' id='section-35'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-37'>#</a>
+        <a class='octothorpe' href='#section-35'>#</a>
       </div>
-      <p>failure somehow</p>
+      <p>finished with success</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>                <span class="n">info</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level failed somehow, please try again, result=&quot;</span><span class="p">))</span>
@@ -755,6 +741,40 @@ returns json formatted data
     </div>
   </div>
   <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>timeout reached or level ende by an gamer error</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">deletelevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>failure somehow</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="n">Level</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">level_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+            <span class="n">level</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span> <span class="c1">#delete only if allowed ;=)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">):</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="s2">&quot;level_error.html&quot;</span>
+        <span class="n">error</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;We are sorry, but the provided level-id is no longer available, you have to restart.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">}</span> <span class="p">)</span>
+    <span class="k">return</span> <span class="n">LevelOverview</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="c1">#redisplay the content without the level</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
   <div class='section' id='section-38'>
     <div class='docs'>
       <div class='octowrap'>
@@ -765,7 +785,7 @@ returns json formatted data
 :param level_id: level to be deleted</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">deletelevel</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">level_id</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -777,171 +797,7 @@ returns json formatted data
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span>
-        <span class="n">level</span> <span class="o">=</span> <span class="n">Level</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">level_id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">level</span><span class="o">.</span><span class="n">game</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
-            <span class="n">level</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span> <span class="c1">#delete only if allowed ;=)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">):</span>
-        <span class="n">template_name</span> <span class="o">=</span> <span class="s2">&quot;level_error.html&quot;</span>
-        <span class="n">error</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;We are sorry, but the provided level-id is no longer available, you have to restart.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">}</span> <span class="p">)</span>
-    <span class="k">return</span> <span class="n">LevelOverview</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="c1">#redisplay the content without the level</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-40'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-40'>#</a>
-      </div>
-      <p>Settings-screen to setup the email basics
-:param request: HTTP-request</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">settings</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-41'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-41'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;POST&#39;</span><span class="p">:</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">settingsForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-            <span class="n">form_dict</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
-            <span class="n">settings</span><span class="o">=</span><span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="p">()</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># @UndefinedVariable</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">setValues</span><span class="p">(</span><span class="n">form_dict</span><span class="p">)</span>  <span class="c1"># @UndefinedVariable</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>  <span class="c1"># @UndefinedVariable</span>
-            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;tlu_joyit_game:emailsettingscheck&#39;</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span><span class="s1">&#39;setup.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-42'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-42'>#</a>
-      </div>
-      <pre><code>       return render(request, 'setup.html', {
-          'error_message': _("Some parameter are wrong, please correct and try again")
-           })
-</code></pre>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">HttpResponseNotAllowed</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-43'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-43'>#</a>
-      </div>
-      <p>Perform a quick email-check to see if the parameter provided do fit
-:param request: HTTP-request</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">settings_check</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-44'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-44'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;POST&#39;</span><span class="p">:</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="n">tlu_local_settings_check</span><span class="o">.</span><span class="n">settingsCheckForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
-            <span class="n">form_dict</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
-            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">form_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emailSuccess&#39;</span><span class="p">)):</span>
-                <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;tlu_joyit_game:index&#39;</span><span class="p">))</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">tlu_local_settings_check</span><span class="o">.</span><span class="n">checkMailOk</span><span class="p">(</span><span class="n">form_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emailSubject&#39;</span><span class="p">),</span> <span class="n">form_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emailMessage&#39;</span><span class="p">),</span> <span class="n">form_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emailFrom&#39;</span><span class="p">),</span> <span class="n">form_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;emailTo&#39;</span><span class="p">)):</span>
-                    <span class="n">email_error</span><span class="o">=</span><span class="bp">False</span>
-                    <span class="n">email_message</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;The Mail has been successfully transmitted! Please check your inbox or the choosen medium.&quot;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">email_error</span><span class="o">=</span><span class="bp">True</span>
-                    <span class="n">email_message</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;The Mail could not be delivered!&quot;</span><span class="p">)</span>
-                   
-            <span class="k">except</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTPException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">email_error</span><span class="o">=</span><span class="bp">True</span>
-                <span class="n">email_message</span> <span class="o">=</span> <span class="n">e</span>
-            <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">email_error</span><span class="o">=</span><span class="bp">True</span>
-                <span class="n">email_message</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;We have encountered an unknown error during trying to submit the test-message: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-                
-            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s1">&#39;setup_check.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;email_error&#39;</span><span class="p">:</span><span class="n">email_error</span><span class="p">,</span> <span class="s1">&#39;email_message&#39;</span><span class="p">:</span><span class="n">email_message</span><span class="p">,</span> <span class="s1">&#39;form&#39;</span><span class="p">:</span><span class="n">form</span><span class="p">})</span>
-                
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;setup_check.html&#39;</span><span class="p">,</span> <span class="p">{</span>
-                <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Some parameter are wrong, please correct and try again&quot;</span><span class="p">)</span>
-                <span class="p">})</span>
-    <span class="k">return</span> <span class="n">HttpResponseNotAllowed</span><span class="p">([</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-45'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-45'>#</a>
-      </div>
-      <p>Form to get the settings</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">SettingsView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-46'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-46'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="n">template_name</span><span class="o">=</span><span class="s2">&quot;setup.html&quot;</span>
-    <span class="n">form_class</span><span class="o">=</span><span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">settingsForm</span>
-    <span class="n">success_url</span> <span class="o">=</span> <span class="s1">&#39;settings&#39;</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-47'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-47'>#</a>
-      </div>
-      <p>Screen to perform the email-check and to show teh result</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">SettingsCheckView</span><span class="p">(</span><span class="n">FormView</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-48'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-48'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="n">template_name</span><span class="o">=</span><span class="s2">&quot;setup_check.html&quot;</span>
-    <span class="n">form_class</span><span class="o">=</span><span class="n">tlu_local_settings_check</span><span class="o">.</span><span class="n">settingsCheckForm</span>
-    <span class="n">success_url</span> <span class="o">=</span> <span class="s1">&#39;settingscheck&#39;</span>
-
-</pre></div>
+      <div class="highlight"><pre></pre></div>
     </div>
   </div>
   <div class='clearall'></div>

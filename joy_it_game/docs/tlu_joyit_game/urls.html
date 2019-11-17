@@ -53,21 +53,6 @@ This module holds all the used URLs of the game </p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      <p>following is the setting and checksettings section (forms)</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;settings&#39;</span><span class="p">),</span>
-    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;settingscheck&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">settings_check</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;settingscheck&#39;</span><span class="p">),</span>
-    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;emailsettings&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">SettingsView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;emailsettings&#39;</span><span class="p">),</span>
-    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;emailsettingscheck&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">SettingsCheckView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;emailsettingscheck&#39;</span><span class="p">),</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-3'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
-      </div>
       <p>demo-page (static, no login needed)</p>
     </div>
     <div class='code'>
@@ -75,10 +60,10 @@ This module holds all the used URLs of the game </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-4'>
+  <div class='section' id='section-3'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
+        <a class='octothorpe' href='#section-3'>#</a>
       </div>
       <p>some levels / the game</p>
     </div>
@@ -95,28 +80,25 @@ This module holds all the used URLs of the game </p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-5'>
+  <div class='section' id='section-4'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
+        <a class='octothorpe' href='#section-4'>#</a>
       </div>
       <p>below logic is needed to show up a config page at first startup to set some mail-settings for the user-handling</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="n">settings</span><span class="o">=</span><span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="p">()</span>
-<span class="k">if</span> <span class="n">tlu_local_settings</span><span class="o">.</span><span class="n">local_settings</span><span class="o">.</span><span class="n">presence</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
-    <span class="n">startuppath</span><span class="o">=</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;index_main&#39;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>    
-    <span class="n">startuppath</span><span class="o">=</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">SettingsView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;setup&#39;</span><span class="p">)</span></pre></div>
+<span class="n">startuppath</span><span class="o">=</span><span class="n">path</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">IndexView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;index_main&#39;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-6'>
+  <div class='section' id='section-5'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-6'>#</a>
+        <a class='octothorpe' href='#section-5'>#</a>
       </div>
-      <p>add the respective correct path to the list of urls  </p>
+      <p>add the startpath to the list of urls  </p>
     </div>
     <div class='code'>
       <div class="highlight"><pre><span class="n">urlpatterns</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">startuppath</span><span class="p">)</span>

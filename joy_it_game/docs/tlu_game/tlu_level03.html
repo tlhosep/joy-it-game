@@ -29,7 +29,7 @@ If one key was wrong, the  whole level fails</p>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
-<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">translation</span>
 <span class="kn">from</span> <span class="nn">tlu_joyit_game.models</span> <span class="kn">import</span> <span class="n">Level</span>
 
 <span class="kn">from</span> <span class="nn">tlu_joyit_game</span> <span class="kn">import</span> <span class="n">models</span>
@@ -40,6 +40,9 @@ If one key was wrong, the  whole level fails</p>
 <span class="kn">from</span> <span class="nn">tlu_services.tlu_threads</span> <span class="kn">import</span> <span class="n">abortThread</span><span class="p">,</span> <span class="n">startThreadClass</span>
 <span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+<span class="kn">from</span> <span class="nn">tlu_services.tlu_queue</span> <span class="kn">import</span> <span class="n">tlu_queue</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_checkhardware</span> <span class="kn">import</span> <span class="n">emulatekey</span>
 
 <span class="n">logger</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
     </div>
@@ -78,7 +81,7 @@ If one key was wrong, the  whole level fails</p>
       <p>Queue loop for level 3</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">hardware</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">hardware</span><span class="p">,</span> <span class="n">language</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -94,20 +97,28 @@ If one key was wrong, the  whole level fails</p>
 </code></pre>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>            <span class="n">key</span><span class="o">=-</span><span class="mi">1</span>
+      <div class="highlight"><pre>            <span class="n">translation</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+            <span class="n">key</span><span class="o">=-</span><span class="mi">1</span>
             <span class="n">numkeys</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">secondstiltimeout</span><span class="o">=</span><span class="mi">4</span>
             <span class="n">thread</span><span class="o">=</span><span class="n">threading</span><span class="o">.</span><span class="n">currentThread</span><span class="p">()</span>
             <span class="p">(</span><span class="n">timer</span><span class="p">,</span> <span class="n">kbd</span><span class="p">,)</span> <span class="o">=</span> <span class="n">hardware</span>  <span class="c1"># @UnusedVariable</span>
+            <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
             <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">numkeys</span><span class="o">&gt;</span><span class="mi">19</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">emulatekey</span> <span class="ow">and</span> <span class="p">(</span><span class="n">numkeys</span><span class="o">&gt;</span><span class="mi">8</span><span class="p">):</span>
+                    <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">numkeys</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="p">:</span>
                     <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
                     <span class="k">break</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                     <span class="n">key</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span>
                     <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
-                    <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You have to press Key #&quot;</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="n">m</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You have to press Key #&quot;</span><span class="p">))</span>
+                    <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">numkeys</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;: &quot;</span><span class="o">+</span><span class="n">m</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                     <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">numkeys</span><span class="o">/</span><span class="mi">20</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
                     <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+                    <span class="n">timer</span><span class="o">.</span><span class="n">changeSecondsAndRestart</span><span class="p">(</span><span class="n">secondstiltimeout</span><span class="p">)</span>
                 
                 <span class="p">(</span><span class="n">queueobject</span><span class="p">,</span><span class="n">breakIndicator</span><span class="p">)</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getQueueObject</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span> <span class="n">gameProcess</span><span class="p">,</span> <span class="n">thread</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">breakIndicator</span><span class="p">:</span>
@@ -116,32 +127,38 @@ If one key was wrong, the  whole level fails</p>
                     <span class="k">continue</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span> <span class="c1">#release object from queue</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkAbort</span><span class="p">(</span><span class="n">stop_event</span><span class="p">,</span><span class="n">gameProcess</span><span class="p">,</span><span class="n">thread</span><span class="p">,</span><span class="n">queueobject</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span><span class="o">==</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_TIMEOUT</span><span class="p">:</span>
+                        <span class="n">glob</span><span class="o">.</span><span class="n">lcdMessagebyline</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level: &quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;03&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Timeout&quot;</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot; :(&quot;</span><span class="p">)</span>
                     <span class="k">break</span>
-                <span class="k">elif</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">:</span>
-                    <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
-                    <span class="n">glob</span><span class="o">.</span><span class="n">lcdMessagebyline</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level: &quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;03&quot;</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Key = &quot;</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">:</span>
+                    <span class="n">glob</span><span class="o">.</span><span class="n">lcdMessagebyline</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level: &quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;03&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">numkeys</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Key=&quot;</span><span class="p">))</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
                     <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">:</span>
                         <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
                         <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
-                        <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">FAILED</span>
+                        <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">DIDNOTFINISH</span>
+                        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">)</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot; was the wrong key, level terminates!&quot;</span><span class="p">))</span>
                         <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Wrong Key:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s2">&quot; instead of:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">)))</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrong Key:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; instead of:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">queueobject</span><span class="o">.</span><span class="n">msg_info</span><span class="p">))</span>
+                        <span class="n">stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                        <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
+                        <span class="n">timer</span><span class="o">.</span><span class="n">pause</span><span class="p">()</span>
                         <span class="n">numkeys</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">glob</span><span class="o">.</span><span class="n">matrixShow_symbol</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span>
+                        <span class="n">key</span><span class="o">=-</span><span class="mi">1</span> <span class="c1">#generate next key</span>
                         <span class="n">status</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">getGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
                         <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">numkeys</span><span class="o">/</span><span class="mi">20</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
                         <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="n">gameProcess</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
-                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Correct key pressed :)&quot;</span><span class="p">)</span>
-                        <span class="n">newseconds</span><span class="o">=</span><span class="mi">4</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Correct key pressed :)&quot;</span><span class="p">)</span>
+                        <span class="n">secondstiltimeout</span><span class="o">=</span><span class="mi">4</span>
                         <span class="k">if</span> <span class="n">numkeys</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
-                            <span class="n">newseconds</span> <span class="o">=</span> <span class="mi">3</span>
+                            <span class="n">secondstiltimeout</span> <span class="o">=</span> <span class="mi">3</span>
                         <span class="k">if</span> <span class="n">numkeys</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-                            <span class="n">newseconds</span> <span class="o">=</span> <span class="mf">2.5</span>
+                            <span class="n">secondstiltimeout</span> <span class="o">=</span> <span class="mf">2.5</span>
                         <span class="k">if</span> <span class="n">numkeys</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
-                            <span class="n">newseconds</span> <span class="o">=</span> <span class="mi">2</span>
-                        <span class="n">timer</span><span class="o">.</span><span class="n">changeSecondsAndRestart</span><span class="p">(</span><span class="n">newseconds</span><span class="p">)</span>
+                            <span class="n">secondstiltimeout</span> <span class="o">=</span> <span class="mi">2</span>
                 <span class="k">elif</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">MSG_KEYRELEASED</span><span class="p">:</span>
-                    <span class="k">pass</span></pre></div>
+                    <span class="n">glob</span><span class="o">.</span><span class="n">matrixShow_symbol</span><span class="p">(</span><span class="s1">&#39;space&#39;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -171,12 +188,12 @@ return list of hardware-processes started here</p>
       <div class="highlight"><pre>        <span class="n">kbd</span><span class="o">=</span><span class="n">CheckKey</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
         <span class="n">startThreadClass</span><span class="p">(</span><span class="n">kbd</span><span class="p">)</span>
         <span class="n">timer</span><span class="o">=</span><span class="n">Countdown</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level03 starts..&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level03 starts..&quot;</span><span class="p">))</span>
         <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
         <span class="n">startThreadClass</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span>
         <span class="n">glob</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">globMgr</span><span class="o">.</span><span class="n">tlu_glob</span><span class="p">()</span>
-        <span class="n">glob</span><span class="o">.</span><span class="n">lcdMessagebyline</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level: &quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;03&quot;</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Random Keys&quot;</span><span class="p">))</span>
-        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level 3 running&quot;</span><span class="p">))</span>
+        <span class="n">glob</span><span class="o">.</span><span class="n">lcdMessagebyline</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level: &quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;03&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Random Keys&quot;</span><span class="p">)))</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level 3 running&quot;</span><span class="p">))</span>
         <span class="n">status</span><span class="o">.</span><span class="n">level_start</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
         <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
@@ -215,11 +232,12 @@ return list of hardware-processes started here</p>
             <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Level 3 failed&quot;</span><span class="p">))</span>
             <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">0</span>
             <span class="n">glob</span><span class="o">.</span><span class="n">matrixShow_symbol</span><span class="p">(</span><span class="s1">&#39;triangle_down&#39;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span> <span class="c1">#wait a bit</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">status</span><span class="o">.</span><span class="n">msg</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;You have passed Level 3 :)&quot;</span><span class="p">))</span>
             <span class="n">status</span><span class="o">.</span><span class="n">level_progress</span><span class="o">=</span><span class="mi">100</span>
             <span class="n">status</span><span class="o">.</span><span class="n">result</span><span class="o">=</span><span class="n">Level</span><span class="o">.</span><span class="n">PASSED</span>
-            <span class="n">status</span><span class="o">.</span><span class="n">points</span><span class="o">=</span><span class="mi">5</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">points</span><span class="o">=</span><span class="mi">15</span>
             <span class="n">glob</span><span class="o">.</span><span class="n">matrixShow_symbol</span><span class="p">(</span><span class="s1">&#39;smiley&#39;</span><span class="p">)</span>
         <span class="n">status</span><span class="o">.</span><span class="n">level_ended</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">models</span><span class="o">.</span><span class="n">setGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>

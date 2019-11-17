@@ -92,13 +92,14 @@ This module shall set, modify and check the presence of a local settings file</p
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">setDefaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;EMAIL_BACKEND&#39;</span> <span class="p">:</span> <span class="s1">&#39;django.core.mail.backends.smtp.EmailBackend&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;EMAIL_BACKEND&#39;</span> <span class="p">:</span> <span class="s1">&#39;django.core.mail.backends.console.EmailBackend&#39;</span><span class="p">,</span>
             <span class="s1">&#39;EMAIL_HOST&#39;</span> <span class="p">:</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
             <span class="s1">&#39;EMAIL_HOST_USER&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
             <span class="s1">&#39;EMAIL_HOST_PASSWORD&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;EMAIL_PORT&#39;</span> <span class="p">:</span> <span class="mi">1025</span><span class="p">,</span>
-            <span class="s1">&#39;EMAIL_USE_TLS&#39;</span> <span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s1">&#39;EMAIL_PORT&#39;</span> <span class="p">:</span> <span class="mi">587</span><span class="p">,</span>
+            <span class="s1">&#39;EMAIL_USE_TLS&#39;</span> <span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
             <span class="s1">&#39;EMAIL_FILE_PATH&#39;</span> <span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MYBASE_DIR</span><span class="p">)),</span>
+            <span class="s1">&#39;LOG_LEVEL&#39;</span> <span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span> 
             <span class="p">}</span></pre></div>
     </div>
   </div>
@@ -143,10 +144,11 @@ This module shall set, modify and check the presence of a local settings file</p
       <div class='octowrap'>
         <a class='octothorpe' href='#section-7'>#</a>
       </div>
-      <p>Check if the local settings file already exists</p>
+      <pre><code>   self.SETTINGS['DEBUG']=bool(parmdict.get('debug'))
+</code></pre>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">presence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;LOG_LEVEL&#39;</span><span class="p">]</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">parmdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;log_level&#39;</span><span class="p">))</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -154,6 +156,73 @@ This module shall set, modify and check the presence of a local settings file</p
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">setParm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings_name</span><span class="p">,</span> <span class="n">options_name</span><span class="p">,</span> <span class="n">options_type</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="n">parm</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="n">options_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">None</span> <span class="o">==</span> <span class="n">parm</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">options_type</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+            <span class="n">parm</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">parm</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">options_type</span> <span class="o">==</span> <span class="s1">&#39;bool&#39;</span><span class="p">:</span>
+            <span class="n">parm</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">parm</span><span class="o">==</span><span class="s1">&#39;True&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="n">settings_name</span><span class="p">]</span><span class="o">=</span><span class="n">parm</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>setup the SETTINGS dictionary from the values given by the commandline-options
+:param parmdict: settings returned from form</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">setValuesFromOptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;EMAIL_BACKEND&#39;</span><span class="p">,</span><span class="s1">&#39;email_backend&#39;</span><span class="p">,</span><span class="s1">&#39;str&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_BACKEND&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;django.core.mail.backends.smtp.EmailBackend&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">,</span> <span class="s1">&#39;email_host&#39;</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;EMAIL_HOST_USER&#39;</span><span class="p">,</span> <span class="s1">&#39;email_host_user&#39;</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;EMAIL_HOST_PASSWORD&#39;</span><span class="p">,</span> <span class="s1">&#39;email_host_password&#39;</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">,</span> <span class="s1">&#39;email_host_port&#39;</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">,</span> <span class="s1">&#39;email_use_tls&#39;</span><span class="p">,</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;django.core.mail.backends.filebased.EmailBackend&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;EMAIL_FILE_PATH&#39;</span><span class="p">,</span><span class="s1">&#39;email_file_path&#39;</span><span class="p">,</span><span class="s1">&#39;str&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setParm</span><span class="p">(</span><span class="s1">&#39;LOG_LEVEL&#39;</span><span class="p">,</span><span class="s1">&#39;log_level&#39;</span><span class="p">,</span><span class="s1">&#39;bool&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">options</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Check if the local settings file already exists</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">presence</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       
     </div>
@@ -166,10 +235,10 @@ This module shall set, modify and check the presence of a local settings file</p
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-9'>
+  <div class='section' id='section-13'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
+        <a class='octothorpe' href='#section-13'>#</a>
       </div>
       <p>Read the local settings file and copy its contents into the
 local SETTINGS</p>
@@ -179,10 +248,10 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-10'>
+  <div class='section' id='section-14'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
+        <a class='octothorpe' href='#section-14'>#</a>
       </div>
       
     </div>
@@ -204,7 +273,7 @@ local SETTINGS</p>
                         <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="n">item</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">contents</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                         <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="n">item</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">contents</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">=</span><span class="n">contents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;True</span><span class="se">\n</span><span class="s2">&quot;</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">Exception</span>
                         <span class="k">break</span>
@@ -212,10 +281,10 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-15'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       <p>Save anything held in local SETTINGS to a fresh created local settings file</p>
     </div>
@@ -224,10 +293,10 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-12'>
+  <div class='section' id='section-16'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
+        <a class='octothorpe' href='#section-16'>#</a>
       </div>
       
     </div>
@@ -246,10 +315,10 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-17'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <p>Close the local settings file</p>
     </div>
@@ -258,10 +327,10 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-14'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       
     </div>
@@ -270,10 +339,10 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-19'>#</a>
       </div>
       <p>Delete the local settings file</p>
     </div>
@@ -282,10 +351,10 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-20'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-20'>#</a>
       </div>
       
     </div>
@@ -299,65 +368,15 @@ local SETTINGS</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
-      </div>
-      <p>Specific field with password-formatting setup properly</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">PasswordField</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-18'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="n">widget</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">PasswordInput</span><span class="p">()</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-19'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
-      </div>
-      <p>Create the form fields for the settings view</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">settingsForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-20'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
   <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-21'>#</a>
       </div>
-      
+      <p>Specific field with password-formatting setup properly</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_urlType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">url</span><span class="p">):</span>
-        <span class="n">pos</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">url</span><span class="p">[:</span><span class="n">pos</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">PasswordField</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -369,10 +388,7 @@ local SETTINGS</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_urlUser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">url</span><span class="p">):</span>
-        <span class="n">pos</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)</span>
-        <span class="n">pos_at</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">url</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">3</span><span class="p">:</span><span class="n">pos_at</span><span class="p">]</span></pre></div>
+      <div class="highlight"><pre>    <span class="n">widget</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">PasswordInput</span><span class="p">()</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -380,6 +396,59 @@ local SETTINGS</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Create the form fields for the settings view</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">settingsForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_urlType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">url</span><span class="p">):</span>
+        <span class="n">pos</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span><span class="p">[:</span><span class="n">pos</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_urlUser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">url</span><span class="p">):</span>
+        <span class="n">pos</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)</span>
+        <span class="n">pos_at</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">3</span><span class="p">:</span><span class="n">pos_at</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
       
     </div>
@@ -392,8 +461,15 @@ local SETTINGS</p>
     <span class="n">settingsObject</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="n">backendlist</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;django.core.mail.backends.smtp.EmailBackend&#39;</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Usual email&#39;</span><span class="p">)),</span>
-        <span class="p">(</span> <span class="s1">&#39;django.core.mail.backends.console.EmailBackend&#39;</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Email to console&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;django.core.mail.backends.console.EmailBackend&#39;</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Email to console&#39;</span><span class="p">)),</span>
         <span class="p">(</span><span class="s1">&#39;django.core.mail.backends.filebased.EmailBackend&#39;</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Email to file&#39;</span><span class="p">)),</span>
+    <span class="p">)</span>
+    <span class="n">loglevellist</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Debug infos&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Details&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;All errors&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Critical errors only&#39;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">FATAL</span><span class="p">,</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Fatal errors only&#39;</span><span class="p">)),</span>
     <span class="p">)</span>
     
     <span class="n">emailBackend</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Backend&quot;</span><span class="p">),</span> <span class="n">choices</span><span class="o">=</span><span class="n">backendlist</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="n">settingsObject</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s2">&quot;EMAIL_BACKEND&quot;</span><span class="p">],</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -402,7 +478,19 @@ local SETTINGS</p>
     <span class="n">emailHostPassword</span> <span class="o">=</span> <span class="n">PasswordField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Login user password&quot;</span><span class="p">),</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="n">emailHostPort</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Port&quot;</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="n">settingsObject</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s2">&quot;EMAIL_PORT&quot;</span><span class="p">],</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="n">emailUseTLS</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Using TLS?&quot;</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="n">settingsObject</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s2">&quot;EMAIL_HOST&quot;</span><span class="p">],</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">emailFilePath</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">FilePathField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Path for email-file to be written&quot;</span><span class="p">),</span> <span class="n">path</span> <span class="o">=</span> <span class="n">settingsObject</span><span class="o">.</span><span class="n">SITE_ROOT</span> <span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="n">settingsObject</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s2">&quot;EMAIL_FILE_PATH&quot;</span><span class="p">],</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_folders</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_files</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">emailFilePath</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">FilePathField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Path for email-file to be written&quot;</span><span class="p">),</span> <span class="n">path</span> <span class="o">=</span> <span class="n">settingsObject</span><span class="o">.</span><span class="n">SITE_ROOT</span> <span class="p">,</span><span class="n">initial</span><span class="o">=</span><span class="n">settingsObject</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s2">&quot;EMAIL_FILE_PATH&quot;</span><span class="p">],</span> <span class="n">recursive</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_folders</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">allow_files</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>debug = forms.BooleanField(label=_(&ldquo;Turn on debug/not for production!&rdquo;),initial=settingsObject.SETTINGS[&ldquo;DEBUG&rdquo;], required=False)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">log_level</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ChoiceField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Logging level&quot;</span><span class="p">),</span> <span class="n">choices</span><span class="o">=</span><span class="n">loglevellist</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="n">settingsObject</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s2">&quot;LOG_LEVEL&quot;</span><span class="p">],</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 </pre></div>
     </div>

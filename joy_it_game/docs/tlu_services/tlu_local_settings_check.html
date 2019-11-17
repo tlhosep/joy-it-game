@@ -43,7 +43,7 @@ Checks the mail connectivity</p>
 :param to_mail: receiver</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">checkMailOk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Testmail&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Testmessage&#39;</span><span class="p">,</span> <span class="n">from_email</span><span class="o">=</span><span class="s1">&#39;test@test.de&#39;</span><span class="p">,</span> <span class="n">to_mail</span><span class="o">=</span><span class="s1">&#39;to@test.de&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></pre></div>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">checkMailOk</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Testmail&#39;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;Testmessage&#39;</span><span class="p">,</span> <span class="n">from_email</span><span class="o">=</span><span class="s1">&#39;test@test.de&#39;</span><span class="p">,</span> <span class="n">to_mail</span><span class="o">=</span><span class="s1">&#39;to@test.de&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -61,7 +61,8 @@ Checks the mail connectivity</p>
         <span class="n">from_email</span><span class="p">,</span>
         <span class="p">[</span><span class="n">to_mail</span><span class="p">],</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="n">email</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">fail_silently</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    
+    <span class="k">if</span> <span class="n">email</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">fail_silently</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">True</span>
     <span class="k">return</span> <span class="bp">False</span></pre></div>
     </div>

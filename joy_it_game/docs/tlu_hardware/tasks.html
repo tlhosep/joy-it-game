@@ -29,13 +29,17 @@ We have a Countdown, Buzzer, Key, Cursor aso Object here&hellip;</p>
       <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">from</span> <span class="nn">tlu_hardware</span> <span class="kn">import</span> <span class="n">tlu_led</span><span class="p">,</span><span class="n">tlu_buttons</span><span class="p">,</span><span class="n">tlu_buzzer</span><span class="p">,</span><span class="n">tlu_matrix</span><span class="p">,</span> <span class="n">tlu_cursor</span><span class="p">,</span>\
-    <span class="n">tlu_hardware_global</span>
+    <span class="n">tlu_hardware_global</span><span class="p">,</span> <span class="n">tlu_touch</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">tlu_services.tlu_queue</span> <span class="kn">import</span> <span class="n">tlu_queueobject</span><span class="p">,</span> <span class="n">tlu_queue</span>
 <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
 <span class="kn">from</span> <span class="nn">tlu_game</span> <span class="kn">import</span> <span class="n">tlu_globals</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_vibration</span> <span class="kn">import</span> <span class="n">tlu_vibrate</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_checkhardware</span> <span class="kn">import</span> <span class="n">emulatekey</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Empty</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_hardwarebase</span> <span class="kn">import</span> <span class="n">tlu_hardwarebase</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></pre></div>
     </div>
@@ -79,11 +83,12 @@ Once timer is run to zero a timeout message would be send to the provided queue<
       <div class="highlight"><pre>        <span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_to_restart</span><span class="o">=</span><span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="n">seconds</span><span class="o">&lt;</span><span class="mi">0</span>
         <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">99</span><span class="p">:</span>
             <span class="n">seconds</span> <span class="o">=</span> <span class="mi">99</span>
         <span class="k">if</span> <span class="n">seconds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">seconds</span> <span class="o">=</span> <span class="mf">0.01</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="o">=</span><span class="n">seconds</span><span class="o">*</span><span class="mi">100</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">seconds</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">=</span><span class="n">queue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sevenseg</span><span class="o">=</span><span class="n">tlu_led</span><span class="o">.</span><span class="n">seven_segment</span><span class="p">()</span>
         <span class="n">tlu_globals</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
@@ -102,7 +107,7 @@ Once timer is run to zero a timeout message would be send to the provided queue<
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Countdown started with hundreds=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Countdown started with hundreds=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; paused=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;paused&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)))</span>
         <span class="n">t0</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="n">diff</span><span class="o">=</span><span class="mi">0</span>
         <span class="k">while</span> <span class="n">diff</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="p">:</span>
@@ -111,7 +116,14 @@ Once timer is run to zero a timeout message would be send to the provided queue<
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Countdown restarted&#39;</span><span class="p">)</span>
                 <span class="n">diff</span><span class="o">=</span><span class="mi">0</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">has_to_restart</span><span class="o">=</span><span class="bp">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sevenseg</span><span class="o">.</span><span class="n">set4digits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="o">-</span><span class="n">diff</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="o">=</span><span class="bp">False</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;paused&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+                <span class="n">t0</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                <span class="n">diff</span><span class="o">=</span><span class="mi">0</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sevenseg</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sevenseg</span><span class="o">.</span><span class="n">set4digits</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="o">-</span><span class="n">diff</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="n">t1</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
             <span class="n">diff</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">t1</span><span class="o">-</span><span class="n">t0</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
@@ -148,8 +160,9 @@ Once timer is run to zero a timeout message would be send to the provided queue<
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_to_restart</span><span class="o">=</span><span class="bp">True</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="o">=</span><span class="bp">True</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Countdown paused&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -161,12 +174,7 @@ Once timer is run to zero a timeout message would be send to the provided queue<
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">changeSecondsAndRestart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">99</span><span class="p">:</span>
-            <span class="n">seconds</span> <span class="o">=</span> <span class="mi">99</span>
-        <span class="k">if</span> <span class="n">seconds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">seconds</span> <span class="o">=</span> <span class="mf">0.01</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="o">=</span><span class="n">seconds</span><span class="o">*</span><span class="mi">100</span>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_to_restart</span><span class="o">=</span><span class="bp">True</span></pre></div>
     </div>
   </div>
@@ -176,6 +184,24 @@ Once timer is run to zero a timeout message would be send to the provided queue<
       <div class='octowrap'>
         <a class='octothorpe' href='#section-8'>#</a>
       </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">changeSecondsAndRestart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seconds</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">99</span><span class="p">:</span>
+            <span class="n">seconds</span> <span class="o">=</span> <span class="mi">99</span>
+        <span class="k">if</span> <span class="n">seconds</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">seconds</span> <span class="o">=</span> <span class="mf">0.01</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hundreds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">seconds</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_to_restart</span><span class="o">=</span><span class="bp">True</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
       <p>Check for any key pressed on the board. Once a key is pressed or released a message will be 
 created and send to the provided queue</p>
     </div>
@@ -184,10 +210,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-9'>
+  <div class='section' id='section-10'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
+        <a class='octothorpe' href='#section-10'>#</a>
       </div>
       <p>Initializes the Thread.
 :param queue: Queue to receive the key-messages or a tiemout , if set
@@ -198,10 +224,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-10'>
+  <div class='section' id='section-11'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
       
     </div>
@@ -219,10 +245,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       
     </div>
@@ -233,8 +259,8 @@ created and send to the provided queue</p>
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Requesting button with count = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_end</span><span class="p">()</span>
                     <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_TIMEOUT</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Buttons no longer checked due to timeout&quot;</span><span class="p">)</span>
@@ -244,29 +270,12 @@ created and send to the provided queue</p>
                 <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Buttons no longer checked due to abort&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span> <span class="c1">#reduce load</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Requesting button with count = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="c1">#reduce load</span>
             <span class="n">button</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">buttons</span><span class="o">.</span><span class="n">button_pressed</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">button</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">button_values</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">button</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="p">:</span>
-                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">button</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-12'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
-      </div>
-      <p>released</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYRELEASED</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Key released: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="p">))</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">button</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span></pre></div>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">button</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -278,11 +287,11 @@ created and send to the provided queue</p>
       <p>pressed</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">,</span><span class="n">button</span><span class="p">)</span>
+      <div class="highlight"><pre>                    <span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="o">=</span><span class="n">button</span>
+                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">,</span><span class="n">button</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Key pressed: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">button</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="o">=</span><span class="n">button</span>
-        <span class="k">return</span> <span class="n">Thread</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Key pressed: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">button</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">button</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -290,6 +299,22 @@ created and send to the provided queue</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>released</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYRELEASED</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Key released: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="o">=</span><span class="n">button</span> <span class="c1">#indicate release</span>
+        <span class="k">return</span> <span class="n">Thread</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       
     </div>
@@ -300,10 +325,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-16'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-16'>#</a>
       </div>
       <p>Make the buzzer sound</p>
     </div>
@@ -312,10 +337,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-17'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <p>Initialization
 :param duration_seconds: Duration of sound in seconds</p>
@@ -325,10 +350,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       
     </div>
@@ -340,10 +365,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-19'>#</a>
       </div>
       
     </div>
@@ -359,10 +384,10 @@ created and send to the provided queue</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-20'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-20'>#</a>
       </div>
       
     </div>
@@ -370,14 +395,14 @@ created and send to the provided queue</p>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buz</span><span class="o">.</span><span class="n">sound</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;animated buzzer termination requested&#39;</span><span class="p">)</span></pre></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Buzzer termination requested&#39;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-21'>#</a>
       </div>
       <p>Buzzer with symbols shown on the matrix.
 You see a note while the buzzer sounds, followed by a space once done</p>
@@ -387,10 +412,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-21'>
+  <div class='section' id='section-22'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-21'>#</a>
+        <a class='octothorpe' href='#section-22'>#</a>
       </div>
       <p>Initialization
 :param duration_seconds: Duration of the sound in seconds</p>
@@ -400,10 +425,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-22'>
+  <div class='section' id='section-23'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
+        <a class='octothorpe' href='#section-23'>#</a>
       </div>
       
     </div>
@@ -419,10 +444,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-23'>
+  <div class='section' id='section-24'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
+        <a class='octothorpe' href='#section-24'>#</a>
       </div>
       
     </div>
@@ -445,10 +470,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-24'>
+  <div class='section' id='section-25'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       
     </div>
@@ -460,10 +485,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-26'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-26'>#</a>
       </div>
       <p>Checks for cursor-key input</p>
     </div>
@@ -472,10 +497,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-26'>
+  <div class='section' id='section-27'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-26'>#</a>
+        <a class='octothorpe' href='#section-27'>#</a>
       </div>
       <p>Initializes the Thread.
 :param queue: Queue to receive the cursorkey-messages or a tiemout , if set
@@ -486,10 +511,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-27'>
+  <div class='section' id='section-28'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-27'>#</a>
+        <a class='octothorpe' href='#section-28'>#</a>
       </div>
       
     </div>
@@ -507,10 +532,10 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-28'>
+  <div class='section' id='section-29'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-28'>#</a>
+        <a class='octothorpe' href='#section-29'>#</a>
       </div>
       
     </div>
@@ -541,32 +566,18 @@ You see a note while the buzzer sounds, followed by a space once done</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-29'>
+  <div class='section' id='section-30'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-29'>#</a>
+        <a class='octothorpe' href='#section-30'>#</a>
       </div>
       <p>released</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYRELEASED</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cursor released: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="p">))</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">cursorkey</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-30'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-30'>#</a>
-      </div>
-      <p>pressed</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">,</span><span class="n">cursorkey</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="o">=</span><span class="n">cursorkey</span>
-        <span class="k">return</span> <span class="n">Thread</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -575,10 +586,228 @@ You see a note while the buzzer sounds, followed by a space once done</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-31'>#</a>
       </div>
+      <p>pressed</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_KEYPRESSED</span><span class="p">,</span><span class="n">cursorkey</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cursor presssed: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">cursorkey</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">currentKey</span><span class="o">=</span><span class="n">cursorkey</span>
+        <span class="k">return</span> <span class="n">Thread</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
       
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">True</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;CheckCursor termination requested&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Make tvibration</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Vibrate</span><span class="p">(</span><span class="n">Thread</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>Initialization
+:param duration_seconds: Duration of sound in seconds</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">duration_seconds</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tenth</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">duration_seconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vib</span><span class="o">=</span><span class="n">tlu_vibrate</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Vibration started with duration=&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tenth</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vib</span><span class="o">.</span><span class="n">vibrate</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tenth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;is_aborted&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)):</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tenth</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vib</span><span class="o">.</span><span class="n">vibrate</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Thread</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vib</span><span class="o">.</span><span class="n">vibrate</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;vibration termination requested&#39;</span><span class="p">)</span>
+
+<span class="n">touch_queue</span><span class="o">=</span><span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">do_touch_check</span><span class="p">(</span><span class="n">channel</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">touch_queue</span>
+    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_TOUCH_PRESSED</span><span class="p">)</span>
+    <span class="n">touch_queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Touchpad pressed &quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Checks for cursor-key input</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CheckTouch</span><span class="p">(</span><span class="n">Thread</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>Initializes the Thread.
+:param queue: Queue to receive the touchpad-messages or a tiemout , if set
+:param limit: Default none, else seconds to wait for a touchpad-event before a timeout is sent to the queue</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">global</span> <span class="n">touch_queue</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">touch</span><span class="o">=</span><span class="n">tlu_touch</span><span class="o">.</span><span class="n">tlu_touch</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">=</span><span class="n">queue</span>
+        <span class="n">touch_queue</span><span class="o">=</span><span class="n">queue</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checking for Touchpad touched in background&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">touch</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">do_touch_check</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">touch</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;exiting touch-check due to retry-limit reached&quot;</span><span class="p">)</span>
+                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_TIMEOUT</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+                    <span class="k">return</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;is_aborted&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">touch</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Touchpad no longer checked&quot;</span><span class="p">)</span>
+                <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_STOP</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;requesting touchpad pressed with count &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">emulatekey</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">=</span><span class="n">tlu_globals</span><span class="o">.</span><span class="n">tqueue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">queueobject</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">Empty</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;touch-q is empty :(&#39;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Exception while reading from key-q: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                    <span class="n">queueobject</span><span class="o">=</span><span class="n">tlu_queueobject</span><span class="p">(</span><span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_STOP</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">queueobject</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="k">if</span> <span class="n">queueobject</span><span class="o">.</span><span class="n">msg_num</span> <span class="o">==</span> <span class="n">tlu_queue</span><span class="o">.</span><span class="n">MSG_TOUCH_PRESSED</span><span class="p">:</span>
+                    <span class="n">do_touch_check</span><span class="p">(</span><span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">touch_bcm</span><span class="p">)</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span> <span class="c1">#release object from queue</span>
+        <span class="k">return</span> <span class="n">Thread</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">touch</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_aborted</span><span class="o">=</span><span class="bp">True</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;CheckCursor termination requested&#39;</span><span class="p">)</span>
 

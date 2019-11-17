@@ -42,9 +42,15 @@ In addition we do have a set of levels associated to a game</p>
 <span class="kn">from</span> <span class="nn">tlu_services.tlu_processes</span> <span class="kn">import</span> <span class="n">abortProcess</span><span class="p">,</span> <span class="n">startProcess</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">from</span> <span class="nn">tlu_hardware</span> <span class="kn">import</span> <span class="n">tlu_hardware_global</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_hardwarebase</span> <span class="kn">import</span> <span class="n">tlu_hardwarebase</span>
+<span class="kn">from</span> <span class="nn">tlu_hardware.tlu_touch</span> <span class="kn">import</span> <span class="n">tlu_touch</span>
 
 <span class="n">logfile</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">BASE_DIR</span><span class="o">+</span><span class="s2">&quot;/log/game.log&quot;</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1">;</span><span class="si">%(filename)-16.16s</span><span class="s1">;</span><span class="si">%(lineno)04d</span><span class="s1">;</span><span class="si">%(levelname)-8s</span><span class="s1">;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">log_level</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">LOG_LEVEL</span>  <span class="c1"># @UndefinedVariable</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">log_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">logfile</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">log_level</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1">;</span><span class="si">%(filename)-16.16s</span><span class="s1">;</span><span class="si">%(lineno)04d</span><span class="s1">;</span><span class="si">%(levelname)-8s</span><span class="s1">;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <span class="n">manager</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
 <span class="n">states</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span></pre></div>
@@ -404,7 +410,7 @@ to lookup the correct task and to forward the frequency for the updates on the w
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="n">dipswitch_settings</span><span class="o">=</span><span class="bp">None</span>
-    <span class="n">frequent_updates</span><span class="o">=</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">500</span><span class="p">)</span></pre></div>
+    <span class="n">frequent_updates</span><span class="o">=</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">250</span><span class="p">,</span><span class="mi">250</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -418,7 +424,11 @@ to lookup the correct task and to forward the frequency for the updates on the w
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dipswitch_settings</span><span class="o">=</span><span class="p">(</span><span class="n">tlu_buttons</span><span class="p">(),</span><span class="n">tlu_buttons</span><span class="p">(),</span><span class="n">tlu_cursor</span><span class="p">(),</span><span class="n">tlu_buttons</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dipswitch_settings</span><span class="o">=</span><span class="p">(</span><span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">getDipHex</span><span class="p">(</span><span class="n">tlu_buttons</span><span class="p">),</span>
+                                 <span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">getDipHex</span><span class="p">(</span><span class="n">tlu_buttons</span><span class="p">),</span>
+                                 <span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">getDipHex</span><span class="p">(</span><span class="n">tlu_cursor</span><span class="p">),</span>
+                                 <span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">getDipHex</span><span class="p">(</span><span class="n">tlu_buttons</span><span class="p">),</span>
+                                 <span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">getDipHex</span><span class="p">(</span><span class="n">tlu_buttons</span><span class="p">)</span><span class="o">|</span><span class="n">tlu_hardwarebase</span><span class="o">.</span><span class="n">getDipHex</span><span class="p">(</span><span class="n">tlu_touch</span><span class="p">))</span>
         <span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></pre></div>
     </div>
   </div>
@@ -651,10 +661,12 @@ There is one number defined for each level, as each level is different
       <div class='octowrap'>
         <a class='octothorpe' href='#section-43'>#</a>
       </div>
-      <p>Service wrapper to return the game-state</p>
+      <p>Internal: Calculate the number of seconds played for the specified level
+:param level: The level in scope
+:type level: Level object</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">getState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">level</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -666,8 +678,9 @@ There is one number defined for each level, as each level is different
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="n">state</span><span class="o">=</span><span class="n">getGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">state</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">level_start</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">level</span><span class="o">.</span><span class="n">level_ended</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">((</span><span class="n">level</span><span class="o">.</span><span class="n">level_ended</span><span class="o">-</span><span class="n">level</span><span class="o">.</span><span class="n">level_start</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+        <span class="k">return</span> <span class="mi">0</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -676,10 +689,12 @@ There is one number defined for each level, as each level is different
       <div class='octowrap'>
         <a class='octothorpe' href='#section-45'>#</a>
       </div>
-      <p>Internal method to abort the level played</p>
+      <p>Calculate the number of seconds played for a specified game
+:param level: The final level for the game in scope
+:type level: Level object</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">_abortTask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">getSecondsPlayedPerGame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">level</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -687,6 +702,157 @@ There is one number defined for each level, as each level is different
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">seconds</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">while</span> <span class="n">level</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">seconds</span><span class="o">+=</span><span class="bp">self</span><span class="o">.</span><span class="n">_seconds</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">level</span><span class="o">.</span><span class="n">prevLevel</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Calculate the number of minutes played on the current game</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">getMinutesPlayedCurrentGame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getSecondsPlayedPerGame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_level</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Calculate the number of minutes played in total for the user</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">getMinutesPlayedOverall</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">seconds</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">startcounting</span><span class="o">=</span><span class="bp">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">level_set</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">level_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-id&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">):</span>
+            <span class="n">level_set</span><span class="o">=</span><span class="bp">None</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">level_set</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">level</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">startcounting</span><span class="p">:</span>
+                <span class="n">seconds</span><span class="o">+=</span><span class="bp">self</span><span class="o">.</span><span class="n">getSecondsPlayedPerGame</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">level</span><span class="o">.</span><span class="n">prevLevel</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+                <span class="n">startcounting</span><span class="o">=</span><span class="bp">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">startcounting</span><span class="o">=</span><span class="bp">False</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">seconds</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>Calculate the number of games started by this user</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">getNumStarts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">numstarts</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">level_set</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">level_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;-id&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">Level</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">level_set</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">level</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">level</span><span class="o">.</span><span class="n">prevLevel</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+                <span class="n">numstarts</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">numstarts</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Service wrapper to return the game-state</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">getState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">state</span><span class="o">=</span><span class="n">getGameState</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">state</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>Internal method to abort the level played</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">_abortTask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">msg</span><span class="p">,</span><span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
       </div>
       <pre><code>    
     :param msg: msg for logging purposes while aborting the process
@@ -705,10 +871,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-47'>
+  <div class='section' id='section-57'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-47'>#</a>
+        <a class='octothorpe' href='#section-57'>#</a>
       </div>
       <p>Restart the game from scratch at the task provided
 :param task: Level that should be used to start the game</p>
@@ -718,10 +884,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-48'>
+  <div class='section' id='section-58'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-48'>#</a>
+        <a class='octothorpe' href='#section-58'>#</a>
       </div>
       
     </div>
@@ -738,10 +904,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-49'>
+  <div class='section' id='section-59'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-49'>#</a>
+        <a class='octothorpe' href='#section-59'>#</a>
       </div>
       <p>Force restart of the game by setting the current level to none</p>
     </div>
@@ -750,10 +916,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-50'>
+  <div class='section' id='section-60'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-50'>#</a>
+        <a class='octothorpe' href='#section-60'>#</a>
       </div>
       
     </div>
@@ -763,10 +929,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-51'>
+  <div class='section' id='section-61'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-51'>#</a>
+        <a class='octothorpe' href='#section-61'>#</a>
       </div>
       <p>Start the game-level</p>
     </div>
@@ -775,10 +941,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-52'>
+  <div class='section' id='section-62'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-52'>#</a>
+        <a class='octothorpe' href='#section-62'>#</a>
       </div>
       <pre><code>    
     :param task: the level-process to be played
@@ -808,10 +974,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-53'>
+  <div class='section' id='section-63'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-53'>#</a>
+        <a class='octothorpe' href='#section-63'>#</a>
       </div>
       <p>Internal used method to end the current game-level</p>
     </div>
@@ -820,10 +986,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-54'>
+  <div class='section' id='section-64'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-54'>#</a>
+        <a class='octothorpe' href='#section-64'>#</a>
       </div>
       <pre><code>    
     :param msg: debugging message for aborting the game
@@ -837,10 +1003,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-55'>
+  <div class='section' id='section-65'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-55'>#</a>
+        <a class='octothorpe' href='#section-65'>#</a>
       </div>
       <p>abort only if not already stopped</p>
     </div>
@@ -857,10 +1023,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-56'>
+  <div class='section' id='section-66'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-56'>#</a>
+        <a class='octothorpe' href='#section-66'>#</a>
       </div>
       <p>short for _end with Level.ABORT</p>
     </div>
@@ -869,10 +1035,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-57'>
+  <div class='section' id='section-67'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-57'>#</a>
+        <a class='octothorpe' href='#section-67'>#</a>
       </div>
       
     </div>
@@ -881,10 +1047,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-58'>
+  <div class='section' id='section-68'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-58'>#</a>
+        <a class='octothorpe' href='#section-68'>#</a>
       </div>
       <p>Sets result of previous level to retry</p>
     </div>
@@ -893,10 +1059,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-59'>
+  <div class='section' id='section-69'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-59'>#</a>
+        <a class='octothorpe' href='#section-69'>#</a>
       </div>
       
     </div>
@@ -913,10 +1079,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-60'>
+  <div class='section' id='section-70'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-60'>#</a>
+        <a class='octothorpe' href='#section-70'>#</a>
       </div>
       <p>Wait for the level to end</p>
     </div>
@@ -925,10 +1091,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-61'>
+  <div class='section' id='section-71'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-61'>#</a>
+        <a class='octothorpe' href='#section-71'>#</a>
       </div>
       <pre><code>    Wait until task produces a result or timeout(in seconds) runs out
     Retrieves the result of a level
@@ -951,10 +1117,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-62'>
+  <div class='section' id='section-72'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-62'>#</a>
+        <a class='octothorpe' href='#section-72'>#</a>
       </div>
       <p>wait for task to end</p>
     </div>
@@ -979,10 +1145,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-63'>
+  <div class='section' id='section-73'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-63'>#</a>
+        <a class='octothorpe' href='#section-73'>#</a>
       </div>
       <p>Check if Game is running</p>
     </div>
@@ -991,10 +1157,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-64'>
+  <div class='section' id='section-74'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-64'>#</a>
+        <a class='octothorpe' href='#section-74'>#</a>
       </div>
       
     </div>
@@ -1010,10 +1176,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-65'>
+  <div class='section' id='section-75'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-65'>#</a>
+        <a class='octothorpe' href='#section-75'>#</a>
       </div>
       <p>The Level played for the game</p>
     </div>
@@ -1031,10 +1197,10 @@ There is one number defined for each level, as each level is different
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-66'>
+  <div class='section' id='section-76'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-66'>#</a>
+        <a class='octothorpe' href='#section-76'>#</a>
       </div>
       <pre><code>Defines some constants for the status of the game-level:
 *NOT_STARTED=0
@@ -1056,7 +1222,8 @@ Forms a daisy-chain by referencing to the previous level, if available
     <span class="n">FAILED</span><span class="o">=</span><span class="mi">4</span>
     <span class="n">STARTED</span><span class="o">=</span><span class="mi">5</span>
     <span class="n">TIMEOUT</span><span class="o">=</span><span class="mi">6</span>
-    <span class="n">resultdict</span><span class="o">=</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;not started&quot;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;retry&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;abort&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;failed&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;started&quot;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">))</span>
+    <span class="n">DIDNOTFINISH</span><span class="o">=</span><span class="mi">6</span>
+    <span class="n">resultdict</span><span class="o">=</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;not started&quot;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;passed&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;retry&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;abort&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;failed&#39;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;started&quot;</span><span class="p">),</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;timeout&quot;</span><span class="p">),</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;not finished&quot;</span><span class="p">))</span>
     <span class="n">game</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Game</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1">#reference to the underlying game object</span>
     <span class="n">prevLevel</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;Level&#39;</span><span class="p">,</span><span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">SET_NULL</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;all_levels&#39;</span><span class="p">)</span> <span class="c1">#daisy-chain for a game consisting of levels</span>
     <span class="n">levelnum</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Level-Number ranging from 00 (Test only), 1..99</span>
@@ -1067,10 +1234,10 @@ Forms a daisy-chain by referencing to the previous level, if available
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-67'>
+  <div class='section' id='section-77'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-67'>#</a>
+        <a class='octothorpe' href='#section-77'>#</a>
       </div>
       
     </div>
@@ -1080,17 +1247,28 @@ Forms a daisy-chain by referencing to the previous level, if available
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level_start</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot; start: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level_start</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level_ended</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
-            <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot; end: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level_ended</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prevLevel</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">):</span>
-            <span class="n">ret</span><span class="o">+=</span><span class="s2">&quot; prev-Level= &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prevLevel</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span></pre></div>
+            <span class="n">ret</span> <span class="o">+=</span> <span class="s2">&quot; end: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level_ended</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-68'>
+  <div class='section' id='section-78'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-68'>#</a>
+        <a class='octothorpe' href='#section-78'>#</a>
+      </div>
+      <pre><code>   if (self.prevLevel != None):
+       ret+=" prev-Level= "+str(self.prevLevel)
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">ret</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-79'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-79'>#</a>
       </div>
       <p>Set some defaults for the level, including the reference to the game</p>
     </div>
@@ -1104,10 +1282,10 @@ Forms a daisy-chain by referencing to the previous level, if available
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-69'>
+  <div class='section' id='section-80'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-69'>#</a>
+        <a class='octothorpe' href='#section-80'>#</a>
       </div>
       <pre><code>    
     :param levelnum: level number (1..99)
@@ -1127,10 +1305,10 @@ Forms a daisy-chain by referencing to the previous level, if available
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-70'>
+  <div class='section' id='section-81'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-70'>#</a>
+        <a class='octothorpe' href='#section-81'>#</a>
       </div>
       <p>Load Level-status from state-object</p>
     </div>
@@ -1139,10 +1317,10 @@ Forms a daisy-chain by referencing to the previous level, if available
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-71'>
+  <div class='section' id='section-82'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-71'>#</a>
+        <a class='octothorpe' href='#section-82'>#</a>
       </div>
       <pre><code>    As the state object only exists in memory this
     methos persists the state as part of the level-object in the database
@@ -1158,10 +1336,10 @@ Forms a daisy-chain by referencing to the previous level, if available
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-72'>
+  <div class='section' id='section-83'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-72'>#</a>
+        <a class='octothorpe' href='#section-83'>#</a>
       </div>
       <p>Returns the string representation of the given result
 :param result: Number-Code of result of level</p>
@@ -1171,10 +1349,10 @@ Forms a daisy-chain by referencing to the previous level, if available
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-73'>
+  <div class='section' id='section-84'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-73'>#</a>
+        <a class='octothorpe' href='#section-84'>#</a>
       </div>
       
     </div>

@@ -102,7 +102,9 @@ Display is updated every 0.25 seconds to show the blinking sign for seconds
         <span class="bp">self</span><span class="o">.</span><span class="n">sevenseg</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ShowClock termination requested: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
-<span class="n">global_clock_thread</span><span class="o">=</span><span class="bp">None</span></pre></div>
+<span class="n">global_clock_thread</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">global_lcd</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">global_matrix</span><span class="o">=</span><span class="bp">None</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -128,8 +130,16 @@ Here you could also start the clock display
 </code></pre>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="n">global_lcd</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">global_matrix</span><span class="o">=</span><span class="bp">None</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">global_lcd</span>
+        <span class="k">global</span> <span class="n">global_matrix</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Global_vars: Init&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">global_lcd</span><span class="o">==</span><span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">global_matrix</span> <span class="o">==</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">global_lcd</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">global_lcd</span> <span class="o">=</span> <span class="n">tlu_lcd</span><span class="o">.</span><span class="n">lcd_panel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">global_matrix</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">global_matrix</span> <span class="o">=</span> <span class="n">tlu_matrix</span><span class="o">.</span><span class="n">tlu_matrix</span><span class="p">()</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -137,22 +147,6 @@ Here you could also start the clock display
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-7'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Global_vars: Init&quot;</span><span class="p">)</span>
-        <span class="n">tlu_hardware_global</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">global_lcd</span> <span class="o">=</span> <span class="n">tlu_lcd</span><span class="o">.</span><span class="n">lcd_panel</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">global_matrix</span> <span class="o">=</span> <span class="n">tlu_matrix</span><span class="o">.</span><span class="n">tlu_matrix</span><span class="p">()</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-8'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-8'>#</a>
       </div>
       <p>Show a message on the LCD screen with backlight turned on
 :param line1: Message for line 1
@@ -165,23 +159,24 @@ Here you could also start the clock display
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-9'>
+  <div class='section' id='section-8'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-9'>#</a>
+        <a class='octothorpe' href='#section-8'>#</a>
       </div>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">global_lcd</span><span class="o">.</span><span class="n">backlight</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">global_lcd</span><span class="o">.</span><span class="n">messagebyline</span><span class="p">(</span><span class="n">line1</span><span class="o">=</span><span class="n">line1</span><span class="p">,</span><span class="n">line2</span><span class="o">=</span><span class="n">line2</span><span class="p">,</span><span class="n">line1_format</span><span class="o">=</span><span class="n">line1Format</span><span class="p">,</span><span class="n">line2_format</span><span class="o">=</span><span class="n">line2Format</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">global</span> <span class="n">global_lcd</span>
+        <span class="n">global_lcd</span><span class="o">.</span><span class="n">backlight</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">global_lcd</span><span class="o">.</span><span class="n">messagebyline</span><span class="p">(</span><span class="n">line1</span><span class="o">=</span><span class="n">line1</span><span class="p">,</span><span class="n">line2</span><span class="o">=</span><span class="n">line2</span><span class="p">,</span><span class="n">line1_format</span><span class="o">=</span><span class="n">line1Format</span><span class="p">,</span><span class="n">line2_format</span><span class="o">=</span><span class="n">line2Format</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-10'>
+  <div class='section' id='section-9'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-10'>#</a>
+        <a class='octothorpe' href='#section-9'>#</a>
       </div>
       <p>For internal testing purposes only, returns True in case tests has passed.
 If not, displays message in terminal
@@ -193,10 +188,10 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-10'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-10'>#</a>
       </div>
       
     </div>
@@ -208,10 +203,10 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-12'>
+  <div class='section' id='section-11'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
       <p>For tests only to make sure that the globals do work as expected</p>
     </div>
@@ -220,26 +215,29 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleTest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">global_lcd</span><span class="p">,</span> <span class="s2">&quot;There has to be an lcd&quot;</span><span class="p">):</span>
+      <div class="highlight"><pre>        <span class="k">global</span> <span class="n">global_lcd</span>
+        <span class="k">global</span> <span class="n">global_matrix</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleTest</span><span class="p">(</span><span class="n">global_lcd</span><span class="p">,</span> <span class="s2">&quot;There has to be an lcd&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">False</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleTest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">global_matrix</span><span class="p">,</span> <span class="s2">&quot;There has to be an matrix&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_singleTest</span><span class="p">(</span><span class="n">global_matrix</span><span class="p">,</span> <span class="s2">&quot;There has to be an matrix&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">False</span>
         <span class="k">return</span> <span class="bp">True</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-14'>
+  <div class='section' id='section-13'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
+        <a class='octothorpe' href='#section-13'>#</a>
       </div>
       <p>Show a specific symbol ion the LED matrix</p>
 <p>:param symbol: Name of symbol to display (see tlu_matrix for details)</p>
@@ -249,23 +247,24 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-14'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-14'>#</a>
       </div>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">global_matrix</span><span class="o">.</span><span class="n">brightness</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">global_matrix</span><span class="o">.</span><span class="n">show_symbol</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">global</span> <span class="n">global_matrix</span>
+        <span class="n">global_matrix</span><span class="o">.</span><span class="n">brightness</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">global_matrix</span><span class="o">.</span><span class="n">show_symbol</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-15'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       <pre><code>    shows the clock on the 7-seg display
 </code></pre>
@@ -275,10 +274,10 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-16'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-16'>#</a>
       </div>
       
     </div>
@@ -292,10 +291,10 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
+  <div class='section' id='section-17'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       <pre><code>    stops the clock from showing
     Needed in order to use the display for other activities :)
@@ -306,10 +305,10 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-19'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-19'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       
     </div>
@@ -322,10 +321,10 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-20'>
+  <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-20'>#</a>
+        <a class='octothorpe' href='#section-19'>#</a>
       </div>
       <p>stops all threads, turns hardware off        </p>
     </div>
@@ -334,17 +333,33 @@ If not, displays message in terminal
     </div>
   </div>
   <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">global</span> <span class="n">global_lcd</span>
+        <span class="k">global</span> <span class="n">global_matrix</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Global cleanup performed&quot;</span><span class="p">)</span>
+        <span class="n">global_lcd</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">global_matrix</span><span class="o">.</span><span class="n">show_symbol</span><span class="p">(</span><span class="s1">&#39;space&#39;</span><span class="p">)</span>  <span class="c1">#turning it off</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopClock</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
   <div class='section' id='section-21'>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-21'>#</a>
       </div>
-      
+      <p>global class as we only have one hardware</p>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">global_lcd</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">global_matrix</span><span class="o">.</span><span class="n">show_symbol</span><span class="p">(</span><span class="s1">&#39;space&#39;</span><span class="p">)</span>  <span class="c1">#turning it off</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stopClock</span><span class="p">()</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">GlobManager</span><span class="p">(</span><span class="n">BaseManager</span><span class="p">):</span>
+    <span class="k">pass</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -353,10 +368,10 @@ If not, displays message in terminal
       <div class='octowrap'>
         <a class='octothorpe' href='#section-22'>#</a>
       </div>
-      <p>global class as we only have one hardware</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">GlobManager</span><span class="p">(</span><span class="n">BaseManager</span><span class="p">):</span>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">KbQueueManager</span><span class="p">(</span><span class="n">BaseManager</span><span class="p">):</span>
     <span class="k">pass</span></pre></div>
     </div>
   </div>
@@ -369,12 +384,8 @@ If not, displays message in terminal
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">KbQueueManager</span><span class="p">(</span><span class="n">BaseManager</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-<span class="n">kbQueue</span><span class="o">=</span><span class="bp">None</span>
-<span class="n">globMgr</span><span class="o">=</span><span class="bp">None</span>
-<span class="n">kbmgr</span><span class="o">=</span><span class="bp">None</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CursorQueueManager</span><span class="p">(</span><span class="n">BaseManager</span><span class="p">):</span>
+    <span class="k">pass</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -382,6 +393,27 @@ If not, displays message in terminal
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">TouchQueueManager</span><span class="p">(</span><span class="n">BaseManager</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">kbQueue</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">cqueue</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">tqueue</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">globMgr</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">kbmgr</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">cmgr</span><span class="o">=</span><span class="bp">None</span>
+<span class="n">tmgr</span><span class="o">=</span><span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
       </div>
       <p>Initialization of several globally used managers.
 At least we have the global-manager to allow to call the hardware settings.
@@ -394,17 +426,21 @@ Therefore we also start a Listener in these scenarios to accept keystrokes via a
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-25'>
+  <div class='section' id='section-26'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-25'>#</a>
+        <a class='octothorpe' href='#section-26'>#</a>
       </div>
       
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">global</span> <span class="n">kbQueue</span>
+    <span class="k">global</span> <span class="n">cqueue</span>
+    <span class="k">global</span> <span class="n">tqueue</span>
     <span class="k">global</span> <span class="n">globMgr</span>
     <span class="k">global</span> <span class="n">kbmgr</span>
+    <span class="k">global</span> <span class="n">cmgr</span>
+    <span class="k">global</span> <span class="n">tmgr</span>
     <span class="k">if</span> <span class="n">globMgr</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">GlobManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;tlu_glob&#39;</span><span class="p">,</span><span class="n">Global_vars</span><span class="p">)</span>
         <span class="n">globMgr</span><span class="o">=</span><span class="n">GlobManager</span><span class="p">()</span>
@@ -416,6 +452,18 @@ Therefore we also start a Listener in these scenarios to accept keystrokes via a
         <span class="n">kbmgr</span> <span class="o">=</span> <span class="n">KbQueueManager</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">50200</span><span class="p">),</span><span class="n">authkey</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;tlu_abracadabra&#39;</span><span class="p">)</span>
         <span class="n">kbmgr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;KeyboardQueueMgr started&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">emulatekey</span> <span class="ow">and</span> <span class="n">cqueue</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cqueue</span> <span class="o">=</span> <span class="n">JoinableQueue</span><span class="p">()</span>
+        <span class="n">CursorQueueManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;get_cursorQueue&#39;</span><span class="p">,</span> <span class="nb">callable</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">cqueue</span><span class="p">)</span>
+        <span class="n">cmgr</span> <span class="o">=</span> <span class="n">CursorQueueManager</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">50201</span><span class="p">),</span><span class="n">authkey</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;tlu_cursormiracle&#39;</span><span class="p">)</span>
+        <span class="n">cmgr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;CursorQueueMgr started&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">emulatekey</span> <span class="ow">and</span> <span class="n">tqueue</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">tqueue</span> <span class="o">=</span> <span class="n">JoinableQueue</span><span class="p">()</span>
+        <span class="n">TouchQueueManager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;get_touchQueue&#39;</span><span class="p">,</span> <span class="nb">callable</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span><span class="n">tqueue</span><span class="p">)</span>
+        <span class="n">tmgr</span> <span class="o">=</span> <span class="n">TouchQueueManager</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">50202</span><span class="p">),</span><span class="n">authkey</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;tlu_touchme&#39;</span><span class="p">)</span>
+        <span class="n">tmgr</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;TouchQueueMgr started&quot;</span><span class="p">)</span>
 
 </pre></div>
     </div>

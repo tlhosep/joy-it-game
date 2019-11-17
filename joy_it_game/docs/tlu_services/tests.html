@@ -71,10 +71,18 @@ Test the settimgs functionality</p>
             <span class="n">localsettings</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">)</span>
             <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
         <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1025</span><span class="p">,</span> <span class="s2">&quot;Default port does not match&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;Default host does not match&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="s2">&quot;Default bool TLS does not match&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">587</span><span class="p">,</span> <span class="s2">&quot;Default port does not match&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;Default host does not match&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="s2">&quot;Default bool TLS does not match&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span>
+            <span class="k">raise</span>
+           
         <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
             <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
@@ -113,11 +121,27 @@ Test the settimgs functionality</p>
         <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1111</span><span class="p">,</span> <span class="s2">&quot;Default port does not match&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;Default host does not match&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="s2">&quot;Default bool TLS does not match&quot;</span><span class="p">)</span>
-        <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_PORT&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1111</span><span class="p">,</span> <span class="s2">&quot;Default port does not match&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_HOST&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;Default host does not match&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">[</span><span class="s1">&#39;EMAIL_USE_TLS&#39;</span><span class="p">]</span> <span class="p">,</span> <span class="s2">&quot;Default bool TLS does not match&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span>
+            <span class="k">raise</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span>
+            <span class="k">raise</span>
+
         <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
             <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
@@ -149,8 +173,15 @@ Test the settimgs functionality</p>
         <span class="n">ls</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">localsettings</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="p">)</span>
         <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-        <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">ls</span><span class="o">.</span><span class="n">presence</span><span class="p">())</span>  
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
+                <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">localsettings</span><span class="o">=</span><span class="bp">None</span>
+            <span class="k">raise</span>
         <span class="k">if</span> <span class="n">localsettings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ls</span><span class="o">.</span><span class="n">SETTINGS</span><span class="o">=</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">localsettings</span><span class="p">)</span>
             <span class="n">ls</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
