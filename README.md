@@ -5,10 +5,10 @@ The idea of the game is to disarm a virtual bomb. So each level has some time-re
 
 ## Preconditions
 The software has been tested on a Joy-it experimental box using an raspberry 3B+ board.
-Other boards have not been checked, the software needs some resources as we start a 
-web-server to get started.
+Other boards have not been checked yet. The software needs some CPU- and memory-resources as we start a 
+web-server to display the instructions.
 You may test if the system also runs with less capable raspberry boards, but there 
-is no warranty that you will succeed.
+is absolutely no warranty that you will succeed.
 
 ## Installation
 (see further below for more details)
@@ -21,10 +21,12 @@ is no warranty that you will succeed.
 7. Once completed cd to joy-it-game/joy_it_game
 8. run ./deploy_game.sh (may take a while)
 9. Note down the chosen admin-account and its password in case you may later on need it. (The user 'admin' with Password xxx has now been created and could be used to administer the system. Please note this down.)
-10. Make your settings for email (console is preferred) and logging (errors is the preferred choice)
+10. Make your settings for email (console is preferred) and logging (errors is the preferred choice)*
 11. Check that the email did work (usually shown on the console)
 12. You should then see "deployment of game finished!"
 13. That's all
+
+*) Please see further down for more details about the potential options to send an email in case you have lost your password
 
 ## Start
 Double-Click on the Desktop-Icon to start the little game. The browser will start and will provide you with a startup screen.
@@ -66,12 +68,25 @@ While running the deployment please note down this important line:
 ![alt text](https://github.com/tlhosep/joy-it-game/blob/master/joy_it_game/assets/screen_joyit_deployment_admin.png)
 You should note down the admin user and its password in order to administer the user and the game later on.
 
-Once deployment finished it results in this desktop:
+Once deployment has finished, it results in this desktop:
 ![alt text](https://github.com/tlhosep/joy-it-game/blob/master/joy_it_game/assets/screen_joyit_deployment_done_commented.jpg)
-1) Localized setting-questions (in this case in German): You have to specify the email system (use console unless you have other plans) and a logging level (errors should do)
-2) In case you have chosen console for the email subsystem, you will see this email. In case of other choices you may specify a path to store the email-file or specify settings of your email-server taht is going to deliver the emai to you. In the later case you also have to specify the content and receiver of the test-email
-3) Please check the email and select "Yes" to confirm that you have received the email
-4) This is the final message, once seen we are sure that everything went as it should :)
+1. Localized setting-questions (in this case in German): 
+First you have to specify the email system (use console unless you have other plans) followed by a logging level (errors should do).
+
+We have the following email-system options:
+   * Console/Terminal: The email and its content will be shown within the commandline window that is opened once you have started the game. As this is the easiest approach, you should give it a go :)
+   * Filesystem: The email will be stored as a file in the local filesystem. If you prefer this choice you have to specify the folder where the message(s) will be placed.
+   * Usual email: This is the most complicated option as you have to specify an smtp server, including its address, port, TLS (transport layer security) and your login credentials. Once provided the script will try to send you an test-email, so you could verify the settings.
+
+The email settings will be followed by asking you about the logging levels. The logfile itself could be found in the folder "log":
+   * FATAL: Minimal logging, only fatal errors could be found in the log 
+   * CRITICAL: This logs fatal and critical errors
+   * ERROR: All kind of errors, my preferred choice!
+   * DEBUG: This adds debugging information in case you would like to report an error
+   * INFO: Very rich log, nearly all actions are reported, produces a big logfile... 
+2. In case you have chosen console for the email subsystem, you will see this email. In case of other choices you may specify a path to store the email-file or specify settings of your email-server taht is going to deliver the emai to you. In the later case you also have to specify the content and receiver of the test-email
+3. Please check the email and select "Yes" to confirm that you have received the email
+4. This is the final message, once seen we are sure that everything went as it should :)
 
 You will then note the 2 new icons on the desktop. These are the ones to click to start and to end the game.
 When the game started a commandline window is left open. Once you have closed the browser, please press the ENTER-key once you have the commandline window active in order to close it. This is going to shut down the web-server and the game itself.
