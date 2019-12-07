@@ -82,6 +82,7 @@ class Level04(LevelBase):
             :param hardware: list of started threads
             """
             translation.activate(language)
+            self.clearQueue() #cleanup before we start
             key=-1
             state=1
             thread=threading.currentThread()
@@ -106,7 +107,7 @@ class Level04(LevelBase):
                     if queueobject.msg_num==tlu_queue.MSG_TIMEOUT:
                         glob.lcdMessagebyline(str(_("Level: "))+"04", str(_("Timeout"))+" :(")
                     break
-                print("State="+str(state)+" "+str(queueobject))
+                logging.info("State="+str(state)+" "+str(queueobject))
                 if queueobject.msg_num==tlu_queue.MSG_KEYRELEASED:
                     #skip this event
                     continue

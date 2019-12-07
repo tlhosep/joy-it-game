@@ -41,6 +41,7 @@ class Level00(LevelBase):
             """
             translation.activate(language)
             thread=threading.currentThread()
+            self.clearQueue() #cleanup before we start
             (timer,)=hardware  # @UnusedVariable
             while True:
                 (queueobject,breakIndicator)=self.getQueueObject(stop_event, gameProcess, thread)

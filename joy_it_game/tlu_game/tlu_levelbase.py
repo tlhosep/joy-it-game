@@ -103,6 +103,18 @@ class LevelBase(Process):
                     return (None,False)
             return (queueobject,False)
         
+        def clearQueue(self):
+            """
+            Fetch potential remaining messages from the queue in order to have clear start of the next level
+            """
+            while True:
+                try:
+                    queueobject = self.queue.get(block=False,timeout=0.1)
+                except:
+                    queueobject=None
+                if None == queueobject:
+                    return
+                
         def checkAbort(self,stop_event,gameProcess,thread,queueobject):
             """
             Checks the current thread, queue and message object for an indication that we shall abort.
@@ -152,6 +164,7 @@ class LevelBase(Process):
             """
             translation.activate(language)
             thread=threading.currentThread()
+            self.clearQueue() #cleanup before we start
             while True:
                 (queueobject,breakIndicator)=self.getQueueObject(stop_event, gameProcess, thread)
                 if breakIndicator:

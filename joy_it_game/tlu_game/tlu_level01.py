@@ -41,6 +41,7 @@ class Level01(LevelBase):
             :param hardware: list of started threads
             """
             translation.activate(language)
+            self.clearQueue() #cleanup before we start
             keymatrix={}
             thread=threading.currentThread()
             glob=tlu_globals.globMgr.tlu_glob()

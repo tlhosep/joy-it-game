@@ -44,6 +44,7 @@ class Level03(LevelBase):
             :param hardware: list of started threads
             """
             translation.activate(language)
+            self.clearQueue() #cleanup before we start
             key=-1
             numkeys=0
             secondstiltimeout=4

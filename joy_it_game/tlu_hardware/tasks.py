@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
             
 class Countdown(Thread):
     """
-    Provides a countdown display (hundreds seconds) on 7-segment
+    Provides a countdown display (tenths seconds) on 7-segment
     Once timer is run to zero a timeout message would be send to the provided queue
     """
     def __init__(self, queue, seconds):
@@ -43,11 +43,11 @@ class Countdown(Thread):
         self.is_aborted=False
         self.has_to_restart=False
         self.paused = seconds<0
-        if seconds > 99:
-            seconds = 99
+        if seconds > 999:
+            seconds = 999
         if seconds <= 0:
-            seconds = 0.01
-        self.hundreds=int(seconds*100)
+            seconds = 0.1
+        self.tenths=int(seconds*10)
         self.queue=queue
         self.sevenseg=tlu_led.seven_segment()
         tlu_globals.init()
@@ -57,10 +57,10 @@ class Countdown(Thread):
     
 
     def run(self, *args, **kwargs):
-        logger.info("Countdown started with hundreds="+str(self.hundreds)+" paused="+str(getattr(self, "paused", False)))
+        logger.info("Countdown started with tenths="+str(self.tenths)+" paused="+str(getattr(self, "paused", False)))
         t0=datetime.now()
         diff=0
-        while diff < self.hundreds:
+        while diff < self.tenths:
             if getattr(self, "has_to_restart", False):
                 t0=datetime.now()
                 logger.info('Countdown restarted')
@@ -73,10 +73,10 @@ class Countdown(Thread):
                 self.sevenseg.clear()
                 time.sleep(0.5)
                 continue
-            self.sevenseg.set4digits(int(self.hundreds-diff), 0)
-            time.sleep(0.01)
+            self.sevenseg.set4digits(int(self.tenths-diff), 0)
+            time.sleep(0.1)
             t1=datetime.now()
-            diff = int((t1-t0).total_seconds() * 100)
+            diff = int((t1-t0).total_seconds() * 10)
             if getattr(self, "is_aborted", False):
                 self.sevenseg.clear()
                 logger.info('Countdown aborted')
@@ -94,11 +94,11 @@ class Countdown(Thread):
     def restart(self):
         self.has_to_restart=True
     def changeSecondsAndRestart(self, seconds):
-        if seconds > 99:
-            seconds = 99
+        if seconds > 999:
+            seconds = 999
         if seconds <= 0:
-            seconds = 0.01
-        self.hundreds=int(seconds*100)
+            seconds = 0.1
+        self.tenths=int(seconds*10)
         self.has_to_restart=True
  
 class CheckKey(Thread):
