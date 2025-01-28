@@ -15,8 +15,8 @@ is absolutely no warranty that you will succeed.
 1. Start the experimental box
 2. Open a terminal
 3. cd to the Desktop
-4. mkdir GAME or equivalent (name does not count)
-5. cd GAME
+4. Optional: mkdir GAME or equivalent (name does not count)
+5. Optional: cd GAME
 6. download the code from github: git clone https://github.com/tlhosep/joy-it-game
 7. Once completed cd to joy-it-game/joy_it_game
 8. run ./deploy_game.sh (may take a while)
@@ -36,13 +36,13 @@ Please register yourself in order to save some results and then start the game.
 For each of the steps to mitigate the "bomb" please check the Dip-settings as they 
 are displayed. If they are not correct, the game-level could not be played.
 
-*Have fun!*
+**Have fun!**
 
 ## Updating the game
 If needed you may want to update to the most recent version of the game. This is very easily done. Please proceed as follows:
 1. Start the experimental box
 2. Open a terminal
-3. cd to the Desktop/GAME/joy-it-game/joy_it_game  (in case you have chosen GAME as teh initial folder on the Desktop)
+3. cd to the Desktop/GAME/joy-it-game/joy_it_game  (in case you have chosen GAME as the initial folder on the Desktop)
 4. enter as follows: ./update_game
 
 You will be guided through the steps to update the game automatically, usually there is no user-intervention needed.
@@ -94,6 +94,8 @@ When the game started a commandline window is left open. Once you have closed th
 # Development and structures
 ## Environment
 I decided to use eclipse (currently I am using the version 2019-09 R (4.13.0) ) and the Python development plugins. This is a very good start :)
+
+**Update**: I switched over to VSCode for a while as this is definitly better maintained and eases your work :) 
 
 ## Some words about the structure of the implementation
 ```
@@ -168,9 +170,9 @@ Adding new levels is fairly easy.
 1) I usally start by checking if a new hardware is needed. If so, I create some scripts and the respective test-case(s). I usually do this by copying some existing py-scripts and modify them as needed. Please note that a new hardware needs usually a change to the hardwarebase file as all addresses and ports are stored there.
 2) Then we have to setup the level-template (tlu_joyit_game/templates/tlu_joyit_game) by copying an existing one.
 3) The game-logic is the trickiest part. Please check existing levels (see tlu_game) and use any of the existing ones as the base for your implementation. Please keep the naming-convention: tlu_level directly followed by the level-number as two decimals (eg. tlu_level12)
-4) The new level has to made visible to the model (tlu_joyit_game/models.py). In the class "Game", scroll down to the "frequent_updates" and add a number (in milliseconds) that the frintend shall wait before callimng the backend again.
+4) The new level has to made visible to the model (tlu_joyit_game/models.py). In the class "Game", scroll down to the "frequent_updates" and add a number (in milliseconds) that the frontend shall wait before calling the backend again.
 5) In the same file and also in the calss "Game" you have to add the needed dipswitch_settimgs (in the __init__ method) as an logical or of all hardware-modules that come to play for your level. Each hardware provides the needed settings.
-6) Now we have to add the new level to the view. Open tlu_joyit_game/views.py and scrolldown to "levels=(" Add here your new level.
+6) Now we have to add the new level to the view. Open tlu_joyit_game/views.py and scroll down to "levels=(" Add here your new level.
 7) Run the Django tests to make sure your new hardware works as you want ist to
 8) Start the Django WebServer and play the game :)
 
