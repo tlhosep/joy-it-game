@@ -10,13 +10,18 @@ we also define the port-numbers we need to setup the GPI correctly
 @created: 2019-07-31 
 """ 
 import inspect
+import sys
 from tlu_hardware import tlu_hardware_global
-try: 
+try:
 # Check and import real RPi.GPIO library
     import RPi.GPIO as GPIO
 
 except ImportError:
-    import FakeRPi.GPIO as GPIO
+    import fake_rpi
+    sys.modules['RPi'] = fake_rpi.RPi     # Fake RPi
+    sys.modules['RPi.GPIO'] = fake_rpi.RPi.GPIO # Fake GPIO
+    sys.modules['smbus'] = fake_rpi.smbus # Fake smbus (I2C)
+    import RPi.GPIO as GPIO
 
 import logging
 

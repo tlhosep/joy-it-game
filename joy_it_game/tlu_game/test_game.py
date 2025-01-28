@@ -5,12 +5,16 @@ This module shall try to test most of the provided game functionalities
 @author: (c) Thomas Lüth 2019 / info@tlc-it-consulting.com
 """ 
 
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'joy_it_game.settings')
 import unittest
 import logging
+import time
+import django
+django.setup()
 from django.contrib.auth import get_user_model
 from tlu_joyit_game.models import Game, getGameState, setGameState, userOk, Level,\
     getCleanGameState
-import time
 from tlu_game.tlu_level00 import Level00
 from tlu_game import tlu_globals
 from tlu_hardware.tlu_checkhardware import emulatekey
@@ -79,9 +83,9 @@ class TestGame(unittest.TestCase):
         tlu_hardware_global.init()
         logging.debug('Test test_start_game started')
         game=self.getGame('test_start_game')
-        logging.debug("test_start_game: b4 start:  Game="+str(game))
+        logging.debug("test_start_game: b4 start:  Game=%s",str(game))
         game.start(Level00,0)
-        logging.debug("test_start_game: after start:  Game="+str(game))
+        logging.debug("test_start_game: after start:  Game=%s",str(game))
         time.sleep(1.2) #wait until game times out internally after 1 second, then continue here
         res=game.result()
         self.assertEqual(res, Level.PASSED, "Expected result of game00-run is "+str(Level.PASSED))
@@ -106,7 +110,7 @@ class TestGame(unittest.TestCase):
         game.abort()
         logging.debug('Test test_abort ended, analysis starts')
         levelobject=game.current_level
-        logging.debug('Test test_abort result is: '+str(levelobject))
+        logging.debug('Test test_abort result is: %s',str(levelobject))
         self.assertNotEqual(levelobject, None, "The level has to be known")
         self.assertEqual(levelobject.levelnum, 0, "Level has to be 0")
         self.assertEqual(levelobject.points, 0, "No points achieved")
@@ -122,10 +126,10 @@ class TestGame(unittest.TestCase):
         tlu_hardware_global.init()
         logging.debug('Test test_retry started')
         game=self.getGame('test_retry')
-        logging.debug("test_retry: b4 start:  Game="+str(game))
+        logging.debug("test_retry: b4 start:  Game=%s",str(game))
         game.start(Level00,0)
         time.sleep(0.5) #allow the game top start
-        logging.debug("test_retry: after start: Game="+str(game))
+        logging.debug("test_retry: after start: Game=%s",str(game))
         game.retry()
         levelobject=game.current_level
         self.assertNotEqual(levelobject, None, "The level has to be known")
@@ -142,11 +146,11 @@ class TestGame(unittest.TestCase):
         tlu_hardware_global.init()
         logging.debug('Test test_success started')
         game=self.getGame('test_success')
-        logging.debug('game created: '+str(game))
+        logging.debug('game created: %s',str(game))
         task=Level00
-        logging.debug("test_success: b4 start:  Game="+str(game))
+        logging.debug("test_success: b4 start:  Game=%s",str(game))
         game.start(task,0)
-        logging.debug("test_success: after start:  Game="+str(game))
+        logging.debug("test_success: after start:  Game=%s",str(game))
         self.assertTrue(game.is_running(), "Started game has to run (for at least 2.5 seconds)")
         time.sleep(1.2) #wait a bit to terminate the level internally
         res=game.result() #wait for level to terminate
